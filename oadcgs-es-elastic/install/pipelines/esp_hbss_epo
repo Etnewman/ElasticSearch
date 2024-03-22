@@ -1,0 +1,256 @@
+{"description":"HBSS syslog pipeline provided by Enterprise Services","pipeline":"input {
+    tcp {
+        port => 5049
+        ssl_enable => true
+        ssl_certificate_authorities => [\"/etc/logstash/certs/cachain.pem\"]
+        ssl_cert => \"/etc/logstash/certs/${HOSTNAME}.crt\"
+        ssl_key => \"/etc/logstash/certs/${HOSTNAME}_pkcs8.key\"
+        ssl_key_passphrase => \"${SSL_PASSPHRASE}\"
+        ssl_verify => false
+    }
+}
+
+filter {
+
+    mutate {
+        add_field => { \"DCGS_Site\" => \"${SITE}\" }
+        add_field => { \"DCGS_Site_Name\" => \"${SITELOC}\" }
+        add_field => { \"[geo][name]\" => \"${SITELOC}\" }
+        copy => { \"@timestamp\" => \"[event][created]\" }
+        copy => { \"message\" => \"[event][original]\" }
+    }
+    translate {
+        field => \"DCGS_Site_Name\"
+        destination => \"[geo][location]\"
+        override => \"true\"
+        fallback => \"0,0\"
+        dictionary_path => '/etc/logstash/dictionaries/site_coordinates.yml'
+    }
+    if [host] {
+        mutate {
+            rename => { \"host\" => \"[observer][host]\" }
+            copy => { \"[observer][host]\" => \"[observer][hostname]\" }
+            add_field => { \"[log][source][address]\" => \"%{[observer][host]}:%{[port]}\" }
+            add_field => { \"[observer][type]\" => \"McAfee ePolicy Orchestrator\" }
+            remove_field => [ \"host\", \"port\" ]
+        }
+    }
+
+    dissect {
+        mapping => {
+            \"message\" => \"<%{syslog_pri}>%{[log][syslog][version]} %{ts} %{[host][name]} %{[process][name]} - %{[log][syslog][msgid]} [%{payload_msg}] %{xml_payload}\"
+        }
+    }
+
+    syslog_pri { }
+
+    mutate {
+        lowercase => [ \"[process][name]\" ]
+        lowercase => [ \"payload_msg\" ]
+    }
+
+    xml {
+        source => \"xml_payload\"
+        force_array => false
+        target => \"[mcafee]\"
+    }
+
+    dissect {
+        mapping => {
+            \"payload_msg\" => \"%{[log][syslog][sd-id]} %{payload_sd}\"
+        }
+    }
+
+    kv {
+        source => \"payload_sd\"
+        target => \"epoevents\"
+        transform_key => \"lowercase\"
+    }
+
+    date {
+        match => [ \"ts\", \"ISO8601\" ]
+        target => \"@timestamp\"
+    }
+
+    # Cleanup parsed fields
+    mutate {
+        rename => { \"xml_payload\" => \"message\" }
+        remove_field => [ \"ts\", \"payload_msg\", \"payload\", \"payload_sd\", \"[host][name]\", \"[process][name]\" ]
+    }
+
+    # Parse host data to ecs
+    mutate {
+        copy => { \"[mcafee][MachineInfo][IPAdress]\" => \"[host][ip]\" }
+        copy => { \"[mcafee][MachineInfo][MachineName]\" => \"[host][name]\" }
+        copy => { \"[mcafee][MachineInfo][OSName]\" => \"[host][os][name]\" }
+        copy => { \"[mcafee][MachineInfo][RawMACAddress]\" => \"[host][mac_temp]\" }
+        copy => { \"[mcafee][MachineInfo][UserName]\" => \"[user][name]\" }
+    }
+
+    mutate {
+        lowercase => [ \"[host][name]\", \"[host][mac_temp]\" ]
+    }
+
+    # Format \"[host][mac_temp]\" to normal mac address format
+    if [host][mac_temp] {
+        grok {
+            match => {
+                \"[host][mac_temp]\" => [
+                    \"(?<mac_sect_1>[0-9a-f]{2})(?<mac_sect_2>[0-9a-f]{2})(?<mac_sect_3>[0-9a-f]{2})(?<mac_sect_4>[0-9a-f]{2})(?<mac_sect_5>[0-9a-f]{2})(?<mac_sect_6>[0-9a-f]{2})\",
+                    \"%{GREEDYDATA:[host][mac]}\"
+                ]
+            }
+        }
+
+        mutate {
+            add_field => { \"[host][mac]\" => \"%{mac_sect_1}:%{mac_sect_2}:%{mac_sect_3}:%{mac_sect_4}:%{mac_sect_5}:%{mac_sect_6}\" }
+            remove_field => [ \"mac_sect_1\", \"mac_sect_2\", \"mac_sect_3\", \"mac_sect_4\", \"mac_sect_5\", \"mac_sect_6\", \"[host][mac_temp]\" ]
+        }
+    }
+
+    # Add event.kind for ECS
+    if [mcafee][EventList] or [mcafee][SoftwareInfo] or [mcafee][EnterceptSoftware] {
+        mutate {
+            add_field => { \"[event][kind]\" => \"alert\" }
+        }
+    }
+
+    # Rename EnterceptSoftware Fields
+    if [mcafee][EnterceptSoftware] {
+        mutate {
+            rename => { \"[mcafee][EnterceptSoftware][Event][EventData][IncidentTime]\" => \"[mcafee][event_data][IncidentTime]\" }
+            rename => { \"[mcafee][EnterceptSoftware][Event][EventData][Process]\" => \"[mcafee][event_data][Process]\" }
+            rename => { \"[mcafee][EnterceptSoftware][Event][EventData][ProcessID]\" => \"[mcafee][event_data][ProcessID]\" }
+            rename => { \"[mcafee][EnterceptSoftware][Event][EventData][ProcessUserName]\" => \"[mcafee][event_data][ProcessUserName]\" }
+            rename => { \"[mcafee][EnterceptSoftware][Event][EventData][Reaction]\" => \"[mcafee][event_data][Reaction]\" }
+            rename => { \"[mcafee][EnterceptSoftware][Event][EventData][RemoteIPAddress]\" => \"[mcafee][event_data][RemoteIPAddress]\" }
+            rename => { \"[mcafee][EnterceptSoftware][Event][EventData][SeverityLevel]\" => \"[mcafee][event_data][SeverityLevel]\" }\t
+            rename => { \"[mcafee][EnterceptSoftware][Event][EventData][SigRuleClass]\" => \"[mcafee][event_data][SigRuleClass]\" }
+            rename => { \"[mcafee][EnterceptSoftware][Event][EventData][SigRuleDirective]\" => \"[mcafee][event_data][SigRuleDirective]\" }
+            rename => { \"[mcafee][EnterceptSoftware][Event][EventData][SignatureID]\" => \"[mcafee][event_data][SignatureID]\" }
+            rename => { \"[mcafee][EnterceptSoftware][Event][EventData][SignatureName]\" => \"[mcafee][event_data][SignatureName]\" }
+            rename => { \"[mcafee][EnterceptSoftware][Event][EventData][ThreatHandled]\" => \"[mcafee][event_data][ThreatHandled]\" }
+            rename => { \"[mcafee][EnterceptSoftware][Event][EventID]\" => \"[mcafee][event][EventID]\" }
+            rename => { \"[mcafee][EnterceptSoftware][Event][GMTTime]\" => \"[mcafee][event][GMTTime]\" }
+            rename => { \"[mcafee][EnterceptSoftware][Event][Params][Param]\" => \"[mcafee][event][Params][Param]\" }\t
+            rename => { \"[mcafee][EnterceptSoftware][Event][Severity]\" => \"[mcafee][event][Severity]\" }
+            rename => { \"[mcafee][EnterceptSoftware][ProductFamily]\" => \"[mcafee][ProductFamily]\" }
+            rename => { \"[mcafee][EnterceptSoftware][ProductName]\" => \"[mcafee][ProductName]\" }
+            rename => { \"[mcafee][EnterceptSoftware][ProductVersion]\" => \"[mcafee][ProductVersion]\" }
+        }
+    }
+
+    # Rename SoftwareInfo Fields
+    if [mcafee][SoftwareInfo] {
+        mutate {
+            rename => { \"[mcafee][SoftwareInfo][CommonFields][Analyzer]\" => \"[mcafee][event_data][Analyzer]\" }
+            rename => { \"[mcafee][SoftwareInfo][CommonFields][AnalyzerName]\" => \"[mcafee][event_data][AnalyzerName]\" }
+            rename => { \"[mcafee][SoftwareInfo][CommonFields][AnalyzerVersion]\" => \"[mcafee][event_data][AnalyzerVersion]\" }
+            rename => { \"[mcafee][SoftwareInfo][Event][CommonFields][AnalyzerDATVersion]\" => \"[mcafee][event_data][AnalyzerDATVersion]\" }
+            rename => { \"[mcafee][SoftwareInfo][Event][CommonFields][AnalyzerDetectionMethod]\" => \"[mcafee][event_data][AnalyzerDetectionMethod]\" }\t
+            rename => { \"[mcafee][SoftwareInfo][Event][CommonFields][AnalyzerEngineVersion]\" => \"[mcafee][event_data][AnalyzerEngineVersion]\" }
+            rename => { \"[mcafee][SoftwareInfo][Event][CommonFields][DetectedUTC]\" => \"[mcafee][event_data][DetectedUTC]\" }\t
+            rename => { \"[mcafee][SoftwareInfo][Event][CommonFields][TargetFileName]\" => \"[mcafee][event_data][TargetFileName]\" }\t
+            rename => { \"[mcafee][SoftwareInfo][Event][CommonFields][TargetProcessName]\" => \"[mcafee][event_data][TargetProcessName]\" }
+            rename => { \"[mcafee][SoftwareInfo][Event][CommonFields][TargetUserName]\" => \"[mcafee][event_data][TargetUserName]\" }
+            rename => { \"[mcafee][SoftwareInfo][Event][CommonFields][ThreatActionTaken]\" => \"[mcafee][event_data][ThreatActionTaken]\" }
+            rename => { \"[mcafee][SoftwareInfo][Event][CommonFields][ThreatCategory]\" => \"[mcafee][event_data][ThreatCategory]\" }
+            rename => { \"[mcafee][SoftwareInfo][Event][CommonFields][ThreatHandled]\" => \"[mcafee][event_data][ThreatHandled]\" }
+            rename => { \"[mcafee][SoftwareInfo][Event][CommonFields][ThreatSeverity]\" => \"[mcafee][event_data][ThreatSeverity]\" }\t
+            rename => { \"[mcafee][SoftwareInfo][Event][CommonFields][ThreatType]\" => \"[mcafee][event_data][ThreatType]\" }\t
+            rename => { \"[mcafee][SoftwareInfo][Event][CommonFields][SourceProcessName]\" => \"[mcafee][event_data][SourceProcessName]\" }
+            rename => { \"[mcafee][SoftwareInfo][Event][CommonFields][SourceUserName]\" =>\"[mcafee][event_data][SourceUserName]\" }
+            rename => { \"[mcafee][SoftwareInfo][Event][CommonFields][ThreatName]\" => \"[mcafee][event_data][ThreatName]\" }
+            rename => { \"[mcafee][SoftwareInfo][Event][EventID]\" => \"[mcafee][event][EventID]\" }
+            rename => { \"[mcafee][SoftwareInfo][Event][GMTTime]\" => \"[mcafee][event][GMTTime]\" }
+            rename => { \"[mcafee][SoftwareInfo][Event][LocalTime]\" => \"[mcafee][event][LocalTime]\" }
+            rename => { \"[mcafee][SoftwareInfo][Event][Severity]\" => \"[mcafee][event][Severity]\" }
+            rename => { \"[mcafee][SoftwareInfo][ProductFamily]\" => \"[mcafee][ProductFamily]\" }
+            rename => { \"[mcafee][SoftwareInfo][ProductName]\" => \"[mcafee][ProductName]\" }
+            rename => { \"[mcafee][SoftwareInfo][ProductVersion]\" => \"[mcafee][ProductVersion]\" }
+        }
+    }
+
+    # Rename EventList Fields
+    if [mcafee][EventList] {
+        mutate {
+            rename => { \"[mcafee][EventList][Event][EventID]\" => \"[mcafee][event][EventID]\" }\t
+            rename => { \"[mcafee][EventList][Event][GMTTime]\" => \"[mcafee][event][GMTTime]\" }
+            rename => { \"[mcafee][EventList][Event][OPGData]\" => \"[mcafee][event][OPGData]\" }\t
+            rename => { \"[mcafee][EventList][Event][Severity]\" => \"[mcafee][event][Severity]\" }
+            rename => { \"[mcafee][EventList][Event][TimeSZone]\" => \"[mcafee][event][TimeSZone]\" }
+            rename => { \"[mcafee][EventList][Event][UserInfo]\" => \"[mcafee][event][UserInfo]\" }
+            rename => { \"[mcafee][EventList][ProductFamily]\" => \"[mcafee][ProductFamily]\" }
+            rename => { \"[mcafee][EventList][ProductName]\" => \"[mcafee][ProductName]\" }
+            rename => { \"[mcafee][EventList][ProductVersion]\" => \"[mcafee][ProductVersion]\" }
+        }
+    }
+
+    # Rename McAfeeCommonUpdater Fields
+    if [mcafee][McAfeeCommonUpdater] {
+        mutate {
+            rename => { \"[mcafee][McAfeeCommonUpdater][UpdateEvent][Description]\" => \"[mcafee][event_data][Description]\" }
+            rename => { \"[mcafee][McAfeeCommonUpdater][UpdateEvent][Error]\" => \"[mcafee][event_data][Error]\" }
+            rename => { \"[mcafee][McAfeeCommonUpdater][UpdateEvent][InitiatorID]\" => \"[mcafee][event_data][InitiatorID]\" }
+            rename => { \"[mcafee][McAfeeCommonUpdater][UpdateEvent][InitiatorType]\" => \"[mcafee][event_data][InitiatorType]\" }
+            rename => { \"[mcafee][McAfeeCommonUpdater][UpdateEvent][Locale]\" => \"[mcafee][event_data][Locale]\" }
+            rename => { \"[mcafee][McAfeeCommonUpdater][UpdateEvent][ProductID]\" => \"[mcafee][event_data][ProductID]\" }
+            rename => { \"[mcafee][McAfeeCommonUpdater][UpdateEvent][SiteName]\" => \"[mcafee][event_data][SiteName]\" }
+            rename => { \"[mcafee][McAfeeCommonUpdater][UpdateEvent][Type]\" => \"[mcafee][event_data][Type]\" }
+            rename => { \"[mcafee][McAfeeCommonUpdater][UpdateEvent][Version]\" => \"[mcafee][event_data][Version]\" }
+            rename => { \"[mcafee][McAfeeCommonUpdater][UpdateEvent][EventID]\" => \"[mcafee][event][EventID]\" }
+            rename => { \"[mcafee][McAfeeCommonUpdater][UpdateEvent][GMTTime]\" => \"[mcafee][event][GMTTime]\" }
+            rename => { \"[mcafee][McAfeeCommonUpdater][UpdateEvent][Severity]\" => \"[mcafee][event][Severity]\" }
+            rename => { \"[mcafee][McAfeeCommonUpdater][ProductFamily]\" => \"[mcafee][ProductFamily]\" }
+            rename => { \"[mcafee][McAfeeCommonUpdater][ProductName]\" => \"[mcafee][ProductName]\" }
+            rename => { \"[mcafee][McAfeeCommonUpdater][ProductVersion]\" => \"[mcafee][ProductVersion]\" }
+        }
+    }
+
+    mutate {
+        rename => { \"syslog_facility_code\" => \"[log][syslog][facility][code]\" }
+        rename => { \"syslog_severity\" => \"[log][level]\" }
+        rename => { \"syslog_severity_code\" => \"[log][syslog][severity][code]\" }
+        rename => { \"syslog_pri\" => \"[log][syslog][priority]\" }
+        rename => { \"syslog_facility\" => \"[log][facility]\" }
+        copy => { \"[log][facility]\" => \"[log][syslog][facility][name]\" }
+        copy => { \"[log][level]\" => \"[log][syslog][severity][name]\" }
+    }
+
+    if ![host][hostname] {
+        mutate {
+            copy => { \"[host][name]\" => \"[host][hostname]\" }
+        }
+    }
+
+    if [mcafee][event][EventID] {
+        translate {
+            field => \"[mcafee][event][EventID]\"
+            destination => \"[mcafee][event][EventName]\"
+            fallback => \"no match\"
+            dictionary_path => '/etc/logstash/dictionaries/mcafee_eventids.yml'
+        }
+
+        mutate {
+            add_tag => [ \"event_translated\" ]
+            copy => { \"[mcafee][event][EventID]\" => \"[event][code]\" }
+        }
+    }
+
+    # Add ECS field.
+    mutate {
+        add_field => { \"[event][dataset]\" => \"mcafee\" }
+    }
+}
+
+output {
+    elasticsearch {
+        hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+        index => \"dcgs-hbss_epo-iaas-ent\"
+        user => \"ls_internal\"
+        password => \"${LS_INTERNAL_PW}\"
+        ssl => true
+        cacert => \"/etc/logstash/certs/cachain.pem\"
+    }
+}
+","settings":{"pipeline.batch.delay":50,"pipeline.batch.size":125,"pipeline.workers":1,"queue.checkpoint.writes":1024,"queue.max_bytes":"1gb","queue.type":"persisted"}}

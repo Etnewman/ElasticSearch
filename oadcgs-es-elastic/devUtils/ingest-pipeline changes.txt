@@ -1,0 +1,117 @@
+filebeat-x.x.x-auditd-log-pipeline:
+
+From:
+
+        "kv" : {
+          "field" : "auditd.log.kv",
+          "field_split" : "\\s(?![\\w\\\"]+?(\\s+|$))",
+          "value_split" : "(?<!\\\\)=",
+          "target_field" : "auditd.log"
+        }
+
+To:
+
+        "kv" : {
+          "field" : "auditd.log.kv",
+          "field_split" : "\\s+(?![\\w\\\"]+?(\\s+|$))",
+          "value_split" : "(?<!\\\\)=",
+          "target_field" : "auditd.log"
+        }
+
+Remove:
+
+      {
+        "geoip" : {
+          "field" : "source.ip",
+          "target_field" : "source.geo",
+          "ignore_failure" : true
+        }
+      },
+      {
+        "geoip" : {
+          "ignore_missing" : true,
+          "database_file" : "GeoLite2-ASN.mmdb",
+          "field" : "source.ip",
+          "target_field" : "source.as",
+          "properties" : [
+            "asn",
+            "organization_name"
+          ]
+        }
+      },
+
+
+filebeat-x.x.x-iptables-log-pipeline:
+
+From:
+
+        "rename" : {
+          "target_field" : "event.original",
+          "field" : "message"
+        }
+
+To:
+
+        "rename" : {
+          "target_field" : "event.original",
+          "field" : "message",
+          "ignore_failure": true
+        }
+
+
+Remove:
+
+      {
+        "geoip" : {
+          "field" : "source.ip",
+          "target_field" : "source.geo",
+          "ignore_missing" : true
+        }
+      },
+      {
+        "geoip" : {
+          "field" : "destination.ip",
+          "target_field" : "destination.geo",
+          "ignore_missing" : true
+        }
+      },
+      {
+        "geoip" : {
+          "properties" : [
+            "asn",
+            "organization_name"
+          ],
+          "ignore_missing" : true,
+          "database_file" : "GeoLite2-ASN.mmdb",
+          "field" : "source.ip",
+          "target_field" : "source.as"
+        }
+      },
+      {
+        "geoip" : {
+          "field" : "destination.ip",
+          "target_field" : "destination.as",
+          "properties" : [
+            "asn",
+            "organization_name"
+          ],
+          "ignore_missing" : true,
+          "database_file" : "GeoLite2-ASN.mmdb"
+        }
+      }
+
+winlogbeat-x.x.x-powershell_operational:
+
+Add (before "]," at end of pipeline):
+      {
+        "fingerprint": {
+          "description": "Hash the powershell code block using MD5",
+          "if": "ctx.powershell.file.script_block_text != null",
+          "fields": [
+            "powershell.file.script_block_text"
+          ],
+          "method": "MD5",
+          "target_field": "powershell.file.script_block_fingerprint",
+          "tag": "DCGSOA-23259"
+        }
+      }

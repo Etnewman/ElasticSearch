@@ -1,0 +1,24 @@
+{
+  "index_patterns" : [
+    "dcgs-filebeat-geo-ha-render-logs*"
+  ],
+      "template" : {
+        "settings" : {
+          "index" : {
+            "lifecycle" : {
+              "rollover_alias" : "dcgs-filebeat-geo-ha-render-logs"
+            }
+          }
+        }
+      },
+  "composed_of" : [
+    "estc_dcgs_defaults",
+    "estc_dcgs_app_defaults",
+    "estc_render-mappings"
+  ],
+  "priority" : 200,
+  "version" : 0,
+  "_meta" : {
+    "description" : "REnDER index template installed by DCGS Enterprise Services"
+  }
+}

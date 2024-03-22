@@ -1,0 +1,321 @@
+{
+  "template" : {
+    "mappings" : {
+      "properties" : {
+        "@timestamp" : {
+          "type" : "date"
+        },
+        "@version" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "log" : {
+          "properties" : {
+            "fields" : {
+              "properties" : {
+                "acceleration_x" : {
+                  "type" : "long"
+                },
+                "acceleration_y" : {
+                  "type" : "long"
+                },
+                "acceleration_z" : {
+                  "type" : "long"
+                },
+                "air_audio_bytes_sent" : {
+                  "type" : "long"
+                },
+                "air_audio_msgs_sent" : {
+                  "type" : "long"
+                },
+                "air_buff_pct_used" : {
+                  "type" : "long"
+                },
+                "air_c2i_bytes_sent" : {
+                  "type" : "long"
+                },
+                "air_c2i_msgs_sent" : {
+                  "type" : "long"
+                },
+                "air_inlet_temp_c" : {
+                  "type" : "long"
+                },
+                "air_link_status" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                },
+                "air_msg_awaiting_delivery" : {
+                  "type" : "long"
+                },
+                "air_non_comms_bytes_sent" : {
+                  "type" : "long"
+                },
+                "air_non_comms_msgs_sent" : {
+                  "type" : "long"
+                },
+                "air_outlet_temp_c" : {
+                  "type" : "long"
+                },
+                "air_pansdu_bytes_sent" : {
+                  "type" : "long"
+                },
+                "air_pansdu_msgs_sent" : {
+                  "type" : "long"
+                },
+                "air_realtime_bytes_sent" : {
+                  "type" : "long"
+                },
+                "air_realtime_msgs_sent" : {
+                  "type" : "long"
+                },
+                "air_total_sends" : {
+                  "type" : "long"
+                },
+                "altitude" : {
+                  "type" : "long"
+                },
+                "chassis_num" : {
+                  "type" : "long"
+                },
+                "csc" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                },
+                "error_num" : {
+                  "type" : "long"
+                },
+                "fluid_outlet_temp_c" : {
+                  "type" : "long"
+                },
+                "fom" : {
+                  "type" : "long"
+                },
+                "fom_str" : {
+                  "type" : "text"
+                },
+                "gnd_audio_bytes_sent" : {
+                  "type" : "long"
+                },
+                "gnd_audio_msgs_sent" : {
+                  "type" : "long"
+                },
+                "gnd_c2i_bytes_sent" : {
+                  "type" : "long"
+                },
+                "gnd_c2i_msgs_sent" : {
+                  "type" : "long"
+                },
+                "gnd_msg_awaiting_delivery" : {
+                  "type" : "long"
+                },
+                "gnd_non_comms_bytes_sent" : {
+                  "type" : "long"
+                },
+                "gnd_non_comms_msgs_sent" : {
+                  "type" : "long"
+                },
+                "gnd_pansdu_bytes_sent" : {
+                  "type" : "long"
+                },
+                "gnd_pansdu_msgs_sent" : {
+                  "type" : "long"
+                },
+                "gnd_realtime_bytes_sent" : {
+                  "type" : "long"
+                },
+                "gnd_realtime_msgs_sent" : {
+                  "type" : "long"
+                },
+                "gnd_total_sends" : {
+                  "type" : "long"
+                },
+                "heading" : {
+                  "type" : "float"
+                },
+                "latitude" : {
+                  "type" : "float"
+                },
+                "log" : {
+                  "properties" : {
+                    "level" : {
+                      "type" : "keyword",
+                      "ignore_above" : 256
+                    },
+                    "logger" : {
+                      "type" : "keyword",
+                      "ignore_above" : 256
+                    },
+                    "syslog" : {
+                      "properties" : {
+                        "appname" : {
+                          "type" : "keyword",
+                          "ignore_above" : 256
+                        },
+                        "severity" : {
+                          "properties" : {
+                            "code" : {
+                              "type" : "long"
+                            },
+                            "name" : {
+                              "type" : "keyword",
+                              "ignore_above" : 256
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "logstr" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                },
+                "longitude" : {
+                  "type" : "float"
+                },
+                "pitch" : {
+                  "type" : "float"
+                },
+                "pitch_rate" : {
+                  "type" : "long"
+                },
+                "pump1_lvl_pct" : {
+                  "type" : "long"
+                },
+                "pump1_temp_c" : {
+                  "type" : "long"
+                },
+                "pump2_lvl_pct" : {
+                  "type" : "long"
+                },
+                "pump2_temp_c" : {
+                  "type" : "long"
+                },
+                "pump3_lvl_pct" : {
+                  "type" : "long"
+                },
+                "pump3_temp_c" : {
+                  "type" : "long"
+                },
+                "pump4_lvl_pct" : {
+                  "type" : "long"
+                },
+                "pump4_temp_c" : {
+                  "type" : "long"
+                },
+                "pumps_ttl_pct" : {
+                  "type" : "long"
+                },
+                "pwr_temp_c" : {
+                  "type" : "long"
+                },
+                "ref_temp_c" : {
+                  "type" : "long"
+                },
+                "roll" : {
+                  "type" : "long"
+                },
+                "roll_rate" : {
+                  "type" : "long"
+                },
+                "sample_time" : {
+                  "type" : "long"
+                },
+                "severity" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                },
+                "size" : {
+                  "type" : "long"
+                },
+                "type" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                },
+                "velocity_e" : {
+                  "type" : "float"
+                },
+                "velocity_n" : {
+                  "type" : "float"
+                },
+                "velocity_vert" : {
+                  "type" : "float"
+                },
+                "velocity_x" : {
+                  "type" : "long"
+                },
+                "velocity_y" : {
+                  "type" : "long"
+                },
+                "velocity_z" : {
+                  "type" : "long"
+                },
+                "yaw_rate" : {
+                  "type" : "long"
+                }
+              }
+            },
+            "name" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "tags" : {
+              "properties" : {
+                "aor" : {
+                  "type" : "long"
+                },
+                "classification" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                },
+                "counter" : {
+                  "type" : "long"
+                },
+                "host" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                },
+                "kit" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                },
+                "objective" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                },
+                "platform_version" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                },
+                "rome_id" : {
+                  "type" : "long"
+                },
+                "sortie_id" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                },
+                "sortie_name" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                },
+                "tail" : {
+                  "type" : "text"
+                }
+              }
+            },
+            "timestamp" : {
+              "type" : "long"
+            }
+          }
+        },
+        "port" : {
+          "type" : "long"
+        },
+        "tags" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        }
+      }
+    }
+  }
+}

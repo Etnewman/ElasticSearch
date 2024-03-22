@@ -1,0 +1,23 @@
+{
+    "index_patterns" : [
+      "heartbeat-7.16.3-*"
+    ],
+        "template" : {
+          "settings" : {
+            "index" : {
+              "lifecycle" : {
+                "rollover_alias" : "heartbeat-7.16.3"
+              }
+            }
+          }
+        },
+    "composed_of" : [
+      "estc_dcgs_defaults",
+      "estc_heartbeat-7.16.3-mappings"
+    ],
+    "priority" : 200,
+    "version" : 0,
+    "_meta" : {
+      "description" : "Heartbeat template installed by DCGS Enterprise Services"
+    }
+}

@@ -1,0 +1,60 @@
+{
+  "template" : {
+    "mappings" : {
+      "properties" : {
+        "agent" : {
+          "properties": {
+            "ephemeral_id" : {
+              "type" : "keyword"
+            },
+            "id" : {
+              "type" : "keyword"
+            },
+            "name" : {
+              "type" : "keyword"
+            }
+          }
+        },
+        "event" : {
+          "properties": {
+            "createdTime" : {
+              "type" : "keyword"
+            },
+            "originalLength" : {
+              "type" : "long"
+            }
+          }
+        },
+        "function" : {
+          "type" : "keyword"
+        },
+        "input" : {
+          "properties": {
+            "type" : {
+              "type" : "keyword"
+            }
+          }
+        },
+        "location" : {
+          "type" : "keyword"
+        },
+        "log" : {
+          "properties": {
+            "level_Num" : {
+              "type" : "long"
+            },
+            "flags" : {
+              "type" : "keyword"
+            }
+          }
+        },
+        "state" : {
+          "type" : "keyword"
+        },
+        "thread" : {
+          "type" : "keyword"
+        }
+      }
+    }
+  }
+}

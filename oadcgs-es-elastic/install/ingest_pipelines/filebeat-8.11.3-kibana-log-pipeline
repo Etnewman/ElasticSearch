@@ -1,0 +1,25 @@
+{
+    "processors" : [
+      {
+        "pipeline" : {
+          "if" : "ctx?.json?.type != null || ctx?.type != null",
+          "name" : "filebeat-8.11.3-kibana-log-pipeline-7"
+        }
+      },
+      {
+        "pipeline" : {
+          "if" : "ctx?.json?.ecs?.version != null || ctx?.ecs?.version != null",
+          "name" : "filebeat-8.11.3-kibana-log-pipeline-ecs"
+        }
+      }
+    ],
+    "description" : "Pipeline for parsing Kibana logs",
+    "on_failure" : [
+      {
+        "set" : {
+          "value" : "{{ _ingest.on_failure_message }}",
+          "field" : "error.message"
+        }
+      }
+    ]
+  }

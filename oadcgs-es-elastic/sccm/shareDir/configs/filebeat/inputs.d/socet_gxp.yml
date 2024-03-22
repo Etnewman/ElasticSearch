@@ -1,0 +1,7 @@
+- type: log
+  enabled: true
+  paths:
+    - C:\\Users\\*\\AppData\\Local\\Temp\\SocetGxp.log
+    - C:\\Users\\*\\AppData\\Local\\Temp\\AFPluginLog0.txt*
+  tags: ['SOCET_GXP']
+  scan_frequency: 30s

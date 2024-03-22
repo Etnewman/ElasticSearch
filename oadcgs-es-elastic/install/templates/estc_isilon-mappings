@@ -1,0 +1,1370 @@
+{
+  "template" : {
+    "settings" : {
+      "index" : {
+        "query" : {
+          "default_field" : [
+            "log.file.path",
+            "metadata.Desc",
+            "metadata.DocSubtype",
+            "metadata.DocType"
+          ]
+        }
+      }
+    },
+          "mappings" : {
+            "dynamic_templates" : [
+              {
+                "node_health" : {
+                  "path_match" : "node.*.node.health",
+                  "mapping" : {
+                    "type" : "keyword"
+                  },
+                  "match_mapping_type" : "string"
+                }
+              }
+            ],
+            "properties" : {
+              "cluster" : {
+                "properties" : {
+                  "node" : {
+                    "properties" : {
+                      "count" : {
+                        "properties" : {
+                          "all" : {
+                            "type" : "long"
+                          },
+                          "up" : {
+                            "type" : "long"
+                          },
+                          "down" : {
+                            "type" : "long"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "agent" : {
+                "properties" : {
+                  "hostname" : {
+                    "type" : "keyword",
+                    "ignore_above" : 256
+                  },
+                  "name" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "id" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "ephemeral_id" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "type" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "version" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  }
+                }
+              },
+              "metadata" : {
+                "properties" : {
+                  "Desc" : {
+                    "type" : "keyword",
+                    "ignore_above" : 1024
+                  },
+                  "DocType" : {
+                    "type" : "keyword",
+                    "ignore_above" : 256
+                  }
+                }
+              },
+              "temp" : {
+                "properties" : {
+                  "units" : {
+                    "type" : "keyword",
+                    "ignore_above" : 256
+                  },
+                  "temp_value" : {
+                    "type" : "float",
+                    "ignore_malformed" :true
+                  },
+                  "sensor_name" : {
+                    "type" : "keyword",
+                    "ignore_above" : 256
+                  }
+                }
+              },
+              "log" : {
+                "properties" : {
+                  "file" : {
+                    "properties" : {
+                      "path" : {
+                        "type" : "keyword",
+                        "ignore_above" : 256
+                      }
+                    }
+                  },
+                  "offset" : {
+                    "type" : "long"
+                  }
+                }
+              },
+              "lnn" : {
+                "type" : "long"
+              },
+              "tags" : {
+                "type" : "text",
+                "fields" : {
+                  "keyword" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  }
+                }
+              },
+              "input" : {
+                "properties" : {
+                  "type" : {
+                    "type" : "keyword",
+                    "ignore_above" : 256
+                  }
+                }
+              },
+              "license" : {
+                "properties" : {
+                  "tiers" : {
+                    "properties" : {
+                      "used_node_count" : {
+                        "type" : "long"
+                      },
+                      "licensed_nodes_with_seds_count" : {
+                        "type" : "long"
+                      },
+                      "tier" : {
+                        "type" : "keyword",
+                        "ignore_above" : 256
+                      },
+                      "licensed_node_count" : {
+                        "type" : "long"
+                      },
+                      "used_drive_capacity" : {
+                        "type" : "long"
+                      },
+                      "licensed_drive_capacity" : {
+                        "type" : "long"
+                      },
+                      "used_nodes_with_seds_count" : {
+                        "type" : "long"
+                      }
+                    }
+                  },
+                  "days_to_expiry" : {
+                    "type" : "long"
+                  },
+                  "name" : {
+                    "type" : "keyword",
+                    "ignore_above" : 256
+                  },
+                  "expiring_alert" : {
+                    "type" : "boolean"
+                  },
+                  "expiration" : {
+                    "type" : "date"
+                  },
+                  "expired_alert" : {
+                    "type" : "boolean"
+                  },
+                  "id" : {
+                    "type" : "keyword",
+                    "ignore_above" : 256
+                  },
+                  "status" : {
+                    "type" : "keyword",
+                    "ignore_above" : 256
+                  }
+                }
+              },
+              "@timestamp" : {
+                "type" : "date"
+              },
+              "partition" : {
+                "properties" : {
+                  "percent_used" : {
+                    "type" : "float"
+                  },
+                  "component_devices" : {
+                    "type" : "text",
+                    "fields" : {
+                      "keyword" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                      }
+                    }
+                  },
+                  "mount_point" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "used" : {
+                    "type" : "long"
+                  },
+                  "statfs" : {
+                    "properties" : {
+                      "f_mntfromname" : {
+                        "ignore_above" : 1024,
+                        "type" : "keyword"
+                      },
+                      "f_iosize" : {
+                        "type" : "long"
+                      },
+                      "f_mntonname" : {
+                        "ignore_above" : 1024,
+                        "type" : "keyword"
+                      },
+                      "f_fstypename" : {
+                        "ignore_above" : 1024,
+                        "type" : "keyword"
+                      },
+                      "f_flags" : {
+                        "type" : "long"
+                      },
+                      "f_type" : {
+                        "type" : "long"
+                      },
+                      "f_owner" : {
+                        "type" : "long"
+                      },
+                      "f_bavail" : {
+                        "type" : "long"
+                      },
+                      "f_namemax" : {
+                        "type" : "long"
+                      },
+                      "f_blocks" : {
+                        "type" : "long"
+                      },
+                      "f_version" : {
+                        "type" : "long"
+                      },
+                      "f_bfree" : {
+                        "type" : "long"
+                      },
+                      "f_bsize" : {
+                        "type" : "long"
+                      },
+                      "f_files" : {
+                        "type" : "long"
+                      },
+                      "f_ffree" : {
+                        "type" : "long"
+                      }
+                    }
+                  },
+                  "block_size" : {
+                    "type" : "long"
+                  },
+                  "capacity" : {
+                    "type" : "long"
+                  }
+                }
+              },
+              "ecs" : {
+                "properties" : {
+                  "version" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  }
+                }
+              },
+              "ifs" : {
+                "properties" : {
+                  "bytes" : {
+                    "properties" : {
+                      "total" : {
+                        "type" : "long"
+                      },
+                      "used" : {
+                        "type" : "long"
+                      },
+                      "free" : {
+                        "type" : "long"
+                      }
+                    }
+                  },
+                  "percent" : {
+                    "properties" : {
+                      "avail" : {
+                        "type" : "float"
+                      },
+                      "used" : {
+                        "type" : "float"
+                      },
+                      "free" : {
+                        "type" : "float"
+                      }
+                    }
+                  }
+                }
+              },
+              "@version" : {
+                "ignore_above" : 1024,
+                "type" : "keyword"
+              },
+              "host" : {
+                "properties" : {
+                  "hostname" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "Health" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "License" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "name" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "type" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "Url" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  }
+                }
+              },
+              "client" : {
+                "properties" : {
+                  "time_max" : {
+                    "type" : "long"
+                  },
+                  "remote_addr" : {
+                    "type" : "ip"
+                  },
+                  "in" : {
+                    "type" : "long"
+                  },
+                  "local_addr" : {
+                    "type" : "ip"
+                  },
+                  "out_avg" : {
+                    "type" : "long"
+                  },
+                  "out_min" : {
+                    "type" : "long"
+                  },
+                  "in_max" : {
+                    "type" : "long"
+                  },
+                  "local_name" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "operation_rate" : {
+                    "type" : "float"
+                  },
+                  "out" : {
+                    "type" : "long"
+                  },
+                  "node" : {
+                    "type" : "long"
+                  },
+                  "protocol" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "time_avg" : {
+                    "type" : "float"
+                  },
+                  "time_min" : {
+                    "type" : "long"
+                  },
+                  "num_operations" : {
+                    "type" : "long"
+                  },
+                  "remote_name" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "out_max" : {
+                    "type" : "long"
+                  },
+                  "time" : {
+                    "type" : "date",
+                     "format" : "epoch_second"
+                  },
+                  "class" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "user" : {
+                    "properties" : {
+                      "name" : {
+                        "ignore_above" : 1024,
+                        "type" : "keyword"
+                      },
+                      "id" : {
+                        "ignore_above" : 1024,
+                        "type" : "keyword"
+                      },
+                      "type" : {
+                        "ignore_above" : 1024,
+                        "type" : "keyword"
+                      }
+                    }
+                  },
+                  "in_avg" : {
+                    "type" : "long"
+                  },
+                  "in_min" : {
+                    "type" : "long"
+                  }
+                }
+              },
+              "share" : {
+                "properties" : {
+                  "ntfs_acl_support" : {
+                    "type" : "boolean"
+                  },
+                  "allow_variable_expansion" : {
+                    "type" : "boolean"
+                  },
+                  "strict_flush" : {
+                    "type" : "boolean"
+                  },
+                  "continuously_available" : {
+                    "type" : "boolean"
+                  },
+                  "access_based_enumeration_root_only" : {
+                    "type" : "boolean"
+                  },
+                  "description" : {
+                    "type" : "keyword",
+                    "ignore_above" : 256
+                  },
+                  "browsable" : {
+                    "type" : "boolean"
+                  },
+                  "ca_write_integrity" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "impersonate_user" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "file_create_mask" : {
+                    "type" : "long"
+                  },
+                  "path" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "run_as_root" : {
+                    "properties" : {
+                      "name" : {
+                        "ignore_above" : 1024,
+                        "type" : "keyword"
+                      },
+                      "id" : {
+                        "ignore_above" : 1024,
+                        "type" : "keyword"
+                      },
+                      "type" : {
+                        "ignore_above" : 1024,
+                        "type" : "keyword"
+                      }
+                    }
+                  },
+                  "allow_execute_always" : {
+                    "type" : "boolean"
+                  },
+                  "ca_timeout" : {
+                    "type" : "long"
+                  },
+                  "zid" : {
+                    "type" : "long"
+                  },
+                  "mangle_byte_start" : {
+                    "type" : "long"
+                  },
+                  "permissions" : {
+                    "properties" : {
+                      "permission_type" : {
+                        "ignore_above" : 1024,
+                        "type" : "keyword"
+                      },
+                      "permission" : {
+                        "ignore_above" : 1024,
+                        "type" : "keyword"
+                      },
+                      "trustee" : {
+                        "properties" : {
+                          "name" : {
+                            "ignore_above" : 1024,
+                            "type" : "keyword"
+                          },
+                          "id" : {
+                            "ignore_above" : 1024,
+                            "type" : "keyword"
+                          },
+                          "type" : {
+                            "ignore_above" : 1024,
+                            "type" : "keyword"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "directory_create_mask" : {
+                    "type" : "long"
+                  },
+                  "hide_dot_files" : {
+                    "type" : "boolean"
+                  },
+                  "change_notify" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "id" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "directory_create_mode" : {
+                    "type" : "long"
+                  },
+                  "file_create_mode" : {
+                    "type" : "long"
+                  },
+                  "file_filter_type" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "file_filtering_enabled" : {
+                    "type" : "boolean"
+                  },
+                  "smb3_encryption_enabled" : {
+                    "type" : "boolean"
+                  },
+                  "access_based_enumeration" : {
+                    "type" : "boolean"
+                  },
+                  "csc_policy" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "strict_ca_lockout" : {
+                    "type" : "boolean"
+                  },
+                  "create_permissions" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "inheritable_path_acl" : {
+                    "type" : "boolean"
+                  },
+                  "auto_create_directory" : {
+                    "type" : "boolean"
+                  },
+                  "strict_locking" : {
+                    "type" : "boolean"
+                  },
+                  "name" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "sparse_file" : {
+                    "type" : "boolean"
+                  },
+                  "impersonate_guest" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "allow_delete_readonly" : {
+                    "type" : "boolean"
+                  },
+                  "mangle_map" : {
+                    "type" : "text",
+                    "fields" : {
+                      "keyword" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                      }
+                    }
+                  },
+                  "oplocks" : {
+                    "type" : "boolean"
+                  }
+                }
+              },
+              "time" : {
+                "type" : "float"
+              },
+              "licenseid" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+			   "export" : {
+				  "properties" : {
+					"all_dirs" : {
+					  "type" : "boolean"
+					},
+					"block_size" : {
+					  "type" : "long"
+					},
+					"can_set_time" : {
+					  "type" : "boolean"
+					},
+					"case_insensitive" : {
+					  "type" : "boolean"
+					},
+					"case_preserving" : {
+					  "type" : "boolean"
+					},
+					"chown_restricted" : {
+					  "type" : "boolean"
+					},
+					"clients" : {
+					  "type" : "keyword",
+					  "ignore_above" : 256
+					},
+					"commit_asynchronous" : {
+					  "type" : "boolean"
+					},
+					"description" : {
+					  "type" : "keyword",
+					  "ignore_above" : 256
+					},
+					"directory_transfer_size" : {
+					  "type" : "long"
+					},
+					"encoding" : {
+					  "type" : "keyword",
+					  "ignore_above" : 256
+					},
+					"id" : {
+					  "type" : "long"
+					},
+					"link_max" : {
+					  "type" : "long"
+					},
+					"map_failure" : {
+					  "properties" : {
+						"enabled" : {
+						  "type" : "boolean"
+						},
+						"primary_group" : {
+						  "type" : "object"
+						},
+						"user" : {
+						  "properties" : {
+							"id" : {
+							  "type" : "keyword",
+							  "ignore_above" : 256
+							}
+						  }
+						}
+					  }
+					},
+					"map_full" : {
+					  "type" : "boolean"
+					},
+					"map_lookup_uid" : {
+					  "type" : "boolean"
+					},
+					"map_non_root" : {
+					  "properties" : {
+						"enabled" : {
+						  "type" : "boolean"
+						},
+						"primary_group" : {
+						  "type" : "object"
+						},
+						"user" : {
+						  "properties" : {
+							"id" : {
+							  "type" : "keyword",
+							  "ignore_above" : 256
+							}
+						  }
+						}
+					  }
+					},
+					"map_retry" : {
+					  "type" : "boolean"
+					},
+					"map_root" : {
+					  "properties" : {
+						"enabled" : {
+						  "type" : "boolean"
+						},
+						"primary_group" : {
+						  "type" : "object"
+						},
+						"user" : {
+						  "properties" : {
+							"id" : {
+							  "type" : "keyword",
+							  "ignore_above" : 256
+							}
+						  }
+						}
+					  }
+					},
+					"max_file_size" : {
+					  "type" : "long"
+					},
+					"name_max_size" : {
+					  "type" : "long"
+					},
+					"no_truncate" : {
+					  "type" : "boolean"
+					},
+					"paths" : {
+					  "type" : "keyword",
+					  "ignore_above" : 256
+					},
+					"read_only" : {
+					  "type" : "boolean"
+					},
+					"read_transfer_max_size" : {
+					  "type" : "long"
+					},
+					"read_transfer_multiple" : {
+					  "type" : "long"
+					},
+					"read_transfer_size" : {
+					  "type" : "long"
+					},
+					"readdirplus" : {
+					  "type" : "boolean"
+					},
+					"readdirplus_prefetch" : {
+					  "type" : "long"
+					},
+					"return_32bit_file_ids" : {
+					  "type" : "boolean"
+					},
+					"root_clients" : {
+					  "type" : "keyword",
+					  "ignore_above" : 256
+					},
+					"security_flavors" : {
+					  "type" : "keyword",
+					  "ignore_above" : 256
+					},
+					"setattr_asynchronous" : {
+					  "type" : "boolean"
+					},
+					"snapshot" : {
+					  "type" : "keyword",
+					  "ignore_above" : 256
+					},
+					"symlinks" : {
+					  "type" : "boolean"
+					},
+					"time_delta" : {
+					  "type" : "float"
+					},
+					"write_datasync_action" : {
+					  "type" : "keyword",
+					  "ignore_above" : 256
+					},
+					"write_datasync_reply" : {
+					  "type" : "keyword",
+					  "ignore_above" : 256
+					},
+					"write_filesync_action" : {
+					  "type" : "keyword",
+					  "ignore_above" : 256
+					},
+					"write_filesync_reply" : {
+					  "type" : "keyword",
+					  "ignore_above" : 256
+					},
+					"write_transfer_max_size" : {
+					  "type" : "long"
+					},
+					"write_transfer_multiple" : {
+					  "type" : "long"
+					},
+					"write_transfer_size" : {
+					  "type" : "long"
+					},
+					"write_unstable_action" : {
+					  "type" : "keyword",
+					  "ignore_above" : 256
+					},
+					"write_unstable_reply" : {
+					  "type" : "keyword",
+					  "ignore_above" : 256
+					},
+					"zone" : {
+					  "type" : "keyword",
+					  "ignore_above" : 256
+					}
+				  }
+				},
+              "hardware" : {
+                "properties" : {
+                  "infiniband" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "lcd_version" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "chassis_code" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "hwgen" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "generation_code" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "nvram" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "disk_controller" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "class" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "configuration_id" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "family_code" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "imb_version" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "ram" : {
+                    "type" : "long"
+                  },
+                  "product" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "disk_expander" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "storage_class" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "powersupplies" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "motherboard" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "cpu" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "serial_number" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "chassis" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "processor" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "net_interfaces" : {
+                    "type" : "text",
+                    "fields" : {
+                      "keyword" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                      }
+                    }
+                  },
+                  "flash_drive" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "chassis_count" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  },
+                  "series" : {
+                    "ignore_above" : 1024,
+                    "type" : "keyword"
+                  }
+                }
+              },
+                "node" : {
+                  "properties" : {
+                    "boottime" : {
+                      "type" : "date",
+                      "format" : "epoch_second"
+                    },
+					"clientstats" : {
+					  "properties" : {
+						"connected" : {
+						  "properties" : {
+							"cifs" : {
+							  "type" : "long"
+							},
+							"nfs" : {
+							  "type" : "long"
+							}
+						  }
+						}
+					  }
+					},
+                    "cpu" : {
+                      "properties" : {
+                        "count" : {
+                          "type" : "long"
+                        },
+                        "idle" : {
+                          "properties" : {
+                            "avg" : {
+                              "type" : "float"
+                            },
+                            "max" : {
+                              "type" : "float"
+                            }
+                          }
+                        },
+                        "intr" : {
+                          "properties" : {
+                            "avg" : {
+                              "type" : "float"
+                            },
+                            "max" : {
+                              "type" : "float"
+                            }
+                          }
+                        },
+                        "nice" : {
+                          "properties" : {
+                            "avg" : {
+                              "type" : "float"
+                            },
+                            "max" : {
+                              "type" : "float"
+                            }
+                          }
+                        },
+                        "sys" : {
+                          "properties" : {
+                            "avg" : {
+                              "type" : "float"
+                            },
+                            "max" : {
+                              "type" : "float"
+                            }
+                          }
+                        },
+                        "throttling" : {
+                          "type" : "long"
+                        },
+                        "user" : {
+                          "properties" : {
+                            "avg" : {
+                              "type" : "float"
+                            },
+                            "max" : {
+                              "type" : "float"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "disk" : {
+                      "properties" : {
+                        "count" : {
+                          "type" : "long"
+                        },
+                        "unhealthy" : {
+                          "properties" : {
+                            "count" : {
+                              "type" : "long"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "diskless" : {
+                      "type" : "long"
+                    },
+                    "health" : {
+                      "type" : "keyword",
+                        "ignore_above" : 256
+                    },
+                    "ifs" : {
+                      "properties" : {
+                        "bytes_deleted" : {
+                          "type" : "long"
+                        },
+                        "bytes_deleted_rate" : {
+                          "type" : "long"
+                        },
+                        "bytes_free" : {
+                          "type" : "long"
+                        },
+                        "bytes_in" : {
+                          "type" : "long"
+                        },
+                        "bytes_in_rate" : {
+                          "type" : "long"
+                        },
+                        "bytes_in_rate_max" : {
+                          "type" : "long"
+                        },
+                        "bytes_out" : {
+                          "type" : "long"
+                        },
+                        "bytes_out_rate" : {
+                          "type" : "float"
+                        },
+                        "bytes_out_rate_max" : {
+                          "type" : "float"
+                        },
+                        "bytes_total" : {
+                          "type" : "long"
+                        },
+                        "bytes_used" : {
+                          "type" : "long"
+                        },
+                        "bytes_used_pct" : {
+                          "type" : "float"
+                        },
+                        "files_created" : {
+                          "type" : "long"
+                        },
+                        "files_created_rate" : {
+                          "type" : "long"
+                        },
+                        "files_removed" : {
+                          "type" : "long"
+                        },
+                        "files_removed_rate" : {
+                          "type" : "long"
+                        },
+                        "num_lookups" : {
+                          "type" : "long"
+                        },
+                        "num_lookups_rate" : {
+                          "type" : "float"
+                        },
+                        "ops_in" : {
+                          "type" : "long"
+                        },
+                        "ops_in_rate" : {
+                          "type" : "float"
+                        },
+                        "ops_out" : {
+                          "type" : "long"
+                        },
+                        "ops_out_rate" : {
+                          "type" : "float"
+                        },
+                        "ssd_bytes_free" : {
+                          "type" : "long"
+                        },
+                        "ssd_bytes_total" : {
+                          "type" : "long"
+                        },
+                        "ssd_bytes_used" : {
+                          "type" : "long"
+                        },
+                        "ssd.bytes_used_pct" : {
+                          "type" : "float"
+                        }
+                      }
+                    },
+                    "load" : {
+                      "properties" : {
+                        "15min" : {
+                          "type" : "float"
+                        },
+                        "1min" : {
+                          "type" : "float"
+                        },
+                        "5min" : {
+                          "type" : "float"
+                        }
+                      }
+                    },
+                    "memory" : {
+                      "properties" : {
+                        "free" : {
+                          "type" : "long"
+                        },
+                        "used" : {
+                          "type" : "long"
+                        }
+                      }
+                    },
+                    "open" : {
+                      "properties" : {
+                        "files" : {
+                          "type" : "long"
+                        }
+                      }
+                    },
+                    "process" : {
+                      "properties" : {
+                        "count" : {
+                          "type" : "long"
+                        }
+                      }
+                    },
+                    "uptime" : {
+                      "type" : "long"
+                    }
+                  }
+                },
+              "node_id" : {
+                "type" : "long"
+              },
+              "status" : {
+                "properties" : {
+                  "nvram" : {
+                    "properties" : {
+                      "charge_status_number" : {
+                        "type" : "long"
+                      },
+                      "supported_type" : {
+                        "ignore_above" : 1024,
+                        "type" : "keyword"
+                      },
+                      "batteries" : {
+                        "properties" : {
+                          "color" : {
+                            "ignore_above" : 256,
+                            "type" : "keyword"
+                          },
+                          "id" : {
+                            "type" : "long"
+                          },
+                          "status" : {
+                            "ignore_above" : 256,
+                            "type" : "keyword"
+                          },
+                          "voltage" : {
+                            "type" : "integer"
+                          }
+                        }
+                      },
+                      "battery_count" : {
+                        "type" : "long"
+                      },
+                      "present_flash" : {
+                        "type" : "boolean"
+                      },
+                      "present_size" : {
+                        "type" : "long"
+                      },
+                      "present_type" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                      },
+                      "charge_status" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                      },
+                      "supported_flash" : {
+                        "type" : "boolean"
+                      },
+                      "ship_mode" : {
+                        "type" : "long"
+                      },
+                      "present" : {
+                        "type" : "boolean"
+                      },
+                      "supported_size" : {
+                        "type" : "long"
+                      },
+                      "device" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                      },
+                      "supported" : {
+                        "type" : "boolean"
+                      }
+                    }
+                  },
+                  "powersupplies" : {
+                    "properties" : {
+                      "has_cff" : {
+                        "type" : "boolean"
+                      },
+                      "failures" : {
+                        "type" : "long"
+                      },
+                      "supplies" : {
+                        "properties" : {
+                          "name" : {
+                            "ignore_above" : 256,
+                            "type" : "keyword"
+                          },
+                          "chassis" : {
+                            "type" : "long"
+                          },
+                          "id" : {
+                            "type" : "long"
+                          },
+                          "type" : {
+                            "ignore_above" : 256,
+                            "type" : "keyword"
+                          },
+                          "firmware" : {
+                            "ignore_above" : 256,
+                            "type" : "keyword"
+                          },
+                          "good" : {
+                            "ignore_above" : 256,
+                            "type" : "keyword"
+                          },
+                          "status" : {
+                            "ignore_above" : 256,
+                            "type" : "keyword"
+                          }
+                        }
+                      },
+                      "count" : {
+                        "type" : "long"
+                      },
+                      "supports_cff" : {
+                        "type" : "boolean"
+                      },
+                      "status" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                      }
+                    }
+                  },
+                  "release" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "batterystatus" : {
+                    "properties" : {
+                      "next_test_time1" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                      },
+                      "status1" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                      },
+                      "last_test_time1" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                      },
+                      "last_test_time2" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                      },
+                      "next_test_time2" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                      },
+                      "present" : {
+                        "type" : "boolean"
+                      },
+                      "status2" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                      },
+                      "result2" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                      },
+                      "result1" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                      },
+                      "supported" : {
+                        "type" : "boolean"
+                      }
+                    }
+                  },
+                  "cpu" : {
+                    "properties" : {
+                      "speed_limit" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                      },
+                      "proc" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                      },
+                      "model" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                      },
+                      "overtemp" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                      }
+                    }
+                  },
+                  "version" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "capacity" : {
+                    "properties" : {
+                      "bytes" : {
+                        "type" : "long"
+                      },
+                      "count" : {
+                        "type" : "long"
+                      },
+                      "type" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                      }
+                    }
+                  },
+                  "uptime" : {
+                    "type" : "long"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "version" : 0,
+        "_meta" : {
+          "description" : "default mappings for the isilon index template installed by DCGS Enterprise Services",
+          "managed" : true
+        }
+}

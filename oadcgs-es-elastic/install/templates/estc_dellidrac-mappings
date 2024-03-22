@@ -1,0 +1,761 @@
+{
+  "template" : {
+    "settings" : {
+      "index" : {
+        "query" : {
+          "default_field" : [
+            "log.file.path",
+            "metadata.Desc",
+            "metadata.DocSubtype",
+            "metadata.DocType"
+          ]
+        }
+      }
+    },
+          "mappings" : {
+            "properties" : {
+              "ifIndex" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "metadata" : {
+                "properties" : {
+                  "Desc" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "DocSubtype" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "DocType" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  }
+                }
+              },
+              "physicalDiskNumber" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "virtualDiskNumber" : {
+                "type" : "integer"
+              },
+              "cooceStateCapabilities" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "ifType" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "ifPhysAddress" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskCapacityInMB" : {
+                "type" : "long"
+              },
+              "powerSupplyIndex" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskBlockSizeInBytes" : {
+                "type" : "long"
+              },
+              "powerSupplyStateCapabilitiesUnique" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "virtualDiskBadBlocksDetected" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "powerSupplyMaximumInputVoltage" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskRemainingRatedWriteEndurance" : {
+                "type" : "integer"
+              },
+              "inputUtilization" : {
+                "type" : "float"
+              },
+              "systemFQDN" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "virtualDiskComponentStatus" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "powerSupplySensorState" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskBusType" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "ifInUcastPkts" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskUsedSpaceInMB" : {
+                "type" : "long"
+              },
+              "ifOutErrors" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "virtualDiskSizeInMB" : {
+                "type" : "long"
+              },
+              "racName" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "enclosureState" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskPartNumber" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "ifAdminStatus" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "systemRackName" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskRevision" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "systemAisleName" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "virtualDiskReadPolicy" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskMediaType" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "tags" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "virtualDiskDisplayName" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "input" : {
+                "properties" : {
+                  "type" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  }
+                }
+              },
+              "physicalDiskManufactureDay" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "systemBladeSlotNumber" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "systemModelName" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "ifOutOctets" : {
+                "type" : "long"
+              },
+              "systemOSName" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "systemPowerState" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskSerialNo" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "systemStateTemperatureStatusCombined" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "systemPowerUpTime" : {
+                "type" : "integer"
+              },
+              "virtualDiskMediaType" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "enclosureSASAddress" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskFreeSpaceInMB" : {
+                "type" : "long"
+              },
+              "virtualDiskRemainingRedundancy" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "enclosureRollUpStatus" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "enclosureFQDD" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "log" : {
+                "properties" : {
+                  "file" : {
+                    "properties" : {
+                      "path" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                      }
+                    }
+                  },
+                  "offset" : {
+                    "type" : "long"
+                  }
+                }
+              },
+              "physicalDiskPowerState" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "systemOEMOSVersion" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "coolingDeviceStatus" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "ifInNUcastPkts" : {
+                "type" : "long"
+              },
+              "virtualDiskWritePolicy" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "powerSupplyCurrentInputVoltage" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "powerSupplychassisIndex" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "powerSupplyLocationName" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "chassisServiceTag" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "enclosureTotalSlots" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "virtualDiskName" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "ifLtChange" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "coolingDeviceStateCapabilities" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "enclosureDriveCount" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "systemSystemID" : {
+                "type" : "integer"
+              },
+              "ifSpeed" : {
+                "type" : "long"
+              },
+              "systemLCDStatus" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskProgress" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "ifOutDiscards" : {
+                "type" : "long"
+              },
+              "physicalDiskCapableSpeed" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "systemAssetTag" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "ifOutQLen" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "@timestamp" : {
+                "type" : "date"
+              },
+              "enclosureType" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "ifSpecific" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "powerSupplyStateSettingsUnique" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "powerSupplyOutputWatts" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "virtualDiskFQDD" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "coolingDeviceProbeCapabilities" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskFormFactor" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "systemFormFactor" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "enclosureBackplaneBayID" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "ihange" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "coolingDeviceLowerNonCriticalThreshold" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "agent" : {
+                "properties" : {
+                  "hostname" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "name" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "id" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "ephemeral_id" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "type" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "version" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  }
+                }
+              },
+              "systemServiceTag" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskManufacturer" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "systemNodeID" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "ifOutUcastPkts" : {
+                "type" : "long"
+              },
+              "powerSupplypowerUnitIndexReference" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "systemOSVersion" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskNegotiatedSpeed" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "powerSupplyPowerMonitorCapable" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "virtualDiskDiskCachePolicy" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "ifDescr" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "ifLastChange" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskManufactureYear" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskState" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "virtualDiskBlockSizeInBytes" : {
+                "type" : "long"
+              },
+              "physicalDiskComponentStatus" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskProtocolVersion" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskDisplayName" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "ecs" : {
+                "properties" : {
+                  "version" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  }
+                }
+              },
+              "ifInUnknownProtos" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "coolingDeviceType" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskSASAddress" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskName" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "enclosureFirmwareVersion" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "host" : {
+                "properties" : {
+                  "hostname" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "Health" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "ServiceTag" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "name" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "type" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  },
+                  "Url" : {
+                    "ignore_above" : 256,
+                    "type" : "keyword"
+                  }
+                }
+              },
+              "enclosureNumber" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskT10PICapability" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "virtualDiskAvailableProtocols" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "enclosureName" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "systemDataCenterName" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "virtualDiskLayout" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "coolingDeviceSubType" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "ifInDiscards" : {
+                "type" : "long"
+              },
+              "ifMtu" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "enclosureComponentStatus" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "virtualDiskState" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "coolingDeviceLowerCriticalThreshold" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "coolingDeviceFQDD" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "coolingDeviceStateSettings" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "coolingDevicechassisIndex" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskSmartAlertIndication" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "chassisNameModular" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "racURL" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "systemRackSlot" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "powerSupplyFQDD" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "coolingDeviceIndex" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "coolingDevicecoolingUnitIndexReference" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "ifInOctets" : {
+                "type" : "long"
+              },
+              "racFirmwareVersion" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskFQDD" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "virtualDiskIsCacheCade" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "systemExpressServiceCode" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskSecurityStatus" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "racVersion" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "powerSupplyType" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskManufactureWeek" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "virtualDiskSecured" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskProductID" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "systemRoomName" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "racType" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "racShortName" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "virtualDiskT10PIStatus" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "enclosureDisplayName" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "coolingDeviceLocationName" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "coolingDeviceReading" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "racManufacturer" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "@version" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "globalStorageStatus" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "ifOutNUcastPkts" : {
+                "type" : "long"
+              },
+              "physicalDiskPCIeNegotiatedLinkWidth" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "powerSupplyRatedInputWattage" : {
+                "type" : "integer"
+              },
+              "physicalDiskSpareState" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "virtualDiskOperationalState" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskPCIeCapableLinkWidth" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "ifInErrors" : {
+                "type" : "long"
+              },
+              "virtualDiskProgress" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "virtualDiskStripeSize" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "globalSystemStatus" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "physicalDiskOperationalState" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "racDescription" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "outputUtilization" : {
+                "type" : "float"
+              },
+              "powerSupplyStatus" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "ifOperStatus" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "time" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              },
+              "chassisModelModular" : {
+                "ignore_above" : 256,
+                "type" : "keyword"
+              }
+            }
+          }
+        },
+        "version" : 0,
+        "_meta" : {
+          "description" : "default mappings for the DellIdrac index template installed by DCGS Enterprise Services",
+          "managed" : true
+        }
+}

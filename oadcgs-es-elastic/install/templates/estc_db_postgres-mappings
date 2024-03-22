@@ -1,0 +1,87 @@
+{
+  "template" : {
+    "mappings" : {
+      "properties" : {
+        "@timestamp" : {
+          "type" : "date"
+        },
+        "@version" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "event" : {
+          "properties" : {
+            "category" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "ingested" : {
+              "type" : "date"
+            },
+            "module" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "host" : {
+          "properties" : {
+            "name" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "members" : {
+          "properties" : {
+            "api_url" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "clientURLs" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "host" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "id" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "lag" : {
+              "type" : "long"
+            },
+            "name" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "peerURLs" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "port" : {
+              "type" : "long"
+            },
+            "role" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "state" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "timeline" : {
+              "type" : "long"
+            }
+          }
+        },
+        "tags" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        }
+      }
+    }
+  }
+}

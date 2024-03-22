@@ -1,0 +1,27 @@
+{
+  "template" : {
+    "settings" : {
+      "index" : {
+        "lifecycle" : {
+          "name" : "dcgs_winlogbeat_policy"
+        }
+      }
+    },
+    "mappings": {
+      "properties": {
+        "powershell": {
+          "properties": {
+            "file": {
+              "properties": {
+                "script_block_fingerprint": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

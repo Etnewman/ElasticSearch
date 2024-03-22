@@ -1,0 +1,7 @@
+- type: log
+  enabled: true
+  paths:
+    - /tmp/ingest/event*.log
+    - /tmp/ingest/notification*.log
+    - /tmp/ingest/ecs*.log
+  tags: ['GXP_XPLORER']

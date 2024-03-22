@@ -1,0 +1,33 @@
+This file contains notes on changes that needed to be done to correct issues
+found with out of the box ingest pielines
+
+
+7.16.3
+- filebeat-7.16.3-auditd-log-pipeline
+    - Corrected to handle multiple spaces between kv fields
+      * Elastic also fixed this issue in 7.17.6 so manual update is no longer necessary
+
+- filebeat-7.16.3-auditd-log-pipeline
+    - Handle multiple spaces between hostname and Type (Added \s*)
+
+7.17.6
+- filebeat-7.16.3-auditd-log-pipeline
+    - Handle multiple spaces between hostname and Type (Added \s*)
+
+8.6.2
+- filebeat-8.6.2-auditd-log-pipeline
+    - Handle multiple spaces within the message field (Added \s+)
+    - Use a script to remove geoip database unavaiable in tags.
+- filebeat-8.6.2-iptables-log-pipeline
+    - Add ignore failure to rename message to event.original,
+    - Use a script to remove geoip database unavaiable in tags.
+
+8.11.1
+- filebeat-8.11.1-auditd-log-pipeline
+    - Change \\s to \\s+ at beginning of auditd.log.kv field_split
+    -  Remove geoip database unavailable in tags
+- filebeat-8.11.1-iptables-log-pipeline
+    - Add ignore failure to rename message to event.original
+    - Remove geoip database unavaiable in tags
+- winlogbeat-8.11.1-powershell_operational
+    - Add Fingerprint processor to end of pipeline

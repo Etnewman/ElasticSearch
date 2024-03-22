@@ -1,0 +1,21 @@
+{
+    "index_patterns" : [
+        "dcgs-db_geo-ha-unicorn*"
+    ],
+    "template" : {
+        "settings" : {
+        "index" : {
+            "lifecycle" : {
+            "rollover_alias" : "dcgs-db_geo-ha-unicorn-iaas-ent"
+            }
+        }
+        }
+    },
+    "composed_of" : [
+        "estc_dcgs_app_defaults",
+        "estc_dcgs_defaults",
+        "estc_unicorn-sql-mappings"
+    ],
+    "priority" : 200,
+    "version" : 0
+}

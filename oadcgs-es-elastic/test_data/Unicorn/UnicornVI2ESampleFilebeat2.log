@@ -1,0 +1,193 @@
+YYYY-MM-DD 00:00:45,013 [ 13] DEBUG () Quartz.Core.JobRunShell - Calling Execute on job SceneStatusMessageQueueJobGroup.SceneStatusMessageQueueJob
+YYYY-MM-DD 00:00:45,013 [  8] DEBUG () Quartz.Core.QuartzSchedulerThread - Batch acquisition of 1 triggers
+YYYY-MM-DD 00:00:45,058 [  4] DEBUG () Quartz.Core.JobRunShell - Trigger instruction : NoInstruction
+YYYY-MM-DD 00:00:30,002 [ 13] DEBUG () Quartz.Core.JobRunShell - Calling Execute on job SceneStatusMessageQueueJobGroup.SceneStatusMessageQueueJob
+YYYY-MM-DD 00:00:30,002 [  8] DEBUG () Quartz.Core.QuartzSchedulerThread - Batch acquisition of 1 triggers
+YYYY-MM-DD 00:00:30,070 [ 13] DEBUG () Quartz.Core.JobRunShell - Trigger instruction : NoInstruction
+YYYY-MM-DD 00:00:15,013 [  8] DEBUG () Quartz.Core.QuartzSchedulerThread - Batch acquisition of 1 triggers
+YYYY-MM-DD 00:00:15,070 [ 11] DEBUG () Quartz.Core.JobRunShell - Trigger instruction : NoInstruction
+YYYY-MM-DD 00:00:15,013 [ 11] DEBUG () Quartz.Core.JobRunShell - Calling Execute on job SceneStatusMessageQueueJobGroup.SceneStatusMessageQueueJob
+YYYY-MM-DD 00:00:00,605 [ 20] DEBUG () Quartz.Core.JobRunShell - Trigger instruction : NoInstruction
+YYYY-MM-DD 00:00:00,621 [ 13] DEBUG () Quartz.Core.JobRunShell - Trigger instruction : NoInstruction
+YYYY-MM-DD 00:00:04,730 [  4] DEBUG () Quartz.Core.JobRunShell - Trigger instruction : NoInstruction
+YYYY-MM-DD 00:00:04,730 [  8] DEBUG () Quartz.Core.QuartzSchedulerThread - Batch acquisition of 1 triggers
+YYYY-MM-DD 00:00:00,015 [  4] DEBUG () Quartz.Core.JobRunShell - Calling Execute on job AlgorithmRefreshJobGroup.AlgorithmRefreshJob
+YYYY-MM-DD 00:00:00,015 [  4] INFO  () Unicorn.JobService.Jobs.ImageProcessing.AlgorithmRefreshJob - Executing AlgorithmRefreshJob
+YYYY-MM-DD 00:00:00,015 [  8] DEBUG () Quartz.Core.QuartzSchedulerThread - Batch acquisition of 1 triggers
+YYYY-MM-DD 00:00:00,015 [  4] INFO  () Unicorn.JobService.Services.AlgorithmRefreshService - Executing StoreGetCapabilitiesMessage
+YYYY-MM-DD 00:00:00,015 [  4] INFO  () Unicorn.JobService.Services.AlgorithmRefreshService - StoreGetCapabilitiesMessage Finished
+YYYY-MM-DD 00:00:00,015 [  4] INFO  () Unicorn.JobService.Jobs.ImageProcessing.AlgorithmRefreshJob - AlgorithmRefreshJob Finished
+YYYY-MM-DD 00:00:00,015 [  4] DEBUG () Quartz.Core.JobRunShell - Trigger instruction : NoInstruction
+YYYY-MM-DD 00:00:00,030 [  4] DEBUG () Quartz.Core.JobRunShell - Calling Execute on job DatabaseReindexJobGroup.DatabaseReindexJob
+YYYY-MM-DD 00:00:00,030 [  8] DEBUG () Quartz.Core.QuartzSchedulerThread - Batch acquisition of 1 triggers
+YYYY-MM-DD 00:00:00,030 [  4] INFO  () Unicorn.JobService.Jobs.Reindex.DatabaseReindexJob - Executing Database Reindex Job 698759718
+YYYY-MM-DD 00:00:00,030 [  8] DEBUG () Quartz.Core.QuartzSchedulerThread - Batch acquisition of 1 triggers
+YYYY-MM-DD 00:00:00,030 [ 11] DEBUG () Quartz.Core.JobRunShell - Calling Execute on job ImageProcessingCleanupJobGroup.ImageProcessingCleanupJob
+YYYY-MM-DD 00:00:00,030 [ 11] INFO  () Unicorn.JobService.Jobs.ImageProcessing.ImageProcessingCleanupJob - Executing ProcessingRequestTimeoutJob
+YYYY-MM-DD 00:00:00,030 [ 11] INFO  () Unicorn.JobService.Services.ImageProcessingCleanupService - Executing ProcessingRequestTimeout
+YYYY-MM-DD 00:00:00,030 [  8] DEBUG () Quartz.Core.QuartzSchedulerThread - Batch acquisition of 1 triggers
+YYYY-MM-DD 00:00:00,049 [ 13] DEBUG () Quartz.Core.JobRunShell - Calling Execute on job ImageProcessingSceneJobGroup.ImageProcessingSceneJob
+YYYY-MM-DD 00:00:00,049 [ 13] INFO  () Unicorn.JobService.Jobs.ImageProcessing.ImageProcessingSceneJob - Executing ImageProcessingSceneJob
+YYYY-MM-DD 00:00:00,064 [ 11] INFO  () Unicorn.JobService.Services.ImageProcessingCleanupService - ProcessingRequestTimeout Finished
+YYYY-MM-DD 00:00:00,066 [ 11] INFO  () Unicorn.JobService.Jobs.ImageProcessing.ImageProcessingCleanupJob - ProcessingRequestTimeoutJob Finished
+YYYY-MM-DD 00:00:00,066 [ 11] DEBUG () Quartz.Core.JobRunShell - Trigger instruction : NoInstruction
+YYYY-MM-DD 00:00:00,070 [ 11] DEBUG () Quartz.Core.JobRunShell - Calling Execute on job LogMaintenanceJobGroup.LogMaintenanceJob
+YYYY-MM-DD 00:00:00,070 [  8] DEBUG () Quartz.Core.QuartzSchedulerThread - Batch acquisition of 1 triggers
+YYYY-MM-DD 00:00:00,070 [ 11] INFO  () Unicorn.JobService.Jobs.CleanupJobs.LogMaintenance.LogMaintenanceJob - Executing Replication Maintenance Job 1715993798
+YYYY-MM-DD 00:00:00,070 [  8] DEBUG () Quartz.Core.QuartzSchedulerThread - Batch acquisition of 1 triggers
+YYYY-MM-DD 00:00:00,078 [  8] DEBUG () Quartz.Core.QuartzSchedulerThread - Batch acquisition of 1 triggers
+YYYY-MM-DD 00:00:00,078 [ 16] DEBUG () Quartz.Core.JobRunShell - Calling Execute on job ObjectDetectionQueueJobGroup.ObjectDetectionQueueJob
+YYYY-MM-DD 00:00:00,078 [  8] DEBUG () Quartz.Core.QuartzSchedulerThread - Batch acquisition of 1 triggers
+YYYY-MM-DD 00:00:00,094 [ 13] DEBUG () Quartz.Core.JobRunShell - Trigger instruction : NoInstruction
+YYYY-MM-DD 00:00:00,094 [ 13] DEBUG () Quartz.Core.JobRunShell - Calling Execute on job OrderIpirCleanupJobGroup.OrderIpirCleanupJob
+YYYY-MM-DD 00:00:00,103 [ 13] INFO  () Unicorn.JobService.Jobs.CleanupJobs.OrderIpirCleanup.OrderIpirCleanupJob - Executing OrderIpirCleanupJob (Run ID 1330461220)
+YYYY-MM-DD 00:00:00,103 [  8] DEBUG () Quartz.Core.QuartzSchedulerThread - Batch acquisition of 1 triggers
+YYYY-MM-DD 00:00:00,118 [ 16] DEBUG () Quartz.Core.JobRunShell - Trigger instruction : NoInstruction
+YYYY-MM-DD 00:00:00,118 [ 16] DEBUG () Quartz.Core.JobRunShell - Calling Execute on job ProductTransferHoldMatchJobGroup.ProductTransferHoldMatchJob
+YYYY-MM-DD 00:00:00,118 [ 16] INFO  () Unicorn.JobService.Jobs.CleanupJobs.ProductTransferHoldMatch.ProductTransferHoldMatchJob - Executing ProductTransferHoldMatchJob...
+YYYY-MM-DD 00:00:00,118 [ 16] DEBUG () Quartz.Core.JobRunShell - Trigger instruction : NoInstruction
+YYYY-MM-DD 00:00:00,118 [ 16] DEBUG () Quartz.Core.JobRunShell - Calling Execute on job ReplicationMaintenanceJobGroup.ReplicationMaintenanceJob
+YYYY-MM-DD 00:00:00,118 [ 16] INFO  () Unicorn.JobService.Jobs.CleanupJobs.ReplicationMaintenance.ReplicationMaintenanceJob - Executing Replication Maintenance Job 134156989
+YYYY-MM-DD 00:00:00,134 [  8] DEBUG () Quartz.Core.QuartzSchedulerThread - Batch acquisition of 1 triggers
+YYYY-MM-DD 00:00:00,167 [  8] DEBUG () Quartz.Core.QuartzSchedulerThread - Batch acquisition of 1 triggers
+YYYY-MM-DD 00:00:00,171 [  8] DEBUG () Quartz.Core.QuartzSchedulerThread - Batch acquisition of 1 triggers
+YYYY-MM-DD 00:00:00,360 [ 13] DEBUG () Quartz.Core.JobRunShell - Trigger instruction : NoInstruction
+YYYY-MM-DD 00:00:00,360 [  8] DEBUG () Quartz.Core.QuartzSchedulerThread - Batch acquisition of 1 triggers
+YYYY-MM-DD 00:00:00,476 [ 13] DEBUG () Quartz.Core.JobRunShell - Trigger instruction : NoInstruction
+YYYY-MM-DD 00:00:00,476 [ 13] DEBUG () Quartz.Core.JobRunShell - Calling Execute on job SceneQueueJobGroup.SceneQueueJob
+YYYY-MM-DD 00:00:00,476 [  8] DEBUG () Quartz.Core.QuartzSchedulerThread - Batch acquisition of 1 triggers
+YYYY-MM-DD 00:00:00,529 [ 13] DEBUG () Quartz.Core.JobRunShell - Trigger instruction : NoInstruction
+YYYY-MM-DD 00:00:00,529 [ 13] DEBUG () Quartz.Core.JobRunShell - Calling Execute on job SceneStatusMessageQueueJobGroup.SceneStatusMessageQueueJob
+YYYY-MM-DD 00:00:00,529 [  8] DEBUG () Quartz.Core.QuartzSchedulerThread - Batch acquisition of 1 triggers
+YYYY-MM-DD 00:00:00,529 [ 11] DEBUG () Quartz.Core.JobRunShell - Trigger instruction : NoInstruction
+YYYY-MM-DD 00:00:00,529 [ 11] DEBUG () Quartz.Core.JobRunShell - Calling Execute on job UserIntermediateStagingTableCleanupJobGroup.UserIntermediateStagingTableCleanupJob
+YYYY-MM-DD 00:00:00,529 [  8] DEBUG () Quartz.Core.QuartzSchedulerThread - Batch acquisition of 1 triggers
+YYYY-MM-DD 00:00:00,529 [ 11] INFO  () Unicorn.JobService.Services.UserIntermediateStagingTableCleanupService - ------- User Intermediate Staging Table Clean Up Job started --------------
+YYYY-MM-DD 00:00:00,605 [ 20] ERROR () Unicorn.JobService.Services.UserIntermediateStagingTableCleanupService - An error occurred executing the UserIntermediateStagingTableCleanupJob job
+System.AggregateException: One or more errors occurred. ---> Newtonsoft.Json.JsonReaderException: Unexpected character encountered while parsing value: {. Path '', line 1, position 1.
+   at Newtonsoft.Json.JsonTextReader.ReadNumberValue(ReadType readType)
+   at Newtonsoft.Json.JsonTextReader.ReadAsInt32()
+   at Newtonsoft.Json.JsonReader.ReadForType(JsonContract contract, Boolean hasConverter)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.Deserialize(JsonReader reader, Type objectType, Boolean checkAdditionalContent)
+   at Newtonsoft.Json.JsonSerializer.DeserializeInternal(JsonReader reader, Type objectType)
+   at System.Net.Http.Formatting.BaseJsonMediaTypeFormatter.ReadFromStream(Type type, Stream readStream, Encoding effectiveEncoding, IFormatterLogger formatterLogger)
+   at System.Net.Http.Formatting.BaseJsonMediaTypeFormatter.ReadFromStream(Type type, Stream readStream, HttpContent content, IFormatterLogger formatterLogger)
+   at System.Net.Http.Formatting.BaseJsonMediaTypeFormatter.ReadFromStreamAsync(Type type, Stream readStream, HttpContent content, IFormatterLogger formatterLogger)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Net.Http.HttpContentExtensions.<ReadAsAsyncCore>d__17`1.MoveNext()
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+   at Unicorn.JobService.Services.UserIntermediateStagingTableCleanupService.<ExecuteCleanup>d__6.MoveNext() in C:\Jenkins\Workspace\job_59\UNICORN\Unicorn.JobService\Services\UserIntermediateStagingTableCleanupService.cs:line 56
+---> (Inner Exception #0) Newtonsoft.Json.JsonReaderException: Unexpected character encountered while parsing value: {. Path '', line 1, position 1.
+   at Newtonsoft.Json.JsonTextReader.ReadNumberValue(ReadType readType)
+   at Newtonsoft.Json.JsonTextReader.ReadAsInt32()
+   at Newtonsoft.Json.JsonReader.ReadForType(JsonContract contract, Boolean hasConverter)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.Deserialize(JsonReader reader, Type objectType, Boolean checkAdditionalContent)
+   at Newtonsoft.Json.JsonSerializer.DeserializeInternal(JsonReader reader, Type objectType)
+   at System.Net.Http.Formatting.BaseJsonMediaTypeFormatter.ReadFromStream(Type type, Stream readStream, Encoding effectiveEncoding, IFormatterLogger formatterLogger)
+   at System.Net.Http.Formatting.BaseJsonMediaTypeFormatter.ReadFromStream(Type type, Stream readStream, HttpContent content, IFormatterLogger formatterLogger)
+   at System.Net.Http.Formatting.BaseJsonMediaTypeFormatter.ReadFromStreamAsync(Type type, Stream readStream, HttpContent content, IFormatterLogger formatterLogger)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Net.Http.HttpContentExtensions.<ReadAsAsyncCore>d__17`1.MoveNext()<---
+YYYY-MM-DD 00:00:00,605 [ 20] ERROR () Quartz.Core.JobRunShell - Job UserIntermediateStagingTableCleanupJobGroup.UserIntermediateStagingTableCleanupJob threw an unhandled Exception:
+System.AggregateException: One or more errors occurred. ---> Newtonsoft.Json.JsonReaderException: Unexpected character encountered while parsing value: {. Path '', line 1, position 1.
+   at Newtonsoft.Json.JsonTextReader.ReadNumberValue(ReadType readType)
+   at Newtonsoft.Json.JsonTextReader.ReadAsInt32()
+   at Newtonsoft.Json.JsonReader.ReadForType(JsonContract contract, Boolean hasConverter)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.Deserialize(JsonReader reader, Type objectType, Boolean checkAdditionalContent)
+   at Newtonsoft.Json.JsonSerializer.DeserializeInternal(JsonReader reader, Type objectType)
+   at System.Net.Http.Formatting.BaseJsonMediaTypeFormatter.ReadFromStream(Type type, Stream readStream, Encoding effectiveEncoding, IFormatterLogger formatterLogger)
+   at System.Net.Http.Formatting.BaseJsonMediaTypeFormatter.ReadFromStream(Type type, Stream readStream, HttpContent content, IFormatterLogger formatterLogger)
+   at System.Net.Http.Formatting.BaseJsonMediaTypeFormatter.ReadFromStreamAsync(Type type, Stream readStream, HttpContent content, IFormatterLogger formatterLogger)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Net.Http.HttpContentExtensions.<ReadAsAsyncCore>d__17`1.MoveNext()
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+   at Unicorn.JobService.Services.UserIntermediateStagingTableCleanupService.<ExecuteCleanup>d__6.MoveNext() in C:\Jenkins\Workspace\job_59\UNICORN\Unicorn.JobService\Services\UserIntermediateStagingTableCleanupService.cs:line 62
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Unicorn.JobService.Jobs.CleanupJobs.StagingTableCleanup.UserIntermediateStagingTableCleanupJob.<Execute>d__4.MoveNext() in C:\Jenkins\Workspace\job_59\UNICORN\Unicorn.JobService\Jobs\CleanupJobs\StagingTableCleanup\UserIntermediateStagingTableCleanupJob.cs:line 38
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext() in C:\projects\quartznet\src\Quartz\Core\JobRunShell.cs:line 193
+---> (Inner Exception #0) Newtonsoft.Json.JsonReaderException: Unexpected character encountered while parsing value: {. Path '', line 1, position 1.
+   at Newtonsoft.Json.JsonTextReader.ReadNumberValue(ReadType readType)
+   at Newtonsoft.Json.JsonTextReader.ReadAsInt32()
+   at Newtonsoft.Json.JsonReader.ReadForType(JsonContract contract, Boolean hasConverter)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.Deserialize(JsonReader reader, Type objectType, Boolean checkAdditionalContent)
+   at Newtonsoft.Json.JsonSerializer.DeserializeInternal(JsonReader reader, Type objectType)
+   at System.Net.Http.Formatting.BaseJsonMediaTypeFormatter.ReadFromStream(Type type, Stream readStream, Encoding effectiveEncoding, IFormatterLogger formatterLogger)
+   at System.Net.Http.Formatting.BaseJsonMediaTypeFormatter.ReadFromStream(Type type, Stream readStream, HttpContent content, IFormatterLogger formatterLogger)
+   at System.Net.Http.Formatting.BaseJsonMediaTypeFormatter.ReadFromStreamAsync(Type type, Stream readStream, HttpContent content, IFormatterLogger formatterLogger)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Net.Http.HttpContentExtensions.<ReadAsAsyncCore>d__17`1.MoveNext()<---
+YYYY-MM-DD 00:00:00,605 [ 20] ERROR () Quartz.Core.ErrorLogger - Job UserIntermediateStagingTableCleanupJobGroup.UserIntermediateStagingTableCleanupJob threw an exception.
+Quartz.SchedulerException: Job threw an unhandled exception. ---> System.AggregateException: One or more errors occurred. ---> Newtonsoft.Json.JsonReaderException: Unexpected character encountered while parsing value: {. Path '', line 1, position 1.
+   at Newtonsoft.Json.JsonTextReader.ReadNumberValue(ReadType readType)
+   at Newtonsoft.Json.JsonTextReader.ReadAsInt32()
+   at Newtonsoft.Json.JsonReader.ReadForType(JsonContract contract, Boolean hasConverter)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.Deserialize(JsonReader reader, Type objectType, Boolean checkAdditionalContent)
+   at Newtonsoft.Json.JsonSerializer.DeserializeInternal(JsonReader reader, Type objectType)
+   at System.Net.Http.Formatting.BaseJsonMediaTypeFormatter.ReadFromStream(Type type, Stream readStream, Encoding effectiveEncoding, IFormatterLogger formatterLogger)
+   at System.Net.Http.Formatting.BaseJsonMediaTypeFormatter.ReadFromStream(Type type, Stream readStream, HttpContent content, IFormatterLogger formatterLogger)
+   at System.Net.Http.Formatting.BaseJsonMediaTypeFormatter.ReadFromStreamAsync(Type type, Stream readStream, HttpContent content, IFormatterLogger formatterLogger)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Net.Http.HttpContentExtensions.<ReadAsAsyncCore>d__17`1.MoveNext()
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+   at Unicorn.JobService.Services.UserIntermediateStagingTableCleanupService.<ExecuteCleanup>d__6.MoveNext() in C:\Jenkins\Workspace\job_59\UNICORN\Unicorn.JobService\Services\UserIntermediateStagingTableCleanupService.cs:line 62
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Unicorn.JobService.Jobs.CleanupJobs.StagingTableCleanup.UserIntermediateStagingTableCleanupJob.<Execute>d__4.MoveNext() in C:\Jenkins\Workspace\job_59\UNICORN\Unicorn.JobService\Jobs\CleanupJobs\StagingTableCleanup\UserIntermediateStagingTableCleanupJob.cs:line 38
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext() in C:\projects\quartznet\src\Quartz\Core\JobRunShell.cs:line 193
+   --- End of inner exception stack trace --- [See nested exception: System.AggregateException: One or more errors occurred. ---> Newtonsoft.Json.JsonReaderException: Unexpected character encountered while parsing value: {. Path '', line 1, position 1.
+   at Newtonsoft.Json.JsonTextReader.ReadNumberValue(ReadType readType)
+   at Newtonsoft.Json.JsonTextReader.ReadAsInt32()
+   at Newtonsoft.Json.JsonReader.ReadForType(JsonContract contract, Boolean hasConverter)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.Deserialize(JsonReader reader, Type objectType, Boolean checkAdditionalContent)
+   at Newtonsoft.Json.JsonSerializer.DeserializeInternal(JsonReader reader, Type objectType)
+   at System.Net.Http.Formatting.BaseJsonMediaTypeFormatter.ReadFromStream(Type type, Stream readStream, Encoding effectiveEncoding, IFormatterLogger formatterLogger)
+   at System.Net.Http.Formatting.BaseJsonMediaTypeFormatter.ReadFromStream(Type type, Stream readStream, HttpContent content, IFormatterLogger formatterLogger)
+   at System.Net.Http.Formatting.BaseJsonMediaTypeFormatter.ReadFromStreamAsync(Type type, Stream readStream, HttpContent content, IFormatterLogger formatterLogger)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Net.Http.HttpContentExtensions.<ReadAsAsyncCore>d__17`1.MoveNext()
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+   at Unicorn.JobService.Services.UserIntermediateStagingTableCleanupService.<ExecuteCleanup>d__6.MoveNext() in C:\Jenkins\Workspace\job_59\UNICORN\Unicorn.JobService\Services\UserIntermediateStagingTableCleanupService.cs:line 62
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Unicorn.JobService.Jobs.CleanupJobs.StagingTableCleanup.UserIntermediateStagingTableCleanupJob.<Execute>d__4.MoveNext() in C:\Jenkins\Workspace\job_59\UNICORN\Unicorn.JobService\Jobs\CleanupJobs\StagingTableCleanup\UserIntermediateStagingTableCleanupJob.cs:line 38
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext() in C:\projects\quartznet\src\Quartz\Core\JobRunShell.cs:line 193
+---> (Inner Exception #0) Newtonsoft.Json.JsonReaderException: Unexpected character encountered while parsing value: {. Path '', line 1, position 1.
+   at Newtonsoft.Json.JsonTextReader.ReadNumberValue(ReadType readType)
+   at Newtonsoft.Json.JsonTextReader.ReadAsInt32()
+   at Newtonsoft.Json.JsonReader.ReadForType(JsonContract contract, Boolean hasConverter)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.Deserialize(JsonReader reader, Type objectType, Boolean checkAdditionalContent)
+   at Newtonsoft.Json.JsonSerializer.DeserializeInternal(JsonReader reader, Type objectType)
+   at System.Net.Http.Formatting.BaseJsonMediaTypeFormatter.ReadFromStream(Type type, Stream readStream, Encoding effectiveEncoding, IFormatterLogger formatterLogger)
+   at System.Net.Http.Formatting.BaseJsonMediaTypeFormatter.ReadFromStream(Type type, Stream readStream, HttpContent content, IFormatterLogger formatterLogger)
+   at System.Net.Http.Formatting.BaseJsonMediaTypeFormatter.ReadFromStreamAsync(Type type, Stream readStream, HttpContent content, IFormatterLogger formatterLogger)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Net.Http.HttpContentExtensions.<ReadAsAsyncCore>d__17`1.MoveNext()<---
+]

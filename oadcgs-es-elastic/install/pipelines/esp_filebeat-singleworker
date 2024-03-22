@@ -1,0 +1,562 @@
+{"description":"Single Worker pipeline running on port 5043","pipeline":"input {
+    beats {
+        port => 5043
+        ssl => true
+        ssl_certificate_authorities => [\"/etc/logstash/certs/cachain.pem\"]
+        ssl_certificate => \"/etc/logstash/certs/${HOSTNAME}.crt\"
+        ssl_key => \"/etc/logstash/certs/${HOSTNAME}_pkcs8.key\"
+        ssl_key_passphrase => \"${SSL_PASSPHRASE}\"
+        ssl_verify_mode => \"peer\"
+    }
+}
+
+filter {
+
+    # Add Orignating Site to document
+    mutate {
+        add_field => { \"DCGS_Site\" => \"${SITE}\" }
+        add_field => { \"DCGS_Site_Name\" => \"${SITELOC}\" }
+        add_field => { \"[geo][name]\" => \"${SITELOC}\" }
+    }
+    translate {
+        field => \"DCGS_Site_Name\"
+        destination => \"[geo][location]\"
+        override => \"true\"
+        fallback => \"0,0\"
+        dictionary_path => '/etc/logstash/dictionaries/site_coordinates.yml'
+    }
+
+    ##### Start dcgs-soaesb Filter #####
+    if \"SOAESB\" in [tags] {
+        mutate {
+            rename => { \"log\" => \"[event][original]\" }
+            rename => {\"@timestamp\" => \"[event][ingested]\"}
+        }
+
+        # Delete any terminal control strings (e.g. \"\\u001b[34;43m\")
+        mutate { gsub => [ \"[event][original]\", \"\\u001b\\[[0-9;]+m\", \"\" ] }
+
+        # Karaf, Zookeeper, Mission Replay, Spring Boot, Solr, & Artemis formats are parsed, non-matches are dropped
+        # (Some containers send plain messages with no fields, and SOAESB has other container log formats not collected)
+        grok {
+            match => { \"[event][original]\" => \"(?m)%{TIMESTAMP_ISO8601:timestamp.karaf}\\s*\\|\\s*%{DATA:[log][level]}\\s*\\|\\s*%{GREEDYDATA:thread}\\s*\\|\\s*%{GREEDYDATA:[log][logger]}\\s*\\|\\s*%{DATA:javaClass}\\s*%{NUMBER:lineNumber}\\s*\\|\\s*%{NUMBER:[bundle][id]}\\s+-\\s+%{DATA:[bundle][name]}\\s+-\\s+%{DATA:[bundle][version]}\\s*\\|\\s*%{GREEDYDATA:message}\"}
+            match => { \"[event][original]\" => \"%{TIMESTAMP_ISO8601:timestamp.zookeeper}\\s+\\[\\s*%{DATA:[log][logger]}\\s*\\]\\s+-\\s+%{DATA:[log][level]}\\s+\\[\\s*%{DATA:javaClass}\\s*\\]\\s+-\\s+%{GREEDYDATA:message}\"}
+            match => { \"[event][original]\" => \"%{TIMESTAMP_ISO8601:timestamp.missionReplay}\\s+%{DATA:[log][level]}\\s+%{NUMBER:lineNumber}\\s+---\\s+\\[%{DATA:thread}\\]\\s+%{DATA:javaClass}\\s+:\\s+{\\s*\\\"imageId\\\":\\s*\\\"%{DATA:imageId}\\\",\\s*\\\"parentId\\\":\\s*\\\"%{DATA:parentId}\\\",\\s*\\\"fileName\\\":\\s*\\\"%{DATA:file.name}\\\",\\s*\\\"sceneNumber\\\":\\s*\\\"%{DATA:sceneNumber}\\\",\\s*\\\"missionId\\\":\\s*\\\"%{DATA:missionId}\\\",\\s*\\\"catalogId\\\":\\s*\\\"%{DATA:catalogId}\\\",\\s*\\\"sentSoapToUnicorn\\\":\\s*\\\"%{DATA:sentSoapToUnicorn}\\\",\\s*\\\"receivedSoapFromUnicorn\\\":\\s*\\\"%{DATA:receivedSoapFromUnicorn}\\\"\\s*}\"}
+            match => { \"[event][original]\" => \"%{TIMESTAMP_ISO8601:timestamp.springBoot}\\s+%{DATA:[log][level]}\\s+%{NUMBER:lineNumber}\\s+---\\s+\\[%{DATA:thread}\\]\\s+%{DATA:javaClass}\\s+:\\s+%{GREEDYDATA:message}\"}
+            match => { \"[event][original]\" => \"%{TIMESTAMP_ISO8601:timestamp.solr}\\s+%{DATA:[log][level]}\\s+\\(\\s*%{DATA:thread}\\s*\\)\\s+\\[\\s*%{DATA:[log][logger]}\\s*\\]\\s+%{DATA:javaClass}\\s+%{GREEDYDATA:message}\"}
+            match => { \"[event][original]\" => \"%{TIMESTAMP_ISO8601:timestamp.artemis}\\s+%{DATA:[log][level]}\\s+\\[\\s*%{DATA:javaClass}\\s*\\]\\s+%{GREEDYDATA:message}\"}
+            match => { \"[event][original]\" => \"\\s*%{GREEDYDATA:message}\"}
+        }
+        if [timestamp.missionReplay] {
+            # Aggregate all image messages into one; process doesn't take more than 5 seconds
+            aggregate {
+                task_id => \"%{imageId}\"
+                code => \"
+                    map['imageId'] = event.get('imageId')
+                    map['parentId'] ||= ''
+                    if (event.get('parentId') != 'null')
+                        map['parentId'] = event.get('parentId')
+                    end
+                    map['file.name'] ||= ''
+                    if (event.get('file.name') != 'null')
+                        map['file.name'] = event.get('file.name')
+                    end
+                    map['sceneNumber'] ||= ''
+                    if (event.get('sceneNumber') != 'null')
+                        map['sceneNumber'] = event.get('sceneNumber')
+                    end
+                    map['missionId'] ||= ''
+                    if (event.get('missionId') != 'null')
+                        map['missionId'] = event.get('missionId')
+                    end
+                    map['catalogId'] ||= ''
+                    if (event.get('catalogId') != 'null')
+                        map['catalogId'] = event.get('catalogId')
+                    end
+                    map['sentSoapToUnicorn'] ||= ''
+                    if (event.get('sentSoapToUnicorn') != 'null')
+                        map['sentSoapToUnicorn'] = event.get('sentSoapToUnicorn')
+                    end
+                    map['receivedSoapFromUnicorn'] ||= ''
+                    if (event.get('receivedSoapFromUnicorn') != 'null')
+                        map['receivedSoapFromUnicorn'] = event.get('receivedSoapFromUnicorn')
+                    end
+                    map['timestamp.missionReplay'] = event.get('timestamp.missionReplay')
+                    map['DCGS_Site'] = event.get('DCGS_Site')
+                    map['DCGS_Site_Name'] = event.get('DCGS_Site_Name')
+                    map['geo'] = event.get('[geo]')
+                    map['host'] = event.get('[host]')
+                \"
+                push_map_as_event_on_timeout => true
+                timeout_tags => [\"aggregate_missionReplay\"]
+                timeout => 5
+            }# end aggregate
+            if \"aggregate_missionReplay\" in [tags] {
+                mutate {
+                    # Add link to command SOAESB to re-send image if needed
+                    add_field => { \"ReplayImageNotification\" => \"https://soaesb:8993/services/api/replay/%{imageId}\" }  # .${DNSDOM}
+                    add_field => { \"[log][level]\" => \"INFO\" }
+                    add_field => { \"[app][DocSubtype]\" => \"aggregate\" }
+                    remove_tag => [ \"aggregate_missionReplay\" ]
+                    rename => {\"@timestamp\" => \"[event][ingested]\"}
+                }
+            }
+            mutate {
+                rename => { \"timestamp.missionReplay\" => \"timestamp\" }
+                add_field => [ \"[app][DocType]\", \"mission-replay\"]
+            }
+        } # end Mission Replay format
+        else if [timestamp.springBoot] {
+            mutate {
+                rename => { \"timestamp.springBoot\" => \"timestamp\" }
+                add_field => [ \"[app][DocType]\", \"spring-boot\"]
+            }
+        } # end Spring Boot format
+        else if [timestamp.karaf] {
+            mutate {
+                rename => { \"timestamp.karaf\" => \"timestamp\" }
+                add_field => [ \"[app][DocType]\", \"karaf\"]
+            }
+        } # end Karaf format
+        else if [timestamp.artemis] {
+            mutate {
+                rename => { \"timestamp.artemis\" => \"timestamp\" }
+                add_field => [ \"[app][DocType]\", \"artemis\"]
+            }
+        } # end Artemis format
+        else if [timestamp.solr] {
+            mutate {
+                rename => { \"timestamp.solr\" => \"timestamp\" }
+                add_field => [ \"[app][DocType]\", \"solr\"]
+            }
+        } # end solr format
+        else if [timestamp.zookeeper] {
+            mutate {
+                rename => { \"timestamp.zookeeper\" => \"timestamp\" }
+                add_field => [ \"[app][DocType]\", \"zookeeper\"]
+            }
+        } # end zookeeper format
+        else {
+            ## Drop messages that match 'message-only' (i.e. not parsed).
+            drop {}
+        } # end plain message format
+        date {
+            match => [\"timestamp\", \"yyyy-MM-dd HH:mm:ss.SSS\"
+                                 , \"yyyy-MM-dd HH:mm:ss,SSS\"
+                                 , \"ISO8601\"]
+        }
+        mutate {
+            remove_field => [\"timestamp\"]
+            add_field => [ \"[@metadata][index]\", \"dcgs-filebeat-soaesb\"]
+            add_field => [ \"[app][Kind]\", \"Mission\"]
+            add_field => [ \"[app][Category]\", \"Common\"]
+            add_field => [ \"[app][Name]\", \"SOAESB\"]
+            remove_tag => [ \"SOAESB\" ]
+        }
+        if [container][name] =~ /spring-itests/ {
+            mutate {add_field => [ \"[app][DocSubtype]\", \"itest\"]}
+        }
+        date {
+            match => [\"time\", \"yyyy-MM-dd HH:mm:ss.SSS\"
+                            , \"ISO8601\"]
+            target => \"[event][created]\"
+        }
+        mutate {
+            remove_field => [\"time\"]
+            rename => { \"[docker][container][labels]\" => \"[container][labels]\" }
+            remove_tag => [ \"beats_input_raw_event\" ]
+            remove_field => [
+                \"input\", \"stream\",
+                \"[agent][id]\", \"[agent][ephemeral_id]\", \"[agent][name]\",
+                \"[container][id]\", \"[docker]\"
+            ]
+        }
+        if [container][name] {
+            mutate {
+                add_field => [ \"[container][runtime]\", \"docker\" ]
+                # Split container.image.name from \"repo/name:version\"
+                rename => { \"[container][image][name]\" => \"Temp\" }
+                gsub => [ \"Temp\", \"/([^/]+:)\", \":\\1\" ]
+                split => { \"Temp\" => \":\" }
+                copy => { \"[Temp][0]\" => \"[container][image][Repo]\" }
+                copy => { \"[Temp][1]\" => \"[container][image][name]\" }
+                copy => { \"[Temp][2]\" => \"[container][image][Version]\" }
+                remove_field => [\"Temp\"]
+            }
+        }
+    }
+    ##### End dcgs-soaesb Filter #####
+    ##### Start REnDER Filter #####
+    if \"render\" in [tags] {
+
+        # Add Application Categorizing Fields to document
+        mutate {
+            add_field => { \"[app][Kind]\" => \"Mission\" }
+            add_field => { \"[app][Category]\" => \"GEOINT\" }
+            add_field => { \"[app][Type]\" => \"HA\" }
+            add_field => { \"[app][Name]\" => \"REnDER\" }
+            add_field => { \"[app][DocType]\" => \"log\" }
+        }
+
+        # Copy original data
+        mutate {
+            copy => { \"@timestamp\" => \"[event][created]\" }
+            copy => { \"message\" => \"[event][original]\" }
+        }
+        truncate {
+            fields => \"[event][original]\"
+            length_bytes => 32000
+        }
+
+        grok {
+            match => {
+                ## Parse Header and dump the rest into message ##
+
+                \"message\" => [
+                    \"%{TIMESTAMP_ISO8601:ts} *\\[%{DATA:XNIO_TASK}\\] *%{LOGLEVEL:[log][level]} %{JAVAFILE:[log][logger]} - Response body: %{QUOTEDSTRING:payload_Msg}\",
+                    \"%{TIMESTAMP_ISO8601:ts} *\\[%{DATA:XNIO_TASK}\\] *%{LOGLEVEL:[log][level]} %{JAVAFILE:[log][logger]} - Response body: %{WORD:response_Type} - %{GREEDYDATA:json_Msg}, %{GREEDYDATA:payload_Files}\",
+                    \"%{TIMESTAMP_ISO8601:ts} *\\[%{DATA:XNIO_TASK}\\] *%{LOGLEVEL:[log][level]} %{JAVAFILE:[log][logger]} - Response body: %{DATA:payload_Msg},\\\"Success\\\":%{WORD:Status}\",
+                    \"%{TIMESTAMP_ISO8601:ts} *\\[%{DATA:XNIO_TASK}\\] *%{LOGLEVEL:[log][level]} %{JAVAFILE:[log][logger]} - Response body: %{GREEDYDATA:json_Msg}\",
+                    \"%{TIMESTAMP_ISO8601:ts} *\\[%{DATA:XNIO_TASK}\\] *%{LOGLEVEL:[log][level]} %{JAVAFILE:[log][logger]} - Attempting to retrieve %{GREEDYDATA:attempting_to_Retrieve}\",
+                    \"%{TIMESTAMP_ISO8601:ts} *\\[%{DATA:XNIO_TASK}\\] *%{LOGLEVEL:[log][level]} %{JAVAFILE:[log][logger]} - Bad Request: %{GREEDYDATA:bad_Request}\",
+                    \"%{TIMESTAMP_ISO8601:ts} *\\[%{DATA:XNIO_TASK}\\] *%{LOGLEVEL:[log][level]} %{JAVAFILE:[log][logger]} - %{WORD:request_Action} %{WORD:request_method} request at URI: /%{DATA:api_Rest}/%{DATA:api_Services}/%{DATA:api_Metadata}/%{GREEDYDATA:api_Request}\",
+                    \"%{TIMESTAMP_ISO8601:ts} *\\[%{DATA:XNIO_TASK}\\] *%{LOGLEVEL:[log][level]} %{JAVAFILE:[log][logger]} - %{WORD:request_Action} %{WORD:request_method} request at URI: %{DATA:api_Rest}/%{DATA:api_Services}/%{DATA:api_Metadata}/%{GREEDYDATA:api_Request}\",
+                    \"%{TIMESTAMP_ISO8601:ts} *\\[%{DATA:XNIO_TASK}\\] *%{LOGLEVEL:[log][level]} %{JAVAFILE:[log][logger]} - Returning response to %{WORD:returning_Response} request at URI: %{GREEDYDATA:payload_Msg}\",
+                    \"%{TIMESTAMP_ISO8601:ts} *\\[%{DATA:XNIO_TASK}\\] *%{LOGLEVEL:[log][level]} %{JAVAFILE:[log][logger]} - Response status: %{GREEDYDATA:response_Status}\",
+                    \"%{TIMESTAMP_ISO8601:ts} *\\[%{DATA:XNIO_TASK}\\] *%{LOGLEVEL:[log][level]} %{JAVAFILE:[log][logger]} - Valid license: %{GREEDYDATA:valid_License}\",
+                    \"%{TIMESTAMP_ISO8601:ts} *\\[%{DATA:XNIO_TASK}\\] *%{LOGLEVEL:[log][level]} %{JAVAFILE:[log][logger]} - Response body: %{GREEDYDATA:payload_Msg}\",
+                    \"%{TIMESTAMP_ISO8601:ts} *\\[%{DATA:XNIO_TASK}\\] *%{LOGLEVEL:[log][level]} %{JAVAFILE:[log][logger]} - %{GREEDYDATA:payload_Msg}\",
+                    \"%{TIMESTAMP_ISO8601:ts} *\\[%{DATA:XNIO_TASK}\\] *%{LOGLEVEL:[log][level]} %{JAVAFILE:[log][logger]}.*\" ]
+
+                tag_on_failure => [ \"grok_failure\" ]
+            }
+        }
+
+        mutate {
+            add_field => [ \"[@metadata][index]\", \"dcgs-filebeat-geo-ha-render-logs\" ]
+        }
+
+        # Set time from event as @timestamp
+        date {
+            match => [ \"ts\", \"yyyy-MM-dd HH:mm:ss\" ]
+            target => \"@timestamp\"
+        }
+
+        if 'Description' in [payload_Msg] {
+            mutate {
+                gsub => [ \"payload_Msg\", \"[\\\\]\", \"\" ]
+                gsub => [ \"payload_Msg\", \"[\\(\\)]\", \"\" ]
+                gsub => [ \"payload_Msg\", \"\\\"\", \"\" ]
+                gsub => [ \"payload_Msg\", \"{\", \"\" ]
+            }
+        }
+
+        # Clean up unused fields and move processed event message to message field
+        mutate {
+            remove_field => [ \"ts\", \"beats_input_codec_plain_applied\", \"message\" ]
+            remove_tag => [ \"beats_input_codec_plain_applied\", \"render\" ]
+        }
+
+        # Updated Aggregate section
+        if \"POST\" in [request_method] or \"GET\" in [request_method] or \"PUT\" in [request_method] or \"DELETE\" in [request_method] {
+            aggregate {
+                task_id => \"%{XNIO_TASK}\"
+                map_action => \"create\"
+                code => \"
+                    map['api_Request'] = event.get('api_Request')
+                \"
+            }
+        }
+
+        else if [response_Status] {
+            mutate {
+                add_tag => \"response_Status\"
+            }
+            aggregate {
+                task_id => \"%{XNIO_TASK}\"
+                map_action => \"update\"
+                code => \"
+                    map['response_Status'] = event.get('response_Status')
+                \"
+                push_previous_map_as_event => true
+                timeout_tags => [\"aggregate_timeout\"]
+                timeout_code => \"event.set('[Rest][timeout]', 'Event Timed out' )\"
+            }
+        }
+
+        if [json_Msg] {
+            mutate {
+                add_tag => \"Response_Body\"
+            }
+            aggregate {
+                task_id => \"%{XNIO_TASK}\"
+                code => \"
+                    event.set('[Rest][request]', map['api_Request'])
+                    event.set('[Rest][status]', map['response_Status'])
+                \"
+                map_action => \"update\"
+                end_of_task => true
+            }
+        }
+
+        if [json_Msg] =~ /^\\[\"/ {
+            mutate {
+                rename => [ \"[json_Msg]\", \"[payload_Msg]\"]
+                gsub => [ \"[payload_Msg]\", \"[\\[\\]]\", \"\" ]
+            }
+        } else if [json_Msg] =~ /(^\\[{|^\\[{\"|^{|^\"\\[{|^{)/ {
+            mutate {
+                gsub => [ \"json_Msg\", \"[\\\\]\", \"\" ]
+                gsub => [ \"[Log][caveats]\", \"[\\\\]\", \"[{\\\\}]\" ]
+            }
+            json {
+                source => \"[json_Msg]\"
+                target => \"Log\"
+            }
+            if [Rest][request] =~ /.*updateRuleset$/ {
+                mutate {
+                    rename => { \"[Log][classification]\" => \"[Ruleset][classification]\" }
+                    rename => { \"[Log][caveats]\" => \"[Ruleset][caveats]\" }
+                    rename => { \"[Log][rules]\" => \"[Ruleset][rules]\" }
+                    rename => { \"[Log][sensors]\" => \"[Ruleset][sensors]\" }
+                }
+            }
+            else if [log][logger] =~ /.*NitfRest$/ {
+                mutate {
+                    rename => { \"[Log][caveats]\" => \"[Nitf][caveats]\" }
+                    rename => { \"[Log][classification]\" => \"[Nitf][classification]\" }
+                    rename => { \"[Log][platforms]\" => \"[Nitf][platforms]\" }
+                    rename => { \"[Log][rules]\" => \"[Nitf][rules]\" }
+                    rename => { \"[Log][sensors]\" => \"[Nitf][sensors]\" }
+                }
+            }
+            else if [Rest][request] =~ /.*trainingManual$/ {
+                mutate {
+                    rename => { \"[Log][caveats]\" => \"[Training][caveats]\" }
+                    rename => { \"[Log][classification]\" => \"[Training][classification]\" }
+                    rename => { \"[Log][platforms]\" => \"[Training][platforms]\" }
+                    rename => { \"[Log][rules]\" => \"[Training][rules]\" }
+                    rename => { \"[Log][sensors]\" => \"[Training][sensors]\" }
+                }
+            }
+            else if [Rest][request] =~ /.*redactWorkProduct$/ {
+                mutate {
+                    rename => { \"[Log][caveats]\" => \"[Product][caveats]\" }
+                    rename => { \"[Log][classification]\" => \"[Product][classification]\" }
+                    rename => { \"[Log][platforms]\" => \"[Product][platforms]\" }
+                    rename => { \"[Log][rules]\" => \"[Product][rules]\" }
+                    rename => { \"[Log][sensors]\" => \"[Product][sensors]\" }
+                }
+            }
+        }
+    }
+
+    ##### End REnDER Filter #####
+    ##### Start SOCET Filter #####
+    if \"SOCET_GXP\" in [tags] {
+        mutate {
+            add_field => [ \"[@metadata][index]\", \"dcgs-filebeat-geo-ha-socetgxp\"]
+            add_field => [ \"[app][Kind]\", \"Mission\"]
+            add_field => [ \"[app][Category]\", \"HA\"]
+            add_field => [ \"[app][Name]\", \"SOCET_GXP\"]
+            rename => {\"@timestamp\" => \"[event][ingested]\"}
+        }
+        grok {
+            pattern_definitions => {
+                \"SOCET_METRIC_LOG_LEVEL\" => \"METRIC\"
+                \"SOCET_LOG_LEVEL\" => \"(ERROR|WARN|INFO|EVENT|%{SOCET_METRIC_LOG_LEVEL}|DEBUG|TRACE|FATAL)\"
+                \"SPACE_PLUS\" => \"\\s+\"
+                \"TIMESTAMP_SOCET\" => \"%{YEAR}/%{MONTHNUM}/%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?%{ISO8601_TIMEZONE}?\"
+                \"TIMESTAMP_GWE\" => \"%{YEAR}/%{MONTHNUM}/%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}%{SECOND}\"
+                \"GWE_PLUGIN_LOG_LEVEL\" => \"(INFO|FINE|SEVERE)\"
+            }
+            # SocetGxp.log log message
+            match => {
+                \"message\" => \"%{TIMESTAMP_SOCET:occuredAt}%{SPACE_PLUS}\\|%{SPACE_PLUS}%{SOCET_LOG_LEVEL:[log][level]}%{SPACE_PLUS}\\|%{SPACE_PLUS}%{NOTSPACE}\\\\%{NOTSPACE:[log][origin][file][name]}%{SPACE_PLUS}\\|%{SPACE_PLUS}%{INT:[log][origin][file][line]}%{SPACE_PLUS}\\|%{SPACE_PLUS}%{GREEDYDATA:logText}\"
+            }
+            # AFPluginLog0.txt log message
+            match => {
+                \"message\" => \"%{TIMESTAMP_SOCET:occuredAt}%{SPACE_PLUS}Method%{SPACE_PLUS}%{NOTSPACE:[log][origin][function]}%{SPACE_PLUS}:%{SPACE_PLUS}%{GWE_PLUGIN_LOG_LEVEL:[log][level]}%{SPACE_PLUS}:%{GREEDYDATA:logText}\"
+            }
+        }
+
+        date {
+            match => [ \"occuredAt\", \"yyyy/MM/dd HH:mm:ss,SSS\",
+                                      \"yyyy/MM/dd HH:mm:ss\" ]
+        }
+
+        if [log][level] == \"METRIC\" {
+
+            # Parse the message as json for metrics
+            json {
+                source => \"logText\"
+                target => \"Metrics\"
+            }
+            mutate {
+                #Extract known fields
+                rename => { \"[Metrics][event.action]\" => \"[event][action]\" }
+                rename => { \"[Metrics][event.category]\" => \"[event][category]\" }
+                rename => { \"[Metrics][event.code]\" => \"[event][code]\" }
+                rename => { \"[Metrics][event.dataset]\" => \"[event][dataset]\" }
+                rename => { \"[Metrics][event.duration]\" => \"[event][duration]\" }
+                rename => { \"[Metrics][event.outcome]\" => \"[event][outcome]\" }
+                rename => { \"[Metrics][event.type]\" => \"[event][type]\" }
+                merge => { \"[tags]\" => \"[Metrics][tags]\" }
+                rename => { \"[Metrics][labels]\" => \"[labels]\" }
+                rename => { \"[Metrics][user.name]\" => \"[user][name]\" }
+
+                add_field => [ \"[app][DocSubtype]\", \"metric\"]
+
+            }
+
+            date {
+                match => [ \"[Metrics][event.start]\", \"ISO8601\" ]
+                target => \"[event][start]\"
+            }
+            date {
+                match => [ \"[Metrics][event.end]\", \"ISO8601\" ]
+                target => \"[event][end]\"
+            }
+            mutate {
+                remove_field => [ \"[Metrics][tags]\", \"[Metrics][event.start]\", \"[Metrics][event.end]\", \"logText\" ]
+            }
+        } else if [log][level] {
+            if [log][file][path] =~ /AFPluginLog/ {
+                mutate {
+                    add_field => [ \"[app][DocType]\", \"afpluginlog\"]
+                }
+            } else if [log][file][path] =~ /SocetGxp/ {
+                mutate {
+                    add_field => [ \"[app][DocType]\", \"socetgxp\"]
+                }
+            }
+        } else {
+            drop { }
+        }
+        mutate {
+            rename => { \"message\" => \"[event][original]\" }
+            rename => { \"logText\" => \"message\" }
+            remove_field => [ \"occuredAt\" ]
+            remove_tag => [ \"SOCET_GXP\" ]
+        }
+    } #SOCET_GXP
+    ##### End SOCET Filter #####
+    ##### Start FMV_MAAS Filter #####
+    if \"MAAS\" in [tags] {
+        mutate {
+            strip => [\"message\"]
+        }
+        if [message] == \"\" {
+            drop { }
+        }
+        ruby {
+            code => \"event.set('[event][originalLength]', event.get('message').length)\"
+        }
+        if [event][originalLength] > 1000 {
+            truncate {
+                fields => \"message\"
+                length_bytes => 1000
+                add_tag => [ \"truncated_msg\" ]
+            }
+        }
+        grok {
+            pattern_definitions => {\"ONOFF\" => \"(On)|(Off)\" \"ELEMENT\" => \"[^\\[\\]]+\"}
+            match => {\"message\" => \"\\[%{TIMESTAMP_ISO8601:datetime}\\] \\[%{WORD:[log][level]}\\]  \\[%{ELEMENT:location}\\] %{GREEDYDATA:msg}\"}
+            match => {\"message\" => \"%{TIMESTAMP_ISO8601:datetime} {%{NUMBER:[log][level_Num]}} %{GREEDYDATA:msg}\"}
+            match => {\"message\" => \"%{TIMESTAMP_ISO8601:datetime} %{ONOFF:state} %{DATA:function} %{WORD:[log][level]} \\[%{ELEMENT:location}\\] \\[%{ELEMENT:user.name}\\] - %{GREEDYDATA:msg}\"}
+            match => {\"message\" => \"%{TIMESTAMP_ISO8601:datetime} %{WORD:[log][level]} *\\[%{ELEMENT:location}\\] \\(%{DATA:thread}\\) %{GREEDYDATA:msg}\"}
+            match => {\"message\" => \"%{TIMESTAMP_ISO8601:datetime} %{WORD:[log][level]} *\\[%{ELEMENT:location}\\] \\(%{DATA:thread}\\) *\"}
+            match => {\"message\" => \"%{TIMESTAMP_ISO8601:datetime} %{DATA:thread} %{WORD:[log][level]} \\[%{ELEMENT:location}\\] - %{GREEDYDATA:msg}\"}
+            match => {\"message\" => \"%{TIMESTAMP_ISO8601:datetime} %{DATA:thread} %{WORD:[log][level]} \\[%{ELEMENT:location}\\] \\[%{ELEMENT:user.name}\\] - %{GREEDYDATA:msg}\"}
+            match => {\"message\" => \"%{TIMESTAMP_ISO8601:datetime} %{GREEDYDATA:msg}\"}
+            match => {\"message\" => \"%{TIME:time} *%{WORD:[log][level]} *\\[%{ELEMENT:location}\\] *\\(%{DATA:thread}\\) *%{GREEDYDATA:msg}\"}
+            match => {\"message\" => \"%{TIME:time} *%{WORD:[log][level]} *\\[%{ELEMENT:location}\\] *\\(%{DATA:thread}\\) *\"}
+            match => {\"message\" => \"%{TIME:time} %{GREEDYDATA:msg}\"}
+            match => {\"message\" => \"%{GREEDYDATA:msg}\"}
+        }
+        if [datetime] {
+            date {
+                match => [\"datetime\", \"yyyy-MM-dd HH:mm:ss,SSS\", \"yyyy-MM-dd HH:mm:ss\"]
+                timezone => \"Zulu\"
+                target => \"[event][created]\"
+            }
+            mutate {
+                remove_field => [\"datetime\"]
+            }
+        } else if [time] {
+            mutate {
+                rename => {\"time\" => \"[event][createdTime]\"}
+            }
+        }
+        if [log][level_Num] {
+            if [log][level_Num] == \"0\" {
+                mutate { add_field => [\"[log][level]\", \"INFO\"]}
+            } else if [log][level_Num] == \"1\" {
+                mutate { add_field => [\"[log][level]\", \"WARN\"]}
+            } else if [log][level_Num] == \"2\" {
+                mutate { add_field => [\"[log][level]\", \"ERROR\"]}
+            }
+        }
+        if ! [log][level] {
+            mutate { add_field => [\"[log][level]\", \"UNKNOWN\"]}
+        }
+        if [log][file][path] =~ /JBOSS/ {
+            mutate { add_field => [ \"[app][DocSubtype]\", \"jboss\"] }
+        } else if [log][file][path] =~ /MAAS/ {
+            mutate { add_field => [ \"[app][DocSubtype]\", \"maas\"] }
+        }
+
+        mutate {
+            add_field => [ \"[@metadata][index]\", \"dcgs-filebeat-geo-fmv-maas_logs\" ]
+            add_field => [ \"[app][Kind]\", \"Mission\"]
+            add_field => [ \"[app][Category]\", \"FMV\"]
+            add_field => [ \"[app][Name]\", \"MAAS\"]
+            add_field => [ \"[app][DocType]\", \"log\"]
+            remove_tag => [ \"MAAS\" ]
+            add_field => [ \"[event][ingested]\", \"%{@timestamp}\" ]
+            uppercase => [ \"[log][level]\" ]
+            rename => { \"message\" => \"[event][original]\" }
+        }
+        mutate {
+            rename => {\"msg\" => \"message\"}
+        }
+    }
+    ##### End FMV_MAAS Filter #####
+
+    ##### Add New Filter Sections Here #####
+
+}
+
+output {
+    if [@metadata][index] {
+        elasticsearch {
+            hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+            index => \"%{[@metadata][index]}\"
+            user => \"ls_internal\"
+            password => \"${LS_INTERNAL_PW}\"
+            ssl => true
+            cacert => \"/etc/logstash/certs/cachain.pem\"
+        }
+    }
+    else if [@metadata][pipeline] {
+        elasticsearch {
+            hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+            index => \"%{[@metadata][beat]}-%{[@metadata][version]}\"
+            pipeline => \"%{[@metadata][pipeline]}\"
+            user => \"ls_internal\"
+            password => \"${LS_INTERNAL_PW}\"
+            ssl => true
+            cacert => \"/etc/logstash/certs/cachain.pem\"
+        }
+    }
+    else {
+        elasticsearch {
+            hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+            index => \"%{[@metadata][beat]}-%{[@metadata][version]}\"
+            user => \"ls_internal\"
+            password => \"${LS_INTERNAL_PW}\"
+            ssl => true
+            cacert => \"/etc/logstash/certs/cachain.pem\"
+        }
+    }
+}","settings":{"pipeline.batch.delay":50,"pipeline.batch.size":125,"pipeline.workers":1,"queue.checkpoint.writes":1024,"queue.max_bytes":"10gb","queue.type":"persisted"}}

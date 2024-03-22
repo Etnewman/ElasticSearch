@@ -1,0 +1,3 @@
+yyyy/mm/dd 01:02:01 Method Function1 : INFO :logText
+yyyy/mm/dd 01:02:02 Method Function2 : FINE :log Text
+yyyy/mm/dd 01:02:03 Method Function3 : SEVERE : log Text

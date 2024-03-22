@@ -1,0 +1,181 @@
+{"description":"sccm pipeline provided by Enterprise Services","pipeline":"input {
+  jdbc {
+        jdbc_driver_library => \"/etc/logstash/jdbc/mssql-jdbc-7.2.2.jre8.jar\"
+        jdbc_driver_class => \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"
+        jdbc_connection_string => \"jdbc:sqlserver://SCCMDB.${DOMAINNAME}:1470;domain=${DOMAINNAME};integratedSecurity=true;authenticationScheme=JavaKerberos\"
+        jdbc_user => \"${SITENUM}_elastic.svc\"
+        jdbc_password => \"${ES_SVC_ACCT_PASSWORD}\"
+        schedule => \"* * * * *\"
+        statement => \"select RecordID,  Time, SiteCode, MessageID, MachineName, ModuleName, InsString1,InsString2, InsString3,
+                      InsString4, InsString5, InsString6, InsString7, InsString8, InsString9, InsString10
+                      from CM_U00.dbo.v_StatMsgWithInsStrings where MessageType = 768 and  Time > :sql_last_value\"
+
+        use_column_value => true
+        tracking_column => \"time\"
+        tracking_column_type => \"timestamp\"
+        last_run_metadata_path => \"/etc/logstash/jdbc/lastrunsccm\"
+    }
+}
+filter {
+
+    translate {
+        field => \"messageid\"
+        destination => \"message\"
+        dictionary_path => '/etc/logstash/dictionaries/sccm_message_ids.yml'
+        fallback => \"no match\"
+
+    }
+
+
+    mutate {
+        add_field => { \"DCGS_Site\" => \"${SITE}\" }
+        add_field => { \"DCGS_Site_Name\" => \"${SITELOC}\" }
+        add_field => { \"[geo][name]\" => \"${SITELOC}\" }
+        add_field => {\"[event][module]\" => \"sccm\"}
+        add_field => {\"[event][category]\" => \"database\"}
+        copy => { \"@timestamp\" => \"[event][created]\" }
+        copy => { \"time\" => \"@timestamp\" }
+        rename=>{\"sitecode\"=>\"DCGS_Site\"}
+        rename =>{\"messageid\"=>\"[event][id]\"}
+        rename =>{\"machinename\"=>\"[host][name]\"}
+        rename =>{\"modulename\"=>\"[event][provider]\"}
+        remove_field => [ \"time\" ]
+        add_field => { \"[event][deviceEventClassId]\" => \"%{[event][provider]}:%{[event][id]}\" }
+    }
+    translate {
+        field => \"DCGS_Site_Name\"
+        destination => \"[geo][location]\"
+        override => \"true\"
+        fallback => \"0,0\"
+        dictionary_path => '/etc/logstash/dictionaries/site_coordinates.yml'
+    }
+
+    if [event][provider] == \"SMS Provider\" {
+        translate {
+            field => \"[event][id]\"
+            destination => \"[event][reason]\"
+            dictionary_path => '/etc/logstash/dictionaries/sccm_reason_ids.yml'
+        }
+    }
+
+    if ![insstring1] {
+       mutate {
+            gsub => [\"message\", \"insstring1\", \"\" ]
+       }
+    }
+    else {
+        mutate {
+            gsub => [\"message\", \"insstring1\", \"%{insstring1}\" ]
+        }
+    }
+
+    if ![insstring2] {
+       mutate {
+            gsub => [\"message\", \"insstring2\", \"\" ]
+        }
+    }
+    else {
+        mutate {
+            gsub => [\"message\", \"insstring2\", \"%{insstring2}\" ]
+        }
+    }
+
+    if ![insstring3] {
+       mutate {
+            gsub => [\"message\", \"insstring3\", \"\" ]
+        }
+    }
+    else {
+        mutate {
+            gsub => [\"message\", \"insstring3\", \"%{insstring3}\" ]
+        }
+    }
+
+    if ![insstring4] {
+       mutate {
+            gsub => [\"message\", \"insstring4\", \"\" ]
+        }
+    }
+    else {
+        mutate {
+            gsub => [\"message\", \"insstring4\", \"%{insstring4}\" ]
+        }
+    }
+
+    if ![insstring5] {
+       mutate {
+            gsub => [\"message\", \"insstring5\", \"\" ]
+        }
+    }
+    else {
+        mutate {
+            gsub => [\"message\", \"insstring5\", \"%{insstring5}\" ]
+        }
+    }
+
+    if ![insstring6] {
+       mutate {
+            gsub => [\"message\", \"insstring6\", \"\" ]
+        }
+    }
+    else {
+        mutate {
+            gsub => [\"message\", \"insstring6\", \"%{insstring6}\" ]
+        }
+    }
+
+    if ![insstring7] {
+       mutate {
+            gsub => [\"message\", \"insstring7\", \"\" ]
+        }
+    }
+    else {
+        mutate {
+            gsub => [\"message\", \"insstring7\", \"%{insstring7}\" ]
+        }
+    }
+
+    if ![insstring8] {
+       mutate {
+            gsub => [\"message\", \"insstring8\", \"\" ]
+        }
+    }
+    else {
+        mutate {
+            gsub => [\"message\", \"insstring8\", \"%{insstring8}\" ]
+        }
+    }
+
+    if ![insstring9] {
+       mutate {
+            gsub => [\"message\", \"insstring9\", \"\" ]
+        }
+    }
+    else {
+        mutate {
+            gsub => [\"message\", \"insstring9\", \"%{insstring9}\" ]
+        }
+    }
+
+    if ![insstring10] {
+       mutate {
+            gsub => [\"message\", \"insstring10\", \"\" ]
+        }
+    }
+    else {
+        mutate {
+            gsub => [\"message\", \"insstring10\", \"%{insstring10}\" ]
+        }
+    }
+
+}
+output {
+    elasticsearch {
+        hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+        index => \"dcgs-db_sccm-iaas-ent\"
+        user => \"ls_internal\"
+        password => \"${LS_INTERNAL_PW}\"
+        ssl => true
+        cacert => \"/etc/logstash/certs/cachain.pem\"
+    }
+}","settings":{"pipeline.batch.delay":50,"pipeline.batch.size":125,"pipeline.workers":1,"queue.checkpoint.writes":1024,"queue.max_bytes":"1gb","queue.type":"persisted"}}

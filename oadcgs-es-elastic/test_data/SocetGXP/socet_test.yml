@@ -1,0 +1,6 @@
+- type: log
+  enabled: true
+  paths:
+    - /tmp/ingest/SocetGxp*.log
+    - /tmp/ingest/AFPluginLog0*.txt
+  tags: ['SOCET_GXP']

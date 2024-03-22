@@ -1,0 +1,17 @@
+YYYY-MM-DD 15:42:55,558 WARN  [org.jboss.as.txn] (ServerService Thread Pool -- 72) WFLYTX0013: The node-identifier attribute on the /subsystem=transactions is set to the default value. This is a danger for environments running multiple servers. Please make sure the attribute value is unique.
+YYYY-MM-DD 15:42:49,558 INFO  [org.jboss.modules] (main) JBoss Modules version 1.9.1.Final
+YYYY-MM-DD 15:42:50,198 INFO  [org.jboss.msc] (main) JBoss MSC version 1.4.11.Final
+YYYY-MM-DD 15:42:50,214 INFO  [org.jboss.threads] (main) JBoss Threads version 2.3.3.Final
+YYYY-MM-DD 15:42:50,417 INFO  [org.jboss.as] (MSC service thread 1-2) WFLYSRV0049: WildFly Full 18.0.1.Final (WildFly Core 10.0.3.Final) starting
+YYYY-MM-DD 15:43:53,804 INFO  [org.apache.cxf.wsdl.service.factory.ReflectionServiceFactoryBean] (EJB default - 4) Creating Service {http://www.gdais.com/maas/common/api/capture/mccs/}Mccs from WSDL: vfs:/C:/jboss/wildfly-18.0.1.Final/bin/content/LibraryAccessService-web-1.13.0-SNAPSHOT.war/WEB-INF/lib/capture-mccs-api-18.6.jar/META-INF/wsdl/mccs.wsdl
+YYYY-MM-DD 15:43:53,876 INFO  [org.apache.cxf.wsdl.service.factory.ReflectionServiceFactoryBean] (EJB default - 5) Creating Service {http://www.gdais.com/maas/common/api/capture/lccs/}Lccs from WSDL: vfs:/C:/jboss/wildfly-18.0.1.Final/bin/content/LibraryAccessService-web-1.13.0-SNAPSHOT.war/WEB-INF/lib/capture-lccs-api-20.5.1b.jar/META-INF/wsdl/lccs.wsdl
+YYYY-MM-DD 15:43:54,174 INFO  [org.apache.cxf.wsdl.service.factory.ReflectionServiceFactoryBean] (EJB default - 5) Creating Service {http://www.gdais.com/maas/common/api/capture/lccs/}Lccs from WSDL: vfs:/C:/jboss/wildfly-18.0.1.Final/bin/content/LibraryAccessService-web-1.13.0-SNAPSHOT.war/WEB-INF/lib/capture-lccs-api-20.5.1b.jar/META-INF/wsdl/lccs.wsdl
+YYYY-MM-DD 15:43:18,667 INFO  [org.jboss.ws.cxf.metadata] (MSC service thread 1-6) JBWS024061: Adding service endpoint metadata: id=AoiServiceSoap
+ address=http://10.22.48.103:8080/library-access-service/v1/soap/AoiService
+ implementor=com.gdais.maas.services.aoi.AoiServiceSoap
+ serviceName={http://www.gdais.com/maas/library-access-service/v1/soap/aoi-service}AoiService
+ portName={http://www.gdais.com/maas/library-access-service/v1/soap/aoi-service}AoiService
+ annotationWsdlLocation=null
+ wsdlLocationOverride=null
+ mtomEnabled=false
+YYYY-MM-DD 15:43:25,339 INFO  [org.apache.cxf.wsdl.service.factory.ReflectionServiceFactoryBean] (MSC service thread 1-6) Creating Service {http://www.gdais.com/maas/library-access-service/v1/soap/aoi-service}AoiService from class com.gdais.maas.services.aoi.AoiService

@@ -1,0 +1,1336 @@
+{
+    "description" : "Pipeline for Windows Sysmon Event Logs",
+    "processors" : [
+      {
+        "set" : {
+          "value" : "1.12.0",
+          "field" : "ecs.version"
+        }
+      },
+      {
+        "script" : {
+          "description" : "Remove all empty values from event_data.",
+          "lang" : "painless",
+          "source" : "ctx.winlog?.event_data?.entrySet().removeIf(entry -> [null, \"\", \"-\", \"{00000000-0000-0000-0000-000000000000}\"].contains(entry.getValue()))"
+        }
+      },
+      {
+        "rename" : {
+          "target_field" : "log.level",
+          "ignore_missing" : true,
+          "ignore_failure" : true,
+          "if" : "ctx?.winlog?.level != \"\"",
+          "field" : "winlog.level"
+        }
+      },
+      {
+        "date" : {
+          "field" : "winlog.time_created",
+          "target_field" : "event.created",
+          "formats" : [
+            "ISO8601"
+          ],
+          "ignore_failure" : true,
+          "if" : "ctx?.winlog?.time_created != null"
+        }
+      },
+      {
+        "date" : {
+          "ignore_failure" : true,
+          "if" : "ctx?.winlog?.event_data?.UtcTime != null",
+          "field" : "winlog.event_data.UtcTime",
+          "formats" : [
+            "yyyy-MM-dd HH:mm:ss.SSS"
+          ],
+          "timezone" : "UTC"
+        }
+      },
+      {
+        "set" : {
+          "field" : "event.module",
+          "value" : "sysmon"
+        }
+      },
+      {
+        "set" : {
+          "value" : "event",
+          "field" : "event.kind"
+        }
+      },
+      {
+        "set" : {
+          "field" : "event.code",
+          "value" : "{{winlog.event_id}}"
+        }
+      },
+      {
+        "script" : {
+          "lang" : "painless",
+          "params" : {
+            "25" : {
+              "type" : [
+                "change"
+              ],
+              "category" : [
+                "process"
+              ]
+            },
+            "17" : {
+              "category" : [
+                "file"
+              ],
+              "type" : [
+                "creation"
+              ]
+            },
+            "13" : {
+              "category" : [
+                "configuration",
+                "registry"
+              ],
+              "type" : [
+                "change"
+              ]
+            },
+            "16" : {
+              "type" : [
+                "change"
+              ],
+              "category" : [
+                "configuration"
+              ]
+            },
+            "10" : {
+              "category" : [
+                "process"
+              ],
+              "type" : [
+                "access"
+              ]
+            },
+            "9" : {
+              "type" : [
+                "access"
+              ],
+              "category" : [
+                "process"
+              ]
+            },
+            "11" : {
+              "category" : [
+                "file"
+              ],
+              "type" : [
+                "creation"
+              ]
+            },
+            "24" : {
+              "type" : [
+                "change"
+              ]
+            },
+            "15" : {
+              "category" : [
+                "file"
+              ],
+              "type" : [
+                "access"
+              ]
+            },
+            "14" : {
+              "category" : [
+                "configuration",
+                "registry"
+              ],
+              "type" : [
+                "change"
+              ]
+            },
+            "8" : {
+              "category" : [
+                "process"
+              ],
+              "type" : [
+                "change"
+              ]
+            },
+            "3" : {
+              "category" : [
+                "network"
+              ],
+              "type" : [
+                "start",
+                "connection",
+                "protocol"
+              ]
+            },
+            "26" : {
+              "type" : [
+                "deletion"
+              ],
+              "category" : [
+                "file"
+              ]
+            },
+            "5" : {
+              "type" : [
+                "end"
+              ],
+              "category" : [
+                "process"
+              ]
+            },
+            "21" : {
+              "type" : [
+                "access"
+              ],
+              "category" : [
+                "process"
+              ]
+            },
+            "1" : {
+              "type" : [
+                "start"
+              ],
+              "category" : [
+                "process"
+              ]
+            },
+            "18" : {
+              "category" : [
+                "file"
+              ],
+              "type" : [
+                "access"
+              ]
+            },
+            "22" : {
+              "category" : [
+                "network"
+              ],
+              "type" : [
+                "connection",
+                "protocol",
+                "info"
+              ]
+            },
+            "12" : {
+              "category" : [
+                "configuration",
+                "registry"
+              ],
+              "type" : [
+                "change"
+              ]
+            },
+            "2" : {
+              "type" : [
+                "change"
+              ],
+              "category" : [
+                "file"
+              ]
+            },
+            "4" : {
+              "category" : [
+                "process"
+              ],
+              "type" : [
+                "change"
+              ]
+            },
+            "20" : {
+              "category" : [
+                "process"
+              ],
+              "type" : [
+                "creation"
+              ]
+            },
+            "19" : {
+              "category" : [
+                "process"
+              ],
+              "type" : [
+                "creation"
+              ]
+            },
+            "255" : {
+              "category" : [
+                "process"
+              ],
+              "type" : [
+                "error"
+              ]
+            },
+            "28" : {
+              "category" : [
+                "file"
+              ],
+              "type" : [
+                "deletion",
+                "denied"
+              ]
+            },
+            "6" : {
+              "category" : [
+                "driver"
+              ],
+              "type" : [
+                "start"
+              ]
+            },
+            "27" : {
+              "category" : [
+                "file"
+              ],
+              "type" : [
+                "creation",
+                "denied"
+              ]
+            },
+            "23" : {
+              "category" : [
+                "file"
+              ],
+              "type" : [
+                "deletion"
+              ]
+            },
+            "7" : {
+              "category" : [
+                "process"
+              ],
+              "type" : [
+                "change"
+              ]
+            }
+          },
+          "tag" : "Add ECS categorization fields",
+          "source" : "if (ctx?.event?.code == null || params.get(ctx.event.code) == null) {\n  return;\n}\ndef hm = new HashMap(params[ctx.event.code]);\nhm.forEach((k, v) -> ctx.event[k] = v);",
+          "description" : "Set event category and type for all event types."
+        }
+      },
+      {
+        "convert" : {
+          "type" : "string",
+          "ignore_failure" : true,
+          "ignore_missing" : true,
+          "field" : "winlog.record_id"
+        }
+      },
+      {
+        "rename" : {
+          "if" : "ctx.event.code == \"255\"",
+          "field" : "winlog.event_data.ID",
+          "target_field" : "error.code",
+          "ignore_failure" : true,
+          "ignore_missing" : true
+        }
+      },
+      {
+        "rename" : {
+          "field" : "winlog.event_data.RuleName",
+          "target_field" : "rule.name",
+          "ignore_missing" : true,
+          "ignore_failure" : true
+        }
+      },
+      {
+        "rename" : {
+          "ignore_missing" : true,
+          "ignore_failure" : true,
+          "if" : "ctx.event.code == \"25\"",
+          "field" : "winlog.event_data.Type",
+          "target_field" : "message"
+        }
+      },
+      {
+        "rename" : {
+          "ignore_missing" : true,
+          "ignore_failure" : true,
+          "field" : "winlog.event_data.Hash",
+          "target_field" : "winlog.event_data.Hashes"
+        }
+      },
+      {
+        "kv" : {
+          "field_split" : ",",
+          "value_split" : "=",
+          "ignore_failure" : true,
+          "if" : "ctx?.winlog?.event_data?.Hashes != null",
+          "field" : "winlog.event_data.Hashes",
+          "target_field" : "_temp.hashes"
+        }
+      },
+      {
+        "script" : {
+          "lang" : "painless",
+          "if" : "ctx?._temp?.hashes != null",
+          "source" : "def hashIsEmpty(String hash) {\n  if (hash == \"\") {\n    return true;\n  }\n  \n  Pattern emptyHashRegex = /^0*$/;\n  def matcher = emptyHashRegex.matcher(hash);\n  \n  return matcher.matches(); \n}\n\ndef hashes = new HashMap();\ndef related = [\n  \"hash\": new ArrayList()\n];\nfor (entry in ctx._temp.hashes.entrySet()) {\n  def key = entry.getKey().toString().toLowerCase();\n  def value = entry.getValue().toString().toLowerCase();\n\n  if (hashIsEmpty(value)) {\n    continue;\n  }\n\n  hashes[key] = value;\n  related.hash.add(value);\n}\n\nctx._temp.hashes = hashes;\nif (related.hash.length > 0) {\n  ctx.related = related;\n}"
+        }
+      },
+      {
+        "rename" : {
+          "target_field" : "process.hash",
+          "if" : "ctx?._temp?.hashes != null &&\n[\"1\", \"23\", \"24\", \"25\", \"26\"].contains(ctx.event.code)",
+          "field" : "_temp.hashes"
+        }
+      },
+      {
+        "rename" : {
+          "ignore_failure" : true,
+          "ignore_missing" : true,
+          "field" : "process.hash.imphash",
+          "target_field" : "process.pe.imphash"
+        }
+      },
+      {
+        "rename" : {
+          "ignore_missing" : true,
+          "ignore_failure" : true,
+          "field" : "winlog.event_data.ProcessGuid",
+          "target_field" : "process.entity_id"
+        }
+      },
+      {
+        "convert" : {
+          "ignore_failure" : true,
+          "ignore_missing" : true,
+          "field" : "winlog.event_data.ProcessId",
+          "target_field" : "process.pid",
+          "type" : "long"
+        }
+      },
+      {
+        "rename" : {
+          "ignore_failure" : true,
+          "field" : "winlog.event_data.Image",
+          "target_field" : "process.executable",
+          "ignore_missing" : true
+        }
+      },
+      {
+        "rename" : {
+          "field" : "winlog.event_data.SourceProcessGuid",
+          "target_field" : "process.entity_id",
+          "ignore_missing" : true,
+          "ignore_failure" : true
+        }
+      },
+      {
+        "rename" : {
+          "ignore_failure" : true,
+          "field" : "winlog.event_data.SourceProcessGUID",
+          "target_field" : "process.entity_id",
+          "ignore_missing" : true
+        }
+      },
+      {
+        "convert" : {
+          "ignore_missing" : true,
+          "field" : "winlog.event_data.SourceProcessId",
+          "target_field" : "process.pid",
+          "type" : "long",
+          "ignore_failure" : true
+        }
+      },
+      {
+        "convert" : {
+          "ignore_missing" : true,
+          "field" : "winlog.event_data.SourceThreadId",
+          "target_field" : "process.thread.id",
+          "type" : "long",
+          "ignore_failure" : true
+        }
+      },
+      {
+        "rename" : {
+          "ignore_missing" : true,
+          "ignore_failure" : true,
+          "field" : "winlog.event_data.SourceImage",
+          "target_field" : "process.executable"
+        }
+      },
+      {
+        "rename" : {
+          "field" : "winlog.event_data.Destination",
+          "target_field" : "process.executable",
+          "ignore_missing" : true,
+          "ignore_failure" : true
+        }
+      },
+      {
+        "rename" : {
+          "field" : "winlog.event_data.CommandLine",
+          "target_field" : "process.command_line",
+          "ignore_missing" : true,
+          "ignore_failure" : true
+        }
+      },
+      {
+        "rename" : {
+          "ignore_failure" : true,
+          "field" : "winlog.event_data.CurrentDirectory",
+          "target_field" : "process.working_directory",
+          "ignore_missing" : true
+        }
+      },
+      {
+        "rename" : {
+          "field" : "winlog.event_data.ParentProcessGuid",
+          "target_field" : "process.parent.entity_id",
+          "ignore_missing" : true,
+          "ignore_failure" : true
+        }
+      },
+      {
+        "convert" : {
+          "ignore_missing" : true,
+          "field" : "winlog.event_data.ParentProcessId",
+          "target_field" : "process.parent.pid",
+          "type" : "long",
+          "ignore_failure" : true
+        }
+      },
+      {
+        "rename" : {
+          "field" : "winlog.event_data.ParentImage",
+          "target_field" : "process.parent.executable",
+          "ignore_missing" : true,
+          "ignore_failure" : true
+        }
+      },
+      {
+        "rename" : {
+          "target_field" : "process.parent.command_line",
+          "ignore_missing" : true,
+          "ignore_failure" : true,
+          "field" : "winlog.event_data.ParentCommandLine"
+        }
+      },
+      {
+        "rename" : {
+          "field" : "winlog.event_data.OriginalFileName",
+          "target_field" : "process.pe.original_file_name",
+          "ignore_missing" : true,
+          "ignore_failure" : true,
+          "if" : "ctx.event.code != \"7\""
+        }
+      },
+      {
+        "set" : {
+          "if" : "ctx.event.code != \"7\"",
+          "field" : "process.pe.company",
+          "copy_from" : "winlog.event_data.Company",
+          "ignore_empty_value" : true,
+          "ignore_failure" : true
+        }
+      },
+      {
+        "set" : {
+          "if" : "ctx.event.code != \"7\"",
+          "field" : "process.pe.description",
+          "copy_from" : "winlog.event_data.Description",
+          "ignore_empty_value" : true,
+          "ignore_failure" : true
+        }
+      },
+      {
+        "set" : {
+          "ignore_empty_value" : true,
+          "ignore_failure" : true,
+          "if" : "ctx.event.code != \"7\"",
+          "field" : "process.pe.file_version",
+          "copy_from" : "winlog.event_data.FileVersion"
+        }
+      },
+      {
+        "set" : {
+          "ignore_failure" : true,
+          "if" : "ctx.event.code != \"7\"",
+          "field" : "process.pe.product",
+          "copy_from" : "winlog.event_data.Product",
+          "ignore_empty_value" : true
+        }
+      },
+      {
+        "script" : {
+          "source" : "// appendBSBytes appends n '\\\\' bytes to b and returns the resulting slice.\ndef appendBSBytes(StringBuilder b, int n) {\n    for (; n > 0; n--) {\n        b.append('\\\\');\n    }\n    return b;\n}\n\n// readNextArg splits command line string cmd into next\n// argument and command line remainder.\ndef readNextArg(String cmd) {\n    def b = new StringBuilder();\n    boolean inquote;\n    int nslash;\n    for (; cmd.length() > 0; cmd = cmd.substring(1)) {\n        def c = cmd.charAt(0);\n        if (c == (char)' ' || c == (char)0x09) {\n            if (!inquote) {\n                return [\n                    \"arg\":  appendBSBytes(b, nslash).toString(),\n                    \"rest\": cmd.substring(1)\n                ];\n            }\n        } else if (c == (char)'\"') {\n            b = appendBSBytes(b, nslash/2);\n            if (nslash%2 == 0) {\n                // use \"Prior to 2008\" rule from\n                // http://daviddeley.com/autohotkey/parameters/parameters.htm\n                // section 5.2 to deal with double double quotes\n                if (inquote && cmd.length() > 1 && cmd.charAt(1) == (char)'\"') {\n                    b.append(c);\n                    cmd = cmd.substring(1);\n                }\n                inquote = !inquote;\n            } else {\n                b.append(c);\n            }\n            nslash = 0;\n            continue;\n        } else if (c == (char)'\\\\') {\n            nslash++;\n            continue;\n        }\n        b = appendBSBytes(b, nslash);\n        nslash = 0;\n        b.append(c);\n    }\n    return [\n        \"arg\":  appendBSBytes(b, nslash).toString(), \n        \"rest\": ''\n    ];\n}\n\n// commandLineToArgv splits a command line into individual argument\n// strings, following the Windows conventions documented\n// at http://daviddeley.com/autohotkey/parameters/parameters.htm#WINARGV\n// Original implementation found at: https://github.com/golang/go/commit/39c8d2b7faed06b0e91a1ad7906231f53aab45d1\ndef commandLineToArgv(String cmd) {\n    def args = new ArrayList();\n    while (cmd.length() > 0) {\n        if (cmd.charAt(0) == (char)' ' || cmd.charAt(0) == (char)0x09) {\n            cmd = cmd.substring(1);\n            continue;\n        }\n        def next = readNextArg(cmd);\n        cmd = next.rest;\n        args.add(next.arg);\n    }\n    return args;\n}\n\ndef cmd = ctx?.process?.command_line;\nif (cmd != null && cmd != \"\") {\n  ctx.process.args = commandLineToArgv(cmd);\n  ctx.process.args_count = ctx.process.args.length;\n}\n\ndef parentCmd = ctx?.process?.parent?.command_line;\nif (parentCmd != null && parentCmd != \"\") {\n  ctx.process.parent.args = commandLineToArgv(parentCmd);\n  ctx.process.parent.args_count = ctx.process.parent.args.length;\n}",
+          "description" : "Implements Windows-like SplitCommandLine",
+          "lang" : "painless",
+          "if" : "(ctx?.process?.command_line != null && ctx.process.command_line != \"\") || \n(ctx?.process?.parent?.command_line != null && ctx.process.parent.command_line != \"\")"
+        }
+      },
+      {
+        "script" : {
+          "source" : "def getProcessName(def path) {\n  def idx = path.lastIndexOf(\"\\\\\");\n  if (idx > -1) {\n      return path.substring(idx+1);\n  }\n  return \"\";\n}\n\ndef cmd = ctx?.process?.executable;\nif (cmd != null && cmd != \"\" && ctx?.process?.name == null) {\n  def name = getProcessName(cmd);\n  if (name != \"\") {\n    ctx.process.name = name;\n  }\n}\n\ndef parentCmd = ctx?.process?.parent?.executable;\nif (parentCmd != null && parentCmd != \"\" && ctx?.process?.parent?.name == null) {\n  def name = getProcessName(parentCmd);\n  if (name != \"\") {\n    ctx.process.parent.name = name;\n  }\n}",
+          "description" : "Adds process name information.",
+          "lang" : "painless",
+          "if" : "(ctx?.process?.executable != null && ctx.process.executable.length() > 1) ||\n(ctx?.process?.parent?.executable != null && ctx.process.parent.executable.length() > 1)"
+        }
+      },
+      {
+        "rename" : {
+          "field" : "_temp.hashes",
+          "target_field" : "file.hash",
+          "if" : "ctx?._temp?.hashes != null &&\n[\"6\", \"7\", \"15\"].contains(ctx.event.code)"
+        }
+      },
+      {
+        "rename" : {
+          "field" : "file.hash.imphash",
+          "target_field" : "file.pe.imphash",
+          "ignore_failure" : true,
+          "ignore_missing" : true
+        }
+      },
+      {
+        "rename" : {
+          "ignore_failure" : true,
+          "field" : "winlog.event_data.TargetFilename",
+          "target_field" : "file.path",
+          "ignore_missing" : true
+        }
+      },
+      {
+        "rename" : {
+          "field" : "winlog.event_data.Device",
+          "target_field" : "file.path",
+          "ignore_missing" : true,
+          "ignore_failure" : true
+        }
+      },
+      {
+        "rename" : {
+          "ignore_failure" : true,
+          "field" : "winlog.event_data.PipeName",
+          "target_field" : "file.name",
+          "ignore_missing" : true
+        }
+      },
+      {
+        "rename" : {
+          "target_field" : "file.path",
+          "ignore_missing" : true,
+          "ignore_failure" : true,
+          "field" : "winlog.event_data.ImageLoaded"
+        }
+      },
+      {
+        "set" : {
+          "field" : "file.code_signature.subject_name",
+          "copy_from" : "winlog.event_data.Signature",
+          "ignore_failure" : true,
+          "ignore_empty_value" : true
+        }
+      },
+      {
+        "set" : {
+          "copy_from" : "winlog.event_data.SignatureStatus",
+          "ignore_failure" : true,
+          "ignore_empty_value" : true,
+          "field" : "file.code_signature.status"
+        }
+      },
+      {
+        "rename" : {
+          "if" : "ctx.event.code == \"7\"",
+          "field" : "winlog.event_data.OriginalFileName",
+          "target_field" : "file.pe.original_file_name",
+          "ignore_missing" : true,
+          "ignore_failure" : true
+        }
+      },
+      {
+        "set" : {
+          "field" : "file.pe.company",
+          "copy_from" : "winlog.event_data.Company",
+          "ignore_failure" : true,
+          "ignore_empty_value" : true,
+          "if" : "ctx.event.code == \"7\""
+        }
+      },
+      {
+        "set" : {
+          "field" : "file.pe.description",
+          "copy_from" : "winlog.event_data.Description",
+          "ignore_failure" : true,
+          "ignore_empty_value" : true,
+          "if" : "ctx.event.code == \"7\""
+        }
+      },
+      {
+        "set" : {
+          "if" : "ctx.event.code == \"7\"",
+          "field" : "file.pe.file_version",
+          "copy_from" : "winlog.event_data.FileVersion",
+          "ignore_failure" : true,
+          "ignore_empty_value" : true
+        }
+      },
+      {
+        "set" : {
+          "copy_from" : "winlog.event_data.Product",
+          "ignore_failure" : true,
+          "ignore_empty_value" : true,
+          "if" : "ctx.event.code == \"7\"",
+          "field" : "file.pe.product"
+        }
+      },
+      {
+        "set" : {
+          "field" : "file.code_signature.signed",
+          "value" : true,
+          "if" : "ctx?.winlog?.event_data?.Signed == true"
+        }
+      },
+      {
+        "set" : {
+          "field" : "file.code_signature.valid",
+          "value" : true,
+          "if" : "ctx?.winlog?.event_data?.SignatureStatus == \"Valid\""
+        }
+      },
+      {
+        "script" : {
+          "source" : "def path = ctx.file.path;\ndef idx = path.lastIndexOf(\"\\\\\");\nif (idx > -1) {\n    if (ctx?.file == null) {\n        ctx.file = new HashMap();\n    }\n    ctx.file.name = path.substring(idx+1);\n    ctx.file.directory = path.substring(0, idx);\n\n    def extIdx = path.lastIndexOf(\".\");\n    if (extIdx > -1) {\n        ctx.file.extension = path.substring(extIdx+1);\n    }\n}",
+          "description" : "Adds file information.",
+          "lang" : "painless",
+          "if" : "ctx?.file?.path != null && ctx.file.path.length() > 1"
+        }
+      },
+      {
+        "rename" : {
+          "ignore_failure" : true,
+          "field" : "winlog.event_data.Protocol",
+          "target_field" : "network.transport",
+          "ignore_missing" : true
+        }
+      },
+      {
+        "rename" : {
+          "ignore_failure" : true,
+          "if" : "ctx.event.code != \"22\"",
+          "field" : "winlog.event_data.DestinationPortName",
+          "target_field" : "network.protocol",
+          "ignore_missing" : true
+        }
+      },
+      {
+        "rename" : {
+          "field" : "winlog.event_data.SourcePortName",
+          "target_field" : "network.protocol",
+          "ignore_missing" : true,
+          "ignore_failure" : true,
+          "if" : "ctx.event.code != \"22\""
+        }
+      },
+      {
+        "set" : {
+          "value" : "dns",
+          "if" : "ctx.event.code == \"22\"",
+          "field" : "network.protocol"
+        }
+      },
+      {
+        "convert" : {
+          "type" : "ip",
+          "ignore_failure" : true,
+          "ignore_missing" : true,
+          "field" : "winlog.event_data.SourceIp",
+          "target_field" : "source.ip"
+        }
+      },
+      {
+        "rename" : {
+          "field" : "winlog.event_data.SourceHostname",
+          "target_field" : "source.domain",
+          "ignore_missing" : true,
+          "ignore_failure" : true
+        }
+      },
+      {
+        "convert" : {
+          "ignore_missing" : true,
+          "field" : "winlog.event_data.SourcePort",
+          "target_field" : "source.port",
+          "type" : "long",
+          "ignore_failure" : true
+        }
+      },
+      {
+        "convert" : {
+          "ignore_missing" : true,
+          "field" : "winlog.event_data.DestinationIp",
+          "target_field" : "destination.ip",
+          "type" : "ip",
+          "ignore_failure" : true
+        }
+      },
+      {
+        "rename" : {
+          "field" : "winlog.event_data.DestinationHostname",
+          "target_field" : "destination.domain",
+          "ignore_missing" : true,
+          "ignore_failure" : true
+        }
+      },
+      {
+        "convert" : {
+          "target_field" : "destination.port",
+          "type" : "long",
+          "ignore_failure" : true,
+          "ignore_missing" : true,
+          "field" : "winlog.event_data.DestinationPort"
+        }
+      },
+      {
+        "rename" : {
+          "field" : "winlog.event_data.QueryName",
+          "target_field" : "dns.question.name",
+          "ignore_missing" : true,
+          "ignore_failure" : true
+        }
+      },
+      {
+        "set" : {
+          "field" : "network.direction",
+          "value" : "egress",
+          "if" : "ctx?.winlog?.event_data?.Initiated == \"true\""
+        }
+      },
+      {
+        "set" : {
+          "field" : "network.direction",
+          "value" : "ingress",
+          "if" : "ctx?.winlog?.event_data?.Initiated == \"false\""
+        }
+      },
+      {
+        "set" : {
+          "if" : "ctx?.winlog?.event_data?.SourceIsIpv6 == \"false\"",
+          "field" : "network.type",
+          "value" : "ipv4"
+        }
+      },
+      {
+        "set" : {
+          "if" : "ctx?.winlog?.event_data?.SourceIsIpv6 == \"true\"",
+          "field" : "network.type",
+          "value" : "ipv6"
+        }
+      },
+      {
+        "script" : {
+          "lang" : "painless",
+          "if" : "ctx?.winlog?.event_data?.QueryResults != null",
+          "params" : {
+            "6" : "SOA",
+            "32" : "NIMLOC",
+            "28" : "AAAA",
+            "65282" : "WINSR",
+            "15" : "MX",
+            "40" : "SINK",
+            "4" : "MF",
+            "49" : "DHCID",
+            "19" : "X25",
+            "103" : "UNSPEC",
+            "36" : "KX",
+            "24" : "SIG",
+            "25" : "KEY",
+            "12" : "PTR",
+            "21" : "RT",
+            "8" : "MG",
+            "255" : "ANY",
+            "65281" : "WINS",
+            "46" : "RRSIG",
+            "2" : "NS",
+            "5" : "CNAME",
+            "43" : "DS",
+            "38" : "A6",
+            "248" : "ADDRS",
+            "13" : "HINFO",
+            "30" : "NXT",
+            "39" : "DNAME",
+            "14" : "MINFO",
+            "33" : "SRV",
+            "10" : "NULL",
+            "254" : "MAILA",
+            "253" : "MAILB",
+            "35" : "NAPTR",
+            "102" : "GID",
+            "48" : "DNSKEY",
+            "1" : "A",
+            "20" : "ISDN",
+            "252" : "AXFR",
+            "9" : "MR",
+            "29" : "LOC",
+            "16" : "TXT",
+            "3" : "MD",
+            "249" : "TKEY",
+            "26" : "PX",
+            "41" : "OPT",
+            "7" : "MB",
+            "22" : "NSAP",
+            "34" : "ATMA",
+            "18" : "AFSDB",
+            "11" : "WKS",
+            "101" : "UID",
+            "31" : "EID",
+            "250" : "TSIG",
+            "251" : "IXFR",
+            "47" : "NSEC",
+            "27" : "GPOS",
+            "23" : "NSAPPTR",
+            "100" : "UINFO",
+            "37" : "CERT",
+            "17" : "RP"
+          },
+          "source" : "def results = /;/.split(ctx.winlog.event_data.QueryResults);\ndef answers = new ArrayList();\ndef ips = new ArrayList();\ndef relatedHosts = new ArrayList();\nfor (def i = 0; i < results.length; i++) {\n  def answer = results[i];\n  if (answer == \"\") {\n    continue;\n  }\n\n  if (answer.startsWith(\"type:\")) {\n    def parts = /\\s+/.split(answer);\n    if (parts.length < 2) {\n      throw new Exception(\"unexpected QueryResult format\");\n    }\n    if (parts.length == 3) {\n      answers.add([\n        \"type\": params[parts[1]],\n        \"data\": parts[2]\n      ]);\n      relatedHosts.add(parts[2]);\n    } else {\n      answers.add([\n        \"type\": params[parts[1]]\n      ]);\n    }\n  } else {\n    answer = answer.replace(\"::ffff:\", \"\");\n    ips.add(answer);\n  }\n}\n\nif (answers.length > 0) {\n  ctx.dns.answers = answers;\n}\nif (ips.length > 0) {\n  ctx.dns.resolved_ip = ips;\n}\nif (relatedHosts.length > 0) {\n  if (ctx?.related == null) {\n    ctx.related = new HashMap();\n  }\n  ctx.related.hosts = relatedHosts;\n}",
+          "description" : "Splits the QueryResults field that contains the DNS responses.\nExample: \"type:  5 f2.taboola.map.fastly.net;::ffff:151.101.66.2;::ffff:151.101.130.2;::ffff:151.101.194.2;::ffff:151.101.2.2;\"\n"
+        }
+      },
+      {
+        "foreach" : {
+          "processor" : {
+            "convert" : {
+              "on_failure" : [
+                {
+                  "remove" : {
+                    "field" : "_ingest._value"
+                  }
+                }
+              ],
+              "field" : "_ingest._value",
+              "type" : "ip"
+            }
+          },
+          "field" : "dns.resolved_ip",
+          "ignore_missing" : true
+        }
+      },
+      {
+        "script" : {
+          "description" : "Convert V4MAPPED addresses.",
+          "lang" : "painless",
+          "if" : "ctx?.dns?.resolved_ip != null",
+          "source" : "if (ctx.dns.answers == null) {\n  ctx.dns.answers = new ArrayList();\n}\nfor (def i = 0; i < ctx.dns.resolved_ip.length; i++) {\n  def ip = ctx.dns.resolved_ip[i];\n  if (ip == null) {\n    ctx.dns.resolved_ip.remove(i);\n    continue;\n  }\n\n  // Synthesize record type based on IP address type.\n  def type = \"A\";\n  if (ip.indexOf(\":\") != -1) {\n    type = \"AAAA\";\n  }\n  ctx.dns.answers.add([\n    \"type\": type,\n    \"data\": ip\n  ]);\n}"
+        }
+      },
+      {
+        "registered_domain" : {
+          "field" : "dns.question.name",
+          "target_field" : "dns.question",
+          "ignore_failure" : true,
+          "ignore_missing" : true
+        }
+      },
+      {
+        "append" : {
+          "field" : "related.hosts",
+          "value" : "{{dns.question.name}}",
+          "allow_duplicates" : false,
+          "if" : "ctx?.dns?.question?.name != null && ctx?.dns?.question?.name != \"\""
+        }
+      },
+      {
+        "remove" : {
+          "field" : "dns.question.domain",
+          "ignore_missing" : true,
+          "ignore_failure" : true,
+          "description" : "Remove dns.question.domain because it is not part of ECS and is redundant with dns.question.name."
+        }
+      },
+      {
+        "foreach" : {
+          "field" : "dns.resolved_ip",
+          "ignore_missing" : true,
+          "processor" : {
+            "append" : {
+              "field" : "related.ip",
+              "value" : "{{_ingest._value}}",
+              "allow_duplicates" : false,
+              "ignore_failure" : true
+            }
+          }
+        }
+      },
+      {
+        "community_id" : {
+          "ignore_failure" : true,
+          "ignore_missing" : false
+        }
+      },
+      {
+        "set" : {
+          "field" : "user.id",
+          "copy_from" : "winlog.user.identifier",
+          "ignore_empty_value" : true,
+          "ignore_failure" : true
+        }
+      },
+      {
+        "split" : {
+          "field" : "winlog.event_data.User",
+          "target_field" : "_temp.user_parts",
+          "separator" : "\\\\",
+          "if" : "ctx?.winlog?.event_data?.User != null"
+        }
+      },
+      {
+        "set" : {
+          "value" : "{{_temp.user_parts.0}}",
+          "ignore_failure" : true,
+          "ignore_empty_value" : true,
+          "if" : "ctx?._temp?.user_parts != null && ctx._temp.user_parts.size() == 2",
+          "field" : "user.domain"
+        }
+      },
+      {
+        "set" : {
+          "if" : "ctx?._temp?.user_parts != null && ctx._temp.user_parts.size() == 2",
+          "field" : "user.name",
+          "value" : "{{_temp.user_parts.1}}",
+          "ignore_failure" : true,
+          "ignore_empty_value" : true
+        }
+      },
+      {
+        "rename" : {
+          "ignore_missing" : true,
+          "ignore_failure" : true,
+          "field" : "winlog.event_data.QueryStatus",
+          "target_field" : "sysmon.dns.status"
+        }
+      },
+      {
+        "script" : {
+          "if" : "ctx?.sysmon?.dns?.status != null && ctx?.sysmon?.dns?.status != \"\"",
+          "source" : "def status = params[ctx.sysmon.dns.status];\nif (status != null) {\n  ctx.sysmon.dns.status = status;\n}",
+          "description" : "Translate DNS Query status.",
+          "lang" : "painless",
+          "params" : {
+            "9924" : "DNS_ERROR_INVAILD_VIRTUALIZATION_INSTANCE_NAME",
+            "9702" : "DNS_ERROR_RECORD_FORMAT",
+            "9116" : "DNS_ERROR_ROLLOVER_IN_PROGRESS",
+            "9721" : "DNS_ERROR_DNAME_COLLISION",
+            "9560" : "DNS_ERROR_INVALID_NAME_CHAR",
+            "9717" : "DNS_ERROR_DS_UNAVAILABLE",
+            "9606" : "DNS_ERROR_ZONE_HAS_NO_NS_RECORDS",
+            "9957" : "DNS_ERROR_ZONESCOPE_FILE_WRITEBACK_FAILED",
+            "9506" : "DNS_REQUEST_PENDING",
+            "9925" : "DNS_ERROR_DEFAULT_VIRTUALIZATION_INSTANCE",
+            "9607" : "DNS_ERROR_ZONE_LOCKED",
+            "9123" : "DNS_ERROR_INVALID_SIGNATURE_VALIDITY_PERIOD",
+            "9556" : "DNS_ERROR_NON_RFC_NAME",
+            "9561" : "DNS_ERROR_NUMERIC_NAME",
+            "9569" : "DNS_ERROR_NOT_ALLOWED_ON_RODC",
+            "9923" : "DNS_ERROR_VIRTUALIZATION_TREE_LOCKED",
+            "9988" : "DNS_ERROR_SERVERSCOPE_IS_REFERENCED",
+            "9958" : "DNS_ERROR_INVALID_SCOPE_NAME",
+            "9701" : "DNS_ERROR_RECORD_DOES_NOT_EXIST",
+            "9977" : "DNS_ERROR_CLIENT_SUBNET_ALREADY_EXISTS",
+            "9004" : "DNS_ERROR_RCODE_NOT_IMPLEMENTED",
+            "9704" : "DNS_ERROR_UNKNOWN_RECORD_TYPE",
+            "9961" : "DNS_ERROR_INVALID_SCOPE_OPERATION",
+            "9912" : "DNS_ERROR_RRL_INVALID_WINDOW_SIZE",
+            "9979" : "DNS_ERROR_SUBNET_ALREADY_EXISTS",
+            "9611" : "DNS_ERROR_INVALID_ZONE_TYPE",
+            "9573" : "DNS_ERROR_ADDRESS_REQUIRED",
+            "9128" : "DNS_ERROR_ROLLOVER_NOT_POKEABLE",
+            "9567" : "DNS_ERROR_DWORD_VALUE_TOO_LARGE",
+            "9557" : "DNS_STATUS_FQDN",
+            "9654" : "DNS_ERROR_FILE_WRITEBACK_FAILED",
+            "9714" : "DNS_ERROR_NAME_DOES_NOT_EXIST",
+            "9565" : "DNS_ERROR_INCONSISTENT_ROOT_HINTS",
+            "9652" : "DNS_ERROR_INVALID_DATAFILE_NAME",
+            "9129" : "DNS_ERROR_NSEC3_NAME_COLLISION",
+            "9005" : "DNS_ERROR_RCODE_REFUSED",
+            "9619" : "DNS_ERROR_FORWARDER_ALREADY_EXISTS",
+            "9125" : "DNS_ERROR_DNSSEC_IS_DISABLED",
+            "9987" : "DNS_ERROR_POLICY_SCOPE_NOT_ALLOWED",
+            "10060" : "WSAETIMEDOUT",
+            "9620" : "DNS_ERROR_ZONE_REQUIRES_MASTER_IP",
+            "9006" : "DNS_ERROR_RCODE_YXDOMAIN",
+            "9952" : "DNS_ERROR_ZONESCOPE_DOES_NOT_EXIST",
+            "9120" : "DNS_ERROR_ROLLOVER_ALREADY_QUEUED",
+            "4312" : "ERROR_OBJECT_NOT_FOUND",
+            "9753" : "DNS_INFO_ADDED_LOCAL_WINS",
+            "9001" : "DNS_ERROR_RCODE_FORMAT_ERROR",
+            "9751" : "DNS_INFO_AXFR_COMPLETE",
+            "9916" : "DNS_ERROR_RRL_INVALID_LEAK_RATE",
+            "9986" : "DNS_ERROR_POLICY_SCOPE_MISSING",
+            "9973" : "DNS_ERROR_POLICY_INVALID_CRITERIA",
+            "9009" : "DNS_ERROR_RCODE_NOTAUTH",
+            "0" : "SUCCESS",
+            "9951" : "DNS_ERROR_ZONESCOPE_ALREADY_EXISTS",
+            "14" : "ERROR_OUTOFMEMORY",
+            "9706" : "DNS_ERROR_NAME_NOT_IN_ZONE",
+            "9752" : "DNS_ERROR_AXFR",
+            "9904" : "DNS_ERROR_DP_ALREADY_ENLISTED",
+            "9502" : "DNS_ERROR_BAD_PACKET",
+            "9981" : "DNS_ERROR_POLICY_INVALID_WEIGHT",
+            "9955" : "DNS_ERROR_NOT_ALLOWED_WITH_ZONESCOPES",
+            "9991" : "DNS_ERROR_POLICY_INVALID_CRITERIA_TRANSPORT_PROTOCOL",
+            "9801" : "DNS_STATUS_CONTINUE_NEEDED",
+            "13" : "ERROR_INVALID_DATA",
+            "9984" : "DNS_ERROR_INVALID_CLIENT_SUBNET_NAME",
+            "9911" : "DNS_ERROR_RRL_NOT_ENABLED",
+            "9616" : "DNS_ERROR_NEED_WINS_SERVERS",
+            "9901" : "DNS_ERROR_DP_DOES_NOT_EXIST",
+            "9105" : "DNS_ERROR_UNSUPPORTED_ALGORITHM",
+            "1460" : "ERROR_TIMEOUT",
+            "9115" : "DNS_ERROR_INVALID_INITIAL_ROLLOVER_OFFSET",
+            "9016" : "DNS_ERROR_RCODE_BADSIG",
+            "9503" : "DNS_ERROR_NO_PACKET",
+            "9109" : "DNS_ERROR_UNEXPECTED_DATA_PROTECTION_ERROR",
+            "9989" : "DNS_ERROR_ZONESCOPE_IS_REFERENCED",
+            "9995" : "DNS_ERROR_POLICY_INVALID_CRITERIA_QUERY_TYPE",
+            "9615" : "DNS_ERROR_WINS_INIT_FAILED",
+            "9572" : "DNS_ERROR_INVALID_POLICY_TABLE",
+            "9559" : "DNS_STATUS_SINGLE_PART_NAME",
+            "9107" : "DNS_ERROR_SIGNING_KEY_NOT_ACCESSIBLE",
+            "9976" : "DNS_ERROR_CLIENT_SUBNET_DOES_NOT_EXIST",
+            "9570" : "DNS_ERROR_NOT_ALLOWED_UNDER_DNAME",
+            "9104" : "DNS_ERROR_NOT_ENOUGH_SIGNING_KEY_DESCRIPTORS",
+            "9621" : "DNS_ERROR_ZONE_IS_SHUTDOWN",
+            "9709" : "DNS_ERROR_CNAME_COLLISION",
+            "9555" : "DNS_ERROR_NOT_UNIQUE",
+            "9110" : "DNS_ERROR_UNEXPECTED_CNG_ERROR",
+            "9971" : "DNS_ERROR_POLICY_ALREADY_EXISTS",
+            "9554" : "DNS_ERROR_TRY_AGAIN_LATER",
+            "9562" : "DNS_ERROR_NOT_ALLOWED_ON_ROOT_SERVER",
+            "9902" : "DNS_ERROR_DP_ALREADY_EXISTS",
+            "9922" : "DNS_ERROR_VIRTUALIZATION_INSTANCE_DOES_NOT_EXIST",
+            "9905" : "DNS_ERROR_DP_NOT_AVAILABLE",
+            "9655" : "DNS_ERROR_DATAFILE_PARSING",
+            "9962" : "DNS_ERROR_SCOPE_LOCKED",
+            "9710" : "DNS_ERROR_RECORD_ONLY_AT_ZONE_ROOT",
+            "5" : "ERROR_ACCESS_DENIED",
+            "9720" : "DNS_ERROR_NODE_IS_DNAME",
+            "9715" : "DNS_WARNING_PTR_CREATE_FAILED",
+            "9103" : "DNS_ERROR_NSEC3_INCOMPATIBLE_WITH_RSA_SHA1",
+            "9718" : "DNS_ERROR_DS_ZONE_ALREADY_EXISTS",
+            "9604" : "DNS_ERROR_ZONE_CONFIGURATION_ERROR",
+            "9978" : "DNS_ERROR_SUBNET_DOES_NOT_EXIST",
+            "9705" : "DNS_ERROR_RECORD_TIMED_OUT",
+            "9651" : "DNS_ERROR_PRIMARY_REQUIRES_DATAFILE",
+            "9126" : "DNS_ERROR_INVALID_XML",
+            "9959" : "DNS_ERROR_SCOPE_DOES_NOT_EXIST",
+            "9608" : "DNS_ERROR_ZONE_CREATION_FAILED",
+            "9121" : "DNS_ERROR_NOT_ALLOWED_ON_UNSIGNED_ZONE",
+            "9003" : "DNS_ERROR_RCODE_NAME_ERROR",
+            "9610" : "DNS_ERROR_AUTOZONE_ALREADY_EXISTS",
+            "9954" : "DNS_ERROR_INVALID_ZONESCOPE_NAME",
+            "9703" : "DNS_ERROR_NODE_CREATION_FAILED",
+            "9992" : "DNS_ERROR_POLICY_INVALID_CRITERIA_NETWORK_PROTOCOL",
+            "9960" : "DNS_ERROR_DEFAULT_SCOPE",
+            "9612" : "DNS_ERROR_SECONDARY_REQUIRES_MASTER_IP",
+            "9130" : "DNS_ERROR_NSEC_INCOMPATIBLE_WITH_NSEC3_RSA_SHA1",
+            "9913" : "DNS_ERROR_RRL_INVALID_IPV4_PREFIX",
+            "9722" : "DNS_ERROR_ALIAS_LOOP",
+            "9111" : "DNS_ERROR_UNKNOWN_SIGNING_PARAMETER_VERSION",
+            "10054" : "WSAECONNRESET",
+            "9716" : "DNS_WARNING_DOMAIN_UNDELETED",
+            "9713" : "DNS_ERROR_NO_CREATE_CACHE_DATA",
+            "9712" : "DNS_ERROR_SECONDARY_DATA",
+            "9551" : "DNS_ERROR_INVALID_TYPE",
+            "9917" : "DNS_ERROR_RRL_LEAK_RATE_LESSTHAN_TC_RATE",
+            "9983" : "DNS_ERROR_POLICY_MISSING_CRITERIA",
+            "1223" : "ERROR_CANCELLED",
+            "9996" : "DNS_ERROR_POLICY_INVALID_CRITERIA_TIME_OF_DAY",
+            "9505" : "DNS_ERROR_UNSECURE_PACKET",
+            "9501" : "DNS_INFO_NO_RECORDS",
+            "9552" : "DNS_ERROR_INVALID_IP_ADDRESS",
+            "9605" : "DNS_ERROR_ZONE_HAS_NO_SOA_RECORD",
+            "9982" : "DNS_ERROR_POLICY_INVALID_NAME",
+            "9614" : "DNS_ERROR_NEED_SECONDARY_ADDRESSES",
+            "9985" : "DNS_ERROR_POLICY_PROCESSING_ORDER_INVALID",
+            "9708" : "DNS_ERROR_NODE_IS_CNAME",
+            "9601" : "DNS_ERROR_ZONE_DOES_NOT_EXIST",
+            "9127" : "DNS_ERROR_NO_VALID_TRUST_ANCHORS",
+            "9563" : "DNS_ERROR_NOT_ALLOWED_UNDER_DELEGATION",
+            "9119" : "DNS_ERROR_NOT_ALLOWED_ON_ACTIVE_SKD",
+            "9117" : "DNS_ERROR_STANDBY_KEY_NOT_PRESENT",
+            "9956" : "DNS_ERROR_LOAD_ZONESCOPE_FAILED",
+            "9618" : "DNS_ERROR_SOA_DELETE_INVALID",
+            "1214" : "ERROR_INVALID_NETNAME",
+            "9915" : "DNS_ERROR_RRL_INVALID_TC_RATE",
+            "9993" : "DNS_ERROR_POLICY_INVALID_CRITERIA_INTERFACE",
+            "9007" : "DNS_ERROR_RCODE_YXRRSET",
+            "9008" : "DNS_ERROR_RCODE_NXRRSET",
+            "9980" : "DNS_ERROR_POLICY_LOCKED",
+            "9852" : "DNS_ERROR_NO_DNS_SERVERS",
+            "9010" : "DNS_ERROR_RCODE_NOTZONE",
+            "9602" : "DNS_ERROR_NO_ZONE_INFO",
+            "9504" : "DNS_ERROR_RCODE",
+            "9906" : "DNS_ERROR_DP_FSMO_ERROR",
+            "9568" : "DNS_ERROR_BACKGROUND_LOADING",
+            "9101" : "DNS_ERROR_KEYMASTER_REQUIRED",
+            "9017" : "DNS_ERROR_RCODE_BADKEY",
+            "9707" : "DNS_ERROR_CNAME_LOOP",
+            "9553" : "DNS_ERROR_INVALID_PROPERTY",
+            "123" : "ERROR_INVALID_NAME",
+            "9118" : "DNS_ERROR_NOT_ALLOWED_ON_ZSK",
+            "9571" : "DNS_ERROR_DELEGATION_REQUIRED",
+            "9558" : "DNS_STATUS_DOTTED_NAME",
+            "9719" : "DNS_ERROR_NO_BOOTFILE_IF_DS_ZONE",
+            "9566" : "DNS_ERROR_DWORD_VALUE_TOO_SMALL",
+            "9124" : "DNS_ERROR_INVALID_NSEC3_ITERATION_COUNT",
+            "9122" : "DNS_ERROR_BAD_KEYMASTER",
+            "9622" : "DNS_ERROR_ZONE_LOCKED_FOR_SIGNING",
+            "9102" : "DNS_ERROR_NOT_ALLOWED_ON_SIGNED_ZONE",
+            "9974" : "DNS_ERROR_POLICY_INVALID_SETTINGS",
+            "9914" : "DNS_ERROR_RRL_INVALID_IPV6_PREFIX",
+            "9921" : "DNS_ERROR_VIRTUALIZATION_INSTANCE_ALREADY_EXISTS",
+            "9108" : "DNS_ERROR_KSP_DOES_NOT_SUPPORT_PROTECTION",
+            "9963" : "DNS_ERROR_SCOPE_ALREADY_EXISTS",
+            "9609" : "DNS_ERROR_ZONE_ALREADY_EXISTS",
+            "10055" : "WSAENOBUFS",
+            "9617" : "DNS_ERROR_NBSTAT_INIT_FAILED",
+            "9953" : "DNS_ERROR_DEFAULT_ZONESCOPE",
+            "9613" : "DNS_ERROR_ZONE_NOT_SECONDARY",
+            "9106" : "DNS_ERROR_INVALID_KEY_SIZE",
+            "9975" : "DNS_ERROR_CLIENT_SUBNET_IS_ACCESSED",
+            "9972" : "DNS_ERROR_POLICY_DOES_NOT_EXIST",
+            "9112" : "DNS_ERROR_KSP_NOT_ACCESSIBLE",
+            "9903" : "DNS_ERROR_DP_NOT_ENLISTED",
+            "9564" : "DNS_ERROR_CANNOT_FIND_ROOT_HINTS",
+            "9018" : "DNS_ERROR_RCODE_BADTIME",
+            "8" : "ERROR_NOT_ENOUGH_MEMORY",
+            "9113" : "DNS_ERROR_TOO_MANY_SKDS",
+            "9114" : "DNS_ERROR_INVALID_ROLLOVER_PERIOD",
+            "9994" : "DNS_ERROR_POLICY_INVALID_CRITERIA_FQDN",
+            "9990" : "DNS_ERROR_POLICY_INVALID_CRITERIA_CLIENT_SUBNET",
+            "9711" : "DNS_ERROR_RECORD_ALREADY_EXISTS",
+            "9851" : "DNS_ERROR_NO_TCPIP",
+            "9002" : "DNS_ERROR_RCODE_SERVER_FAILURE",
+            "9603" : "DNS_ERROR_INVALID_ZONE_OPERATION",
+            "9653" : "DNS_ERROR_DATAFILE_OPEN_FAILURE"
+          }
+        }
+      },
+      {
+        "convert" : {
+          "field" : "winlog.event_data.Archived",
+          "target_field" : "sysmon.file.archived",
+          "type" : "boolean",
+          "ignore_missing" : true,
+          "ignore_failure" : true
+        }
+      },
+      {
+        "convert" : {
+          "target_field" : "sysmon.file.is_executable",
+          "type" : "boolean",
+          "ignore_missing" : true,
+          "ignore_failure" : true,
+          "field" : "winlog.event_data.IsExecutable"
+        }
+      },
+      {
+        "append" : {
+          "value" : "{{user.name}}",
+          "ignore_failure" : true,
+          "allow_duplicates" : false,
+          "if" : "ctx?.user?.name != null && ctx.user.name != \"\"",
+          "field" : "related.user"
+        }
+      },
+      {
+        "append" : {
+          "allow_duplicates" : false,
+          "if" : "ctx?.source?.ip != null && ctx.source.ip != \"\"",
+          "field" : "related.ip",
+          "value" : "{{source.ip}}",
+          "ignore_failure" : true
+        }
+      },
+      {
+        "append" : {
+          "allow_duplicates" : false,
+          "if" : "ctx?.destination?.ip != null && ctx.destination.ip != \"\"",
+          "field" : "related.ip",
+          "value" : "{{destination.ip}}",
+          "ignore_failure" : true
+        }
+      },
+      {
+        "script" : {
+          "description" : "Set registry fields.",
+          "lang" : "painless",
+          "if" : "ctx?.winlog?.event_data?.TargetObject != null && [\"12\", \"13\", \"14\"].contains(ctx.event.code)",
+          "params" : {
+            "HKCR" : "HKCR",
+            "HKDD" : "HKDD",
+            "HKCC" : "HKCC",
+            "HKEY_PERFORMANCE_DATA" : "HKPD",
+            "HKPD" : "HKPD",
+            "HKLM" : "HKLM",
+            "HKU" : "HKU",
+            "HKEY_CLASSES_ROOT" : "HKCR",
+            "HKCU" : "HKCU",
+            "HKEY_CURRENT_CONFIG" : "HKCC",
+            "HKEY_DYN_DATA" : "HKDD",
+            "HKEY_USERS" : "HKU",
+            "HKEY_CURRENT_USER" : "HKCU",
+            "HKEY_LOCAL_MACHINE" : "HKLM"
+          },
+          "source" : "ctx.registry = new HashMap();\nPattern qwordRegex = /(?i)QWORD \\(((0x[0-9A-F]{8})-(0x[0-9A-F]{8}))\\)/;\nPattern dwordRegex = /(?i)DWORD \\((0x[0-9A-F]{8})\\)/;\nPattern binDataRegex = /Binary Data/;\n\ndef path = ctx.winlog.event_data.TargetObject;\nctx.registry.path = path;\n\ndef pathTokens = Arrays.asList(/\\\\/.split(path));\ndef hive = params[pathTokens[0]];\nif (hive != null) {\n  ctx.registry.hive = hive;\n  if (pathTokens.length > 1) {\n    ctx.registry.key = pathTokens.subList(1, pathTokens.length).join(\"\\\\\");\n  }\n}\n\ndef value = pathTokens[pathTokens.length - 1];\nctx.registry.value = value;\n\ndef data = ctx?.winlog?.event_data?.Details;\nif (data != null && data != \"\") {\n  def prefixLen = 2; // to remove 0x prefix\n  def dataValue = \"\";\n  def dataType = \"\";\n  def matcher = qwordRegex.matcher(data);\n  if (matcher.matches()) {\n    def parsedHighByte = Long.parseLong(matcher.group(2).substring(prefixLen), 16);\n    def parsedLowByte = Long.parseLong(matcher.group(3).substring(prefixLen), 16);\n    if (!Double.isNaN(parsedHighByte) && !Double.isNaN(parsedLowByte)) {\n      dataType = \"SZ_QWORD\";\n      dataValue = Long.toString(((parsedHighByte << 8) + parsedLowByte));\n      ctx.registry.data = [\n        \"strings\": [dataValue],\n        \"type\": dataType\n      ];\n    }\n    return;\n  }\n\n  matcher = dwordRegex.matcher(data);\n  if (matcher.matches()) {\n    def parsedValue = Long.parseLong(matcher.group(1).substring(prefixLen), 16);\n    if (!Double.isNaN(parsedValue)) {\n      dataType = \"SZ_DWORD\";\n      dataValue = Long.toString(parsedValue);\n      ctx.registry.data = [\n        \"strings\": [dataValue],\n        \"type\": dataType\n      ];\n    }\n    return;\n  }\n\n  matcher = binDataRegex.matcher(data);\n  if (matcher.matches()) {\n    // Data type could be REG_BINARY or REG_MULTI_SZ\n    ctx.registry.data = [\n      \"strings\": [data],\n      \"type\": \"REG_BINARY\"\n    ];\n    return;\n  }\n\n  // REG_SZ or REG_EXPAND_SZ\n  ctx.registry.data = [\n    \"strings\": [data],\n    \"type\": \"REG_SZ\"\n  ];\n}"
+        }
+      },
+      {
+        "remove" : {
+          "field" : [
+            "_temp",
+            "winlog.event_data.ProcessId",
+            "winlog.event_data.ParentProcessId",
+            "winlog.event_data.SourceProcessId",
+            "winlog.event_data.SourceThreadId",
+            "winlog.event_data.SourceIp",
+            "winlog.event_data.SourcePort",
+            "winlog.event_data.SourcePortName",
+            "winlog.event_data.DestinationIp",
+            "winlog.event_data.DestinationPort",
+            "winlog.event_data.DestinationPortName",
+            "winlog.event_data.RuleName",
+            "winlog.event_data.User",
+            "winlog.event_data.Initiated",
+            "winlog.event_data.SourceIsIpv6",
+            "winlog.event_data.DestinationIsIpv6",
+            "winlog.event_data.QueryStatus",
+            "winlog.event_data.Archived",
+            "winlog.event_data.IsExecutable",
+            "winlog.event_data.QueryResults",
+            "winlog.event_data.UtcTime",
+            "winlog.event_data.Hash",
+            "winlog.event_data.Hashes",
+            "winlog.event_data.TargetObject",
+            "winlog.event_data.Details",
+            "winlog.time_created",
+            "winlog.level"
+          ],
+          "ignore_failure" : true,
+          "ignore_missing" : true
+        }
+      },
+      {
+        "remove" : {
+          "description" : "Remove empty event data.",
+          "field" : "winlog.event_data",
+          "ignore_missing" : true,
+          "ignore_failure" : true,
+          "if" : "ctx?.winlog?.event_data != null && ctx.winlog.event_data.size() == 0"
+        }
+      }
+    ],
+    "on_failure" : [
+      {
+        "set" : {
+          "field" : "error.message",
+          "value" : "Processor \"{{ _ingest.on_failure_processor_type }}\" with tag \"{{ _ingest.on_failure_processor_tag }}\" in pipeline \"{{ _ingest.on_failure_pipeline }}\" failed with message \"{{ _ingest.on_failure_message }}\""
+        }
+      }
+    ]
+  }

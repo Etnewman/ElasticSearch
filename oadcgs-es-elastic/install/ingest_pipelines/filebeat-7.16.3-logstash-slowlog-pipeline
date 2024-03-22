@@ -1,0 +1,55 @@
+{
+    "description" : "Pipeline for parsing logstash slow logs",
+    "processors" : [
+      {
+        "set" : {
+          "field" : "event.ingested",
+          "value" : "{{_ingest.timestamp}}"
+        }
+      },
+      {
+        "rename" : {
+          "target_field" : "event.created",
+          "field" : "@timestamp"
+        }
+      },
+      {
+        "grok" : {
+          "field" : "message",
+          "patterns" : [
+            "^%{CHAR:first_char}"
+          ],
+          "pattern_definitions" : {
+            "CHAR" : "."
+          }
+        }
+      },
+      {
+        "pipeline" : {
+          "if" : "ctx.first_char != '{'",
+          "name" : "filebeat-7.16.3-logstash-slowlog-pipeline-plaintext"
+        }
+      },
+      {
+        "pipeline" : {
+          "if" : "ctx.first_char == '{'",
+          "name" : "filebeat-7.16.3-logstash-slowlog-pipeline-json"
+        }
+      },
+      {
+        "remove" : {
+          "field" : [
+            "first_char"
+          ]
+        }
+      }
+    ],
+    "on_failure" : [
+      {
+        "set" : {
+          "field" : "error.message",
+          "value" : "{{ _ingest.on_failure_message }}"
+        }
+      }
+    ]
+  }

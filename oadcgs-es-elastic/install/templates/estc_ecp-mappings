@@ -1,0 +1,167 @@
+{
+  "template" : {
+    "mappings" : {
+      "dynamic_templates" : [
+        {
+          "XmlLatitudeFields" : {
+            "path_match" : "Xml.*.Latitude",
+            "mapping" : {
+              "type" : "double"
+            },
+            "match_mapping_type" : "string"
+          }
+        },
+        {
+          "XmlLongitudeFields" : {
+            "path_match" : "Xml.*.Longitude",
+            "mapping" : {
+              "type" : "double"
+            },
+            "match_mapping_type" : "string"
+          }
+        },
+        {
+          "XmlAltitudeFields" : {
+            "path_match" : "Xml.*.Altitude",
+            "mapping" : {
+              "type" : "double"
+            },
+            "match_mapping_type" : "string"
+          }
+        },
+        {
+          "XmlPitchFields" : {
+            "path_match" : "Xml.*.Pitch",
+            "mapping" : {
+              "type" : "double"
+            },
+            "match_mapping_type" : "string"
+          }
+        },
+        {
+          "XmlRollFields" : {
+            "path_match" : "Xml.*.Roll",
+            "mapping" : {
+              "type" : "double"
+            },
+            "match_mapping_type" : "string"
+          }
+        },
+        {
+          "XmlYawFields" : {
+            "path_match" : "Xml.*.Yaw",
+            "mapping" : {
+              "type" : "double"
+            },
+            "match_mapping_type" : "string"
+          }
+        },
+        {
+          "XmlSlantRangeFields" : {
+            "path_match" : "Xml.*.SlantRange",
+            "mapping" : {
+              "type" : "double"
+            },
+            "match_mapping_type" : "string"
+          }
+        },
+        {
+          "XmlStandOffDistanceAfterFields" : {
+            "path_match" : "Xml.*.StandOffDistanceAfter",
+            "mapping" : {
+              "type" : "double"
+            },
+            "match_mapping_type" : "string"
+          }
+        },
+        {
+          "XmlStandOffDistanceBeforeFields" : {
+            "path_match" : "Xml.*.StandOffDistanceBefore",
+            "mapping" : {
+              "type" : "double"
+            },
+            "match_mapping_type" : "string"
+          }
+        },
+        {
+          "XmlSunElevationAngleFields" : {
+            "path_match" : "Xml.*.SunElevationAngle",
+            "mapping" : {
+              "type" : "double"
+            },
+            "match_mapping_type" : "string"
+          }
+        },
+        {
+          "XmlTurnRadiusFields" : {
+            "path_match" : "Xml.*.TurnRadius",
+            "mapping" : {
+              "type" : "double"
+            },
+            "match_mapping_type" : "string"
+          }
+        },
+        {
+          "XmlTextFields" : {
+            "path_match" : "Xml.*",
+            "mapping" : {
+              "type" : "keyword"
+            },
+            "match_mapping_type" : "string"
+          }
+        }
+      ],
+      "properties": {
+        "Thread.Id": {
+          "type": "keyword"
+        },
+        "Thread.Name": {
+          "type": "keyword"
+        },
+        "agent": {
+          "properties": {
+            "ephemeral_id": {
+              "type": "keyword"
+            },
+            "id": {
+              "type": "keyword"
+            },
+            "name": {
+              "type": "keyword"
+            }
+          }
+        },
+        "input": {
+          "properties": {
+            "type": {
+              "type": "keyword"
+            }
+          }
+        },
+        "java": {
+          "properties": {
+            "class": {
+              "type": "keyword"
+            }
+          }
+        },
+        "log": {
+          "properties": {
+            "flags": {
+              "type": "keyword"
+            },
+            "offset": {
+              "type": "long"
+            }
+          }
+        },
+        "TZ": {
+          "type": "keyword"
+        },
+        "msg2": {
+          "type": "keyword"
+        }
+      }
+    }
+  }
+}

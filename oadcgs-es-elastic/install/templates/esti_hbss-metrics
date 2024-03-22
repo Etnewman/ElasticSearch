@@ -1,0 +1,19 @@
+{
+    "template" : {
+      "settings" : {
+        "index" : {
+          "lifecycle" : {
+            "rollover_alias" : "dcgs-hbss-metrics-iaas-ent"
+          }
+        }
+       }
+      },
+    "index_patterns" : [ "dcgs-hbss-metrics-iaas-ent-*" ],
+    "composed_of" : [ "estc_dcgs_defaults", "estc_hbss-metrics-mappings" ],
+    "priority" : 200,
+    "version" : 0,
+    "_meta" : {
+      "description" : "settings for hbss metrics indexes installed by DCGS Enterprise Services`",
+      "managed" : true
+    }
+}

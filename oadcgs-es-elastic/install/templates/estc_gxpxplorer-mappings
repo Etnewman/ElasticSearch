@@ -1,0 +1,205 @@
+{
+  "template" : {
+    "mappings" : {
+      "dynamic_templates": [
+        {
+          "Json": {
+            "mapping": {
+              "type": "keyword"
+            },
+            "match_mapping_type": "string",
+            "path_match": "Json.*"
+          }
+        },
+        {
+          "datasetMetadata": {
+            "mapping": {
+              "type": "keyword"
+            },
+            "match_mapping_type": "string",
+            "path_match": "datasetMetadata.*"
+          }
+        }
+      ],
+      "properties" : {
+        "action" : {
+          "type" : "keyword"
+        },
+        "avgDurationPerFile" : {
+          "type" : "long"
+        },
+        "cellCount" : {
+          "type" : "long"
+        },
+        "compartment" : {
+          "type" : "keyword"
+        },
+        "componentIndex" : {
+          "type" : "keyword"
+        },
+        "description" : {
+          "type" : "keyword"
+        },
+        "destination" : {
+          "type" : "keyword"
+        },
+        "destinationUrl" : {
+          "type" : "keyword"
+        },
+        "duration" : {
+          "type" : "long"
+        },
+        "event": {
+          "properties": {
+            "created": {
+              "type": "date",
+          "format": "yyyy-MM-dd'T'HH:mm:ss.SSSX||yyyy-MM-dd HH:mm:ss.SSS||yyyy-MM-dd HH:mm:ss,SSS||MMMM d yyyy, H:m:s.SSS||MMMM d yyyy, H:m:s.SS||MMMM d yyyy, H:m:s.S||epoch_second",
+          "ignore_malformed": "true"
+            },
+            "ingested": {
+              "type": "date",
+          "format": "yyyy-MM-dd'T'HH:mm:ss.SSSX||yyyy-MM-dd HH:mm:ss.SSS||yyyy-MM-dd HH:mm:ss,SSS||MMMM d yyyy, H:m:s.SSS||MMMM d yyyy, H:m:s.SS||MMMM d yyyy, H:m:s.S||epoch_second",
+          "ignore_malformed": "true"
+            }
+          }
+        },
+        "endTime" : {
+          "type" : "date",
+          "format": "yyyy-MM-dd'T'HH:mm:ss.SSSX||yyyy-MM-dd HH:mm:ss.SSS||yyyy-MM-dd HH:mm:ss,SSS||MMMM d yyyy, H:m:s.SSS||MMMM d yyyy, H:m:s.SS||MMMM d yyyy, H:m:s.S||epoch_second",
+          "ignore_malformed": "true"
+        },
+        "eventID" : {
+          "type" : "keyword"
+        },
+        "exportType" : {
+          "type" : "keyword"
+        },
+        "folderUri" : {
+          "type" : "keyword"
+        },
+        "fromState" : {
+          "type" : "keyword"
+        },
+        "includeBrowse" : {
+          "type" : "boolean"
+        },
+        "includeFiles" : {
+          "type" : "boolean"
+        },
+        "ingest" : {
+          "properties" : {
+            "event" : {
+              "type" : "keyword"
+            }
+          }
+        },
+        "input" : {
+          "properties" : {
+            "type" : {
+              "type" : "keyword"
+            }
+          }
+        },
+        "isNotifiable" : {
+          "type" : "boolean"
+        },
+        "isOffline" : {
+          "type" : "boolean"
+        },
+        "isPaused" : {
+          "type" : "boolean"
+        },
+        "isResync" : {
+          "type" : "boolean"
+        },
+        "numFiles" : {
+          "type" : "long"
+        },
+        "numOutputProducts" : {
+          "type" : "long"
+        },
+        "onIngest" : {
+          "type" : "boolean"
+        },
+        "operation" : {
+          "type" : "keyword"
+        },
+        "orderIdentifier" : {
+          "type" : "keyword"
+        },
+        "primaryFile" : {
+          "type" : "keyword"
+        },
+        "principle" : {
+          "type" : "keyword"
+        },
+        "processDeletes" : {
+          "type" : "boolean"
+        },
+        "processUpdates" : {
+          "type" : "boolean"
+        },
+        "requestIP" : {
+          "type" : "keyword"
+        },
+        "resource" : {
+          "type" : "keyword"
+        },
+        "securityClassification" : {
+          "type" : "keyword"
+        },
+        "service" : {
+          "type" : "keyword"
+        },
+        "serviceOperation" : {
+          "type" : "keyword"
+        },
+        "sourceUrl" : {
+          "type" : "keyword"
+        },
+        "startTime" : {
+          "type" : "date",
+          "format": "yyyy-MM-dd'T'HH:mm:ss.SSSX||yyyy-MM-dd HH:mm:ss.SSS||yyyy-MM-dd HH:mm:ss,SSS||MMMM d yyyy, H:m:s.SSS||MMMM d yyyy, H:m:s.SS||MMMM d yyyy, H:m:s.S||epoch_second",
+          "ignore_malformed": "true"
+        },
+        "status" : {
+          "type" : "keyword"
+        },
+        "subCompartment" : {
+          "type" : "keyword"
+        },
+        "taskName" : {
+          "type" : "keyword"
+        },
+        "toState" : {
+          "type" : "keyword"
+        },
+        "token" : {
+          "type" : "keyword"
+        },
+        "transportType" : {
+          "type" : "keyword"
+        },
+        "type" : {
+          "type" : "keyword"
+        },
+        "url" : {
+          "properties" : {
+            "original" : {
+              "type" : "keyword"
+            }
+          }
+        },
+        "userID" : {
+          "type" : "long"
+        },
+        "userUUID" : {
+          "type" : "keyword"
+        },
+        "userUUIDAndResource" : {
+          "type" : "keyword"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,379 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#
+# (c) Copyright 2014 Hewlett-Packard Development Company, L.P.
+#
+# Licensed under the MIT License.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to permit
+# persons to whom the Software is furnished to do so, subject to the
+# following conditions:
+
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+# NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+# DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+# OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+# USE OR OTHER DEALINGS IN THE SOFTWARE.
+#
+# originally written jan23,2014
+# version 20140128 - code stable, repo created -jk
+# version 20161021 - fixed archive parsing, port to python 3 -jm
+# version 20161024 - write to kafka, add back support for python 2 -jm
+
+from __future__ import print_function, unicode_literals, division
+
+import csv
+from glob import glob
+import json
+import optparse
+import gzip
+import re
+import struct
+from os import path
+import sys
+import zstd
+import traceback
+from datetime import datetime
+
+# We could use the six library for this, but I would rather not have any deps.
+PY2 = sys.version_info[0] == 2
+range = xrange if PY2 else range
+iteritems = dict.iteritems if PY2 else dict.items
+text_read_mode = "r" if PY2 else "rt"
+if PY2:
+    from StringIO import StringIO as BytesIO
+else:
+    from io import BytesIO
+
+
+# start_time = time.time()
+cef_key_re = re.compile(r" ([\w.-]+?)=")
+cef_first_key_re = re.compile(r"([\w.-]+?)=")
+cef_pipe_re = re.compile(r"\\*?\|")
+
+
+def parse_cef(s):
+    d = dict()
+    fields = []
+    field_start = 0
+    for match in cef_pipe_re.finditer(s):
+        start, end = match.span()
+        if (end - start) % 2 == 0:
+            # There are an odd number of backslashes, so the pipe is escaped.
+            # A negative lookbehind may be a better way to do this.
+            continue
+        field = s[field_start : end - 1]
+        fields.append(field.replace("\\|", "|").replace("\\\\", "\\"))
+        field_start = end
+        if len(fields) == 7:
+            break
+    else:
+        raise ValueError("CEF string does not have enough pipe characters")
+
+    if "CEF:0" not in fields[0]:
+        raise ValueError("CEF string is missing CEF:0 header")
+
+    d["devicevendor"] = fields[1]
+    d["deviceproduct"] = fields[2]
+    d["deviceversion"] = fields[3]
+    d["signatureid"] = fields[4]
+    d["name"] = fields[5]
+    d["severity"] = fields[6]
+
+    parse_cef_extension(d, s[field_start:])
+    # if '_cefVer' not in d:
+    #    raise ValueError("CEF string is missing _cefVer")
+    return d
+
+
+def parse_cef_extension(d, s):
+    last_start = len(s)
+    matches = cef_key_re.finditer(s)
+    # Look at the key value pairs from the end to the beginning because the
+    # only way to find the end of a value is to find the start of the next key.
+    for match in reversed(list(matches)):
+        start, end = match.span()
+        d[match.group(1)] = unescape_cef_value(s[end:last_start])
+        last_start = start
+
+    # The first key-value pair may be preceded by a space. If it is not, add
+    # it to d .
+    leftover = s[:last_start]
+    match = cef_first_key_re.match(leftover)
+    if match:
+        d[match.group(1)] = unescape_cef_value(s[match.end() : last_start])
+    return d
+
+
+def unescape_cef_value(s):
+    s = s.replace("\\r", "\r").replace("\\n", "\n")
+    return s.replace("\\=", "=").replace("\\\\", "\\")
+
+
+def get_metadata(f):
+    rows = list(f)
+    # debug-swt
+    # for row in rows:
+    #  print("row",row)
+    # exit(1)
+    # Why is the first row space separated, instead of comma separated?
+    # SWT - Add missing space between column headers
+    rows[0] = rows[0].replace(
+        "MinEventEndTimeMaxEventEndTime", "MinEventEndTime MaxEventEndTime"
+    )
+    rows[0] = rows[0].replace(" ", ",")
+    return list(csv.DictReader(rows))
+
+
+def read_chunk(f, start, count, i, ec):
+    """ move around inside gigantor file and return the gzip'd embed """
+    f.seek(start + 256)  # offset plus header
+    # v=f.read(20)
+    # print("v=",v)
+    # chunk = BytesIO(f.read(count-256))
+    chunk = f.read(count - 256)
+    # debug-swt
+    # print("chunk:",chunk.getvalue())
+    # name="outfiles/outfile"+str(i) +"-"+str(ec)
+    # with open(name,'wb') as of:
+    #   of.write(chunk)
+    # return gzip.GzipFile(fileobj=chunk)
+    # print(chunk)
+    # exit(1)
+    try:
+        retval = zstd.decompress(chunk)
+        # name="outfiles/doutfile"+str(i) +"-"+str(ec)
+        # with open(name, 'wb') as of:
+        #  of.write(retval)
+    except Exception:
+        print("Unable to decompress chunk:", i)
+        name = "outfiles/outfile" + str(i) + "-" + str(ec)
+        with open(name, "wb") as of:
+            of.write(chunk)
+        # traceback.print_exc()
+        retval = None
+    return retval
+
+
+def parse_chunk(f, event_count):
+    # We have to read some bytes from a tiny header, but we don't do anything
+    # with those bytes.
+    end = 4
+    zero, length = struct.unpack(">hh", f[:end])
+    # print("length=", length)
+    # skip the reciever name and an int32 after it.
+    begin = end
+    end = begin + length + 4
+    val = f[begin:end]
+    # print("val=",val)
+
+    for _ in range(event_count):
+        begin = end
+        end = begin + 40
+        unpacked = struct.unpack(">qllqlbbbbq", f[begin:end])
+        # print("unpacked=",unpacked)
+        (time, length, recv_id, dvc_ip, mystery, n1, n2, n3, n4, zero) = unpacked
+        dtime = datetime.fromtimestamp(time / 1000)
+        # print("time=",dtime.strftime('%Y-%m-%d %H:%M:%S')," length=",length," recv_id=", hex(int(recv_id)), " dvc_ip=",dvc_ip,"mystery=",mystery,"Src IP:",n1,".",n2,".",n3,".",n4," zero=",zero)
+        begin = end
+        end = begin + length
+        event = f[begin:end]
+        event = str(event, encoding="utf-8")
+        # print("event=",event)
+        # strip off syslog header, if present
+        yield event[event.index("CEF:0") :]
+
+
+def dump_cef(cef_recs, ofile=None, to_json=False, limit_to=[]):
+    filters = dict(parse_search(kv) for kv in limit_to)
+    for c in cef_recs:
+        c = c.strip()
+        if not to_json and not filters:
+            # no json, no filter. just output
+            print(c)
+            continue
+        p_c = parse_cef(c)
+        if filters:
+            # could use set intersection here but want to bypass set
+            # instantiaton
+            match = tuple(p_c.get(fk) == fv for fk, fv in iteritems(filters))
+            if not all(match):
+                continue
+        if to_json:
+            if ofile != None:
+                ofile.write(json.dumps(p_c) + "\n")
+            else:
+                print(json.dumps(p_c))
+        else:
+            print(c)
+
+
+def send_kafka(cef_recs, topic, servers):
+    from kafka import KafkaProducer
+
+    producer = KafkaProducer(
+        bootstrap_servers=servers,
+        compression_type="gzip",
+        # compression_type='snappy',
+    )
+    for event in cef_recs:
+        producer.send(topic, event.encode("utf-8"))
+    producer.flush()
+    producer.close()
+
+
+def parse_search(kv):
+    """ returns a tuple(k,v) from k=v """
+    equal = kv.find("=")
+    if equal == -1:
+        raise Exception("filter format invalid. should be k=v")
+    return (kv[:equal], kv[equal + 1 :])
+
+
+def read_cef(file_list):
+    i = 1
+    for fdat, fcsv in file_list:
+        if fcsv.endswith(".gz"):
+            with gzip.open(fcsv, text_read_mode) as f:
+                metadata = get_metadata(f)
+        else:
+            with open(fcsv, text_read_mode) as f:
+                metadata = get_metadata(f)
+
+        with open(fdat, "rb") as f:
+            for chunk_md in metadata:
+                start = int(chunk_md["BeginOffset"])
+                chunk_length = int(chunk_md["Length"])
+                event_count = int(chunk_md["EventCount"])
+                receiver_id = int(chunk_md["ReceiverId"])
+                # debug-swt
+                # print("Start:",start, "Length:", chunk_length, "event_count", event_count, "ReceiverId:", receiver_id)
+                # print("i=",i)
+                # with read_chunk(f, start, chunk_length) as chunk:
+                chunk = read_chunk(f, start, chunk_length, i, event_count)
+
+                if chunk != None:
+                    for event in parse_chunk(chunk, event_count):
+                        yield event
+                else:
+                    print("Unable to parse for receiverId:", receiver_id)
+                i = i + 1
+    # debug-swt
+    # exit(1)
+
+
+if __name__ == "__main__":
+    usage = """%prog [options] path_to_dat path_to_meta
+
+Extracts cef events from Logger Archive files to stdout
+
+THIS SOFTWARE IS UNSUPPORTED.  USE AT YOUR OWN RISK.
+
+Why is it called lacat?
+    Because "Logger_Archive_cat" was too long to type.
+
+"""
+    parser = optparse.OptionParser(usage=usage)
+    parser.add_option(
+        "-j",
+        "--json",
+        dest="json",
+        action="store_true",
+        default=False,
+        help="export as json instead of raw cef",
+    )
+    parser.add_option(
+        "-f",
+        "--filter",
+        dest="filter",
+        action="append",
+        default=[],
+        help="specify a key=val to filter records by. multiple -s k=v allowed",
+    )
+    parser.add_option(
+        "-d",
+        "--directory",
+        dest="directory",
+        action="append",
+        default=[],
+        help="specify a directory full of dat and csv files",
+    )
+    parser.add_option(
+        "-k",
+        "--kafka-topic",
+        dest="kafka_topic",
+        action="store",
+        help="send events to kafka topic",
+    )
+    # check that you can clear default for kafka-servers
+    parser.add_option(
+        "--kafka-servers",
+        dest="kafka_servers",
+        action="store",
+        default="localhost:9092",
+        help="connect to kafka with server name (can be comma-separated list)",
+    )
+    # parser.add_option(
+    #    "-o", "--output", dest="output", action="append", default=[],
+    #    help="specify a output directory")
+    options, args = parser.parse_args()
+
+    # ArcSight_Data_46_0504403158265495552.dat
+    # ArcSight_Metadata_46_504403158265495552.csv
+    if options.directory:
+        # user wants to scan through an entire directory
+        csvFiles = glob(options.directory[0] + "*.csv") + glob(
+            options.directory[0] + "*.csv.gz"
+        )
+        file_list = []
+        for csvFile in csvFiles:
+            csv_path = csvFile.rstrip(".gz").rstrip(".csv")
+            datFinder = path.basename(csv_path)[18:].split(
+                "_"
+            )  # returns list of significant digits
+            # ArcSight_Metadata_46_504403158265495552.csv = ['46', '504403158265495552']
+            # we need the significant digits because the archive loggers sometimes pad with extra zero
+            datFile = glob(
+                options.directory[0]
+                + "*_"
+                + datFinder[0]
+                + "_*"
+                + datFinder[1]
+                + "*.dat"
+            )
+            # datFile returns list of single file matching the csv significant digits
+            file_list.append((datFile[0], csvFile))  # nice list of (CSV,DAT) tuples
+        if not file_list:
+            raise ValueError("No files found in directory.")
+
+    elif len(args) == 2:
+        # user manually specifies the dat and csv files
+        f_dat = args[0]
+        f_csv = args[1]
+        file_list = [(args[0], args[1])]
+
+    elif len(args) < 2:
+        parser.print_help()
+        raise SystemExit
+
+    # SWT
+    ofile = open("./output.dat", "w")
+
+    events = read_cef(file_list)
+    if options.kafka_topic:
+        send_kafka(
+            events, options.kafka_topic, options.kafka_servers,
+        )
+    else:
+        dump_cef(events, ofile, to_json=options.json, limit_to=options.filter)
+    # print(time.time() - start_time)

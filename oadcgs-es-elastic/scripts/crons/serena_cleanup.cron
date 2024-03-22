@@ -1,0 +1,4 @@
+#!/bin/bash
+
+SCRIPT_DIR="/etc/logstash/scripts/"
+/etc/logstash/scripts/venv/bin/python ${SCRIPT_DIR}SerenaCleanup.py

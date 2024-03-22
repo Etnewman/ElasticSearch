@@ -1,0 +1,11 @@
+client:
+  hosts:
+    - elastic-node-1
+  port: 9200
+  use_ssl: True
+  certificate: '/etc/elasticsearch/certs/cachain.pem'
+  ssl_no_validate: False
+  username: ${elasticUser}
+  password: ${elasticPassword}
+  timeout: 30
+  master_only: False

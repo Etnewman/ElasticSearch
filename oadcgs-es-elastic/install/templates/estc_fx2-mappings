@@ -1,0 +1,519 @@
+{
+  "template" : {
+    "settings" : {
+      "index" : {
+        "query" : {
+          "default_field" : [
+            "log.file.path",
+            "metadata.Desc",
+            "metadata.DocSubtype",
+            "metadata.DocType"
+          ]
+        }
+      }
+    },
+    "mappings" : {
+      "properties" : {
+        "@timestamp" : {
+          "type" : "date"
+        },
+        "@version" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "agent" : {
+          "properties" : {
+            "hostname" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "name" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            },
+            "id" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            },
+            "ephemeral_id" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            },
+            "type" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            },
+            "version" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            }
+          }
+        },
+        "drsAmpsReading" : {
+          "type" : "float"
+        },
+        "drsBladeCurrSta" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsBladeCurrStarsRedCurrStatus" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsBladeCurrStas" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsBladeCurrStats" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsBladeCurrStattus" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsBladeCurrStatus" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsBladeCurrStatustus" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsBladeCurrStatusus" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsBladeCurrStatutus" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsBladeCurrStatuus" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsBladeCurrStaus" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsCMCAmbientTemperature" : {
+          "type" : "float"
+        },
+        "drsCMCCurrStatus" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsCMCProcessorTemperature" : {
+          "type" : "float"
+        },
+        "drsChassisFrontPanelAmbientTemperature" : {
+          "type" : "float"
+        },
+        "drsChassisIndex" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsChassisServiceTag" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsFanCurrStatus" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsFirmwareVersion" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsGlobalCurrStatus" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsIOMCurrStatus" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsIdlePower" : {
+          "type" : "float"
+        },
+        "drsKVMCurrStatus" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsKWhCumulative" : {
+          "type" : "float"
+        },
+        "drsKWhCumulativeTime" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsMaxPowerSpecification" : {
+          "type" : "float"
+        },
+        "drsPSUAmpsReading" : {
+          "type" : "float"
+        },
+        "drsPSUChassisIndex" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsPSUIndex" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsPSULocation" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsPSUMonitoringCapable" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsPSUVoltsReading" : {
+          "type" : "float"
+        },
+        "drsPSUWattsReading" : {
+          "type" : "integer"
+        },
+        "drsPotentialPower" : {
+          "type" : "float"
+        },
+        "drsPowerCurrStatus" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsPowerSurplus" : {
+          "type" : "float"
+        },
+        "drsProductChassisAisle" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsProductChassisAssetTag" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsProductChassisDataCenter" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsProductChassisExpressServiceCode" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsProductChassisLocation" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsProductChassisModel" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsProductChassisName" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsProductChassisRack" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsProductChassisRackSlot" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsProductChassisSize" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsProductChassisSystemID" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsProductDescription" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsProductManufacturer" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsProductName" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsProductShortName" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsProductSystemAssetTag" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsProductSystemSlot" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsProductType" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsProductURL" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsProductVersion" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsRedCurrStatus" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsServerAssetTag" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsServerAssignedServerSlots" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsServerIndex" : {
+          "type" : "integer"
+        },
+        "drsServerIntrusionState" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsServerModel" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsServerMonitoringCapable" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsServerNodeID" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsServerNumStorageControllers" : {
+          "type" : "integer"
+        },
+        "drsServerServiceTag" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsServerSlotName" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsServerSlotNumber" : {
+          "type" : "integer"
+        },
+        "drsServerStorageMode" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsSystemServiceTag" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsTempCurrStatus" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsWattsMinTime" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsWattsMinUsage" : {
+          "type" : "float"
+        },
+        "drsWattsPeakTime" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "drsWattsPeakUsage" : {
+          "type" : "float"
+        },
+        "drsWattsReading" : {
+          "type" : "float"
+        },
+        "drsWattsResetTime" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "ecs" : {
+          "properties" : {
+            "version" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "host" : {
+          "properties" : {
+            "Fan" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "Health" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "ServiceTag" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "Temp" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "Url" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "hostname" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "name" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "type" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "ifAdminStatus" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "ifDescr" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "ifInDiscards" : {
+          "type" : "integer"
+        },
+        "ifInErrors" : {
+          "type" : "integer"
+        },
+        "ifInNUcastPkts" : {
+          "type" : "integer"
+        },
+        "ifInOctets" : {
+          "type" : "long"
+        },
+        "ifInUcastPkts" : {
+          "type" : "long"
+        },
+        "ifInUnknownProtos" : {
+          "type" : "integer"
+        },
+        "ifIndex" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "ifLastChange" : {
+          "type" : "integer"
+        },
+        "ifMtu" : {
+          "type" : "integer"
+        },
+        "ifOperStatus" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "ifOutDiscards" : {
+          "type" : "integer"
+        },
+        "ifOutErrors" : {
+          "type" : "integer"
+        },
+        "ifOutNUcastPkts" : {
+          "type" : "integer"
+        },
+        "ifOutOctets" : {
+          "type" : "long"
+        },
+        "ifOutQLen" : {
+          "type" : "integer"
+        },
+        "ifOutUcastPkts" : {
+          "type" : "long"
+        },
+        "ifPhysAddress" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "ifSpecific" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "ifSpeed" : {
+          "type" : "long"
+        },
+        "ifType" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "input" : {
+          "properties" : {
+            "type" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "inputUtilization" : {
+          "type" : "float"
+        },
+        "log" : {
+          "properties" : {
+            "file" : {
+              "properties" : {
+                "path" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                }
+              }
+            },
+            "offset" : {
+              "type" : "long"
+            }
+          }
+        },
+        "metadata" : {
+          "properties" : {
+            "Desc" : {
+              "type" : "keyword",
+              "ignore_above" : 1024
+            },
+            "DocType" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "outputUtilization" : {
+          "type" : "float"
+        },
+        "tags" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "time" : {
+          "type" : "float"
+        }
+      }
+    }
+        },
+        "version" : 0,
+        "_meta" : {
+          "description" : "default mappings for the fx2 chassis index template installed by DCGS Enterprise Services",
+          "managed" : true
+        }
+}

@@ -1,0 +1,13 @@
+.editorconfig export-ignore
+.gitattributes export-ignore
+.gitignore export-ignore
+.pre-commit-config.yaml export-ignore
+.python-version export-ignore
+.rubocop.yml export-ignore
+.ruby-version export-ignore
+Jenkinsfile export-ignore
+lint_powershell.ps1 export-ignore
+requirements.txt export-ignore
+tox.ini export-ignore
+Vagrantfile export-ignore
+pkg/.gitkeep export-ignore

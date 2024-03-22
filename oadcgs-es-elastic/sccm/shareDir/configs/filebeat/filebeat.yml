@@ -1,0 +1,12 @@
+filebeat.config:
+  inputs:
+    enabled: true
+    path: ${path.config}/inputs.d/*.yml
+    #reload.enabled: true
+    #reload.period: 10s
+  modules:
+    enabled: true
+    path: ${path.config}/modules.d/*.yml
+    #reload.enabled: true
+    #reload.period: 10s
+#----------------------------- Logstash output --------------------------------

@@ -1,0 +1,28 @@
+{
+        "index_patterns": [
+          "dcgs-acas-iaas-ent"
+        ],
+        "template": {
+          "settings": {
+            "index": {
+              "lifecycle": {
+                "rollover_alias": "dcgs-acas-iaas-ent"
+              }
+            }
+          }
+        },
+        "composed_of": [
+                    "estc_dcgs_defaults",
+                    "estc_acas-mappings"
+
+        ],
+        "priority": 10,
+        "version": 0,
+        "_meta": {
+          "description": "settings for ACAS indexes installed by DCGS Enterprise Services",
+          "managed": true
+        }
+      }
+    }
+  ]
+}

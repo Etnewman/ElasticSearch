@@ -1,0 +1,875 @@
+{
+        "template": {
+          "mappings": {
+            "dynamic_templates": [],
+            "properties": {
+              "@timestamp": {
+                "type": "date"
+              },
+              "@version": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "agent": {
+                "type": "object",
+                "properties": {
+                  "ephemeral_id": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "hostname": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "id": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "name": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "type": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "version": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  }
+                }
+              },
+              "ecs": {
+                "type": "object",
+                "properties": {
+                  "version": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  }
+                }
+              },
+              "host": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  }
+                }
+              },
+              "input": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  }
+                }
+              },
+              "log": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "text",
+                        "fields": {
+                          "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "offset": {
+                    "type": "long"
+                  }
+                }
+              },
+              "metadata": {
+                "type": "object",
+                "properties": {
+                  "DocSubtype": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "DocType": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  }
+                }
+              },
+              "scanner_health": {
+                "type": "object",
+                "properties": {
+                  "error_code": {
+                    "type": "long"
+                  },
+                  "error_msg": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "response": {
+                    "type": "object",
+                    "properties": {
+                      "perf_stats_current": {
+                        "type": "object",
+                        "properties": {
+                          "avg_dns_lookup_time": {
+                            "type": "long"
+                          },
+                          "avg_rdns_lookup_time": {
+                            "type": "long"
+                          },
+                          "cpu_load_avg": {
+                            "type": "long"
+                          },
+                          "kbytes_received": {
+                            "type": "long"
+                          },
+                          "kbytes_sent": {
+                            "type": "long"
+                          },
+                          "nessus_cpu": {
+                            "type": "long"
+                          },
+                          "nessus_data_disk_free": {
+                            "type": "long"
+                          },
+                          "nessus_data_disk_total": {
+                            "type": "long"
+                          },
+                          "nessus_log_disk_free": {
+                            "type": "long"
+                          },
+                          "nessus_log_disk_total": {
+                            "type": "long"
+                          },
+                          "nessus_mem": {
+                            "type": "long"
+                          },
+                          "nessus_vmem": {
+                            "type": "long"
+                          },
+                          "num_dns_lookups": {
+                            "type": "long"
+                          },
+                          "num_hosts": {
+                            "type": "long"
+                          },
+                          "num_rdns_lookups": {
+                            "type": "long"
+                          },
+                          "num_scans": {
+                            "type": "long"
+                          },
+                          "num_tcp_sessions": {
+                            "type": "long"
+                          },
+                          "plugins_code_db_corrupted": {
+                            "type": "long"
+                          },
+                          "plugins_description_db_corrupted": {
+                            "type": "long"
+                          },
+                          "plugins_failed_to_compile_count": {
+                            "type": "long"
+                          },
+                          "sys_cores": {
+                            "type": "long"
+                          },
+                          "sys_ram": {
+                            "type": "long"
+                          },
+                          "temp_disk_free": {
+                            "type": "long"
+                          },
+                          "temp_disk_total": {
+                            "type": "long"
+                          },
+                          "timestamp": {
+                            "type": "long"
+                          }
+                        }
+                      },
+                      "perf_stats_history": {
+                        "type": "object",
+                        "properties": {
+                          "avg_dns_lookup_time": {
+                            "type": "long"
+                          },
+                          "avg_rdns_lookup_time": {
+                            "type": "long"
+                          },
+                          "cpu_load_avg": {
+                            "type": "long"
+                          },
+                          "kbytes_received": {
+                            "type": "long"
+                          },
+                          "kbytes_sent": {
+                            "type": "long"
+                          },
+                          "nessus_cpu": {
+                            "type": "long"
+                          },
+                          "nessus_data_disk_free": {
+                            "type": "long"
+                          },
+                          "nessus_data_disk_total": {
+                            "type": "long"
+                          },
+                          "nessus_log_disk_free": {
+                            "type": "long"
+                          },
+                          "nessus_log_disk_total": {
+                            "type": "long"
+                          },
+                          "nessus_mem": {
+                            "type": "long"
+                          },
+                          "nessus_vmem": {
+                            "type": "long"
+                          },
+                          "num_dns_lookups": {
+                            "type": "long"
+                          },
+                          "num_hosts": {
+                            "type": "long"
+                          },
+                          "num_rdns_lookups": {
+                            "type": "long"
+                          },
+                          "num_scans": {
+                            "type": "long"
+                          },
+                          "num_tcp_sessions": {
+                            "type": "long"
+                          },
+                          "plugins_code_db_corrupted": {
+                            "type": "long"
+                          },
+                          "plugins_description_db_corrupted": {
+                            "type": "long"
+                          },
+                          "plugins_failed_to_compile_count": {
+                            "type": "long"
+                          },
+                          "sys_cores": {
+                            "type": "long"
+                          },
+                          "sys_ram": {
+                            "type": "long"
+                          },
+                          "temp_disk_free": {
+                            "type": "long"
+                          },
+                          "temp_disk_total": {
+                            "type": "long"
+                          },
+                          "timestamp": {
+                            "type": "long"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "timestamp": {
+                    "type": "long"
+                  },
+                  "type": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  }
+                }
+              },
+              "tags": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "vuln": {
+                "type": "object",
+                "properties": {
+                  "dnsName": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "family": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "text",
+                        "fields": {
+                          "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                          }
+                        }
+                      },
+                      "name": {
+                        "type": "text",
+                        "fields": {
+                          "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                          }
+                        }
+                      },
+                      "type": {
+                        "type": "text",
+                        "fields": {
+                          "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "hostUniqueness": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "ip": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "ips": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "macAddress": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "name": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "netbiosName": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "pluginID": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "pluginInfo": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "port": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "protocol": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "repository": {
+                    "type": "object",
+                    "properties": {
+                      "dataFormat": {
+                        "type": "text",
+                        "fields": {
+                          "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                          }
+                        }
+                      },
+                      "description": {
+                        "type": "text",
+                        "fields": {
+                          "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                          }
+                        }
+                      },
+                      "id": {
+                        "type": "text",
+                        "fields": {
+                          "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                          }
+                        }
+                      },
+                      "name": {
+                        "type": "text",
+                        "fields": {
+                          "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                          }
+                        }
+                      },
+                      "sciID": {
+                        "type": "text",
+                        "fields": {
+                          "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "severity": {
+                    "type": "object",
+                    "properties": {
+                      "description": {
+                        "type": "text",
+                        "fields": {
+                          "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                          }
+                        }
+                      },
+                      "id": {
+                        "type": "text",
+                        "fields": {
+                          "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                          }
+                        }
+                      },
+                      "name": {
+                        "type": "text",
+                        "fields": {
+                          "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "uniqueness": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "uuid": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "vprContext": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "vprScore": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  }
+                }
+              },
+              "vulns": {
+                "type": "object",
+                "properties": {
+                  "dnsName": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "family": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "text",
+                        "fields": {
+                          "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                          }
+                        }
+                      },
+                      "name": {
+                        "type": "text",
+                        "fields": {
+                          "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                          }
+                        }
+                      },
+                      "type": {
+                        "type": "text",
+                        "fields": {
+                          "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "hostUniqueness": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "ip": {
+                    "type": "ip",
+                    "index": true,
+                    "doc_values": true,
+                    "store": false
+                  },
+                  "ips": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "macAddress": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "name": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "netbiosName": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "pluginID": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "pluginInfo": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "port": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "protocol": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "repository": {
+                    "type": "object",
+                    "properties": {
+                      "dataFormat": {
+                        "type": "text",
+                        "fields": {
+                          "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                          }
+                        }
+                      },
+                      "description": {
+                        "type": "text",
+                        "fields": {
+                          "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                          }
+                        }
+                      },
+                      "id": {
+                        "type": "text",
+                        "fields": {
+                          "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                          }
+                        }
+                      },
+                      "name": {
+                        "type": "text",
+                        "fields": {
+                          "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                          }
+                        }
+                      },
+                      "sciID": {
+                        "type": "text",
+                        "fields": {
+                          "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "severity": {
+                    "type": "object",
+                    "properties": {
+                      "description": {
+                        "type": "text",
+                        "fields": {
+                          "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                          }
+                        }
+                      },
+                      "id": {
+                        "type": "text",
+                        "fields": {
+                          "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                          }
+                        }
+                      },
+                      "name": {
+                        "type": "text",
+                        "fields": {
+                          "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "uniqueness": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "uuid": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "vprContext": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "vprScore": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+}

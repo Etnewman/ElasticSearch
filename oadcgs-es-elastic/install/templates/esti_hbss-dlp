@@ -1,0 +1,24 @@
+{
+  "template": {
+    "settings": {
+      "index": {
+        "lifecycle": {
+         "rollover_alias": "dcgs-hbss_epo_dlp-iaas-ent"
+        }
+      }
+    }
+  },
+  "index_patterns" : [
+    "dcgs-hbss_epo_dlp-iaas-ent*"
+  ],
+  "composed_of": [
+    "estc_dcgs_defaults",
+    "estc_hbss-epo_dlp-mappings"
+  ],
+  "priority": 150,
+  "version": 0,
+  "_meta": {
+    "description": "settings for hbss epo index containing DLP data sent via ArcSight connector, installed by DCGS Enterprise Services",
+    "managed": true
+  }
+}

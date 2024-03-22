@@ -1,0 +1,23 @@
+#
+# This file contains a list of all applications
+# that metricbeat is to monitor.  A unique portion
+# of the application name is used to identify if the
+# application is running on a host.  If the application is
+# found to be installed on the host then the associated
+# metricbeat configuration will be inserted into the yml.
+# Configuration files should be placed in the inputs.d
+# directory.  Files should contain a section for the 'apps'
+# section of the appmonitor params, with a following comma
+# (see inputs.d/example_config.yml).
+#
+# Enter one application per line like this:
+# application name=config.app  (Do not enclose in quotes)
+# Examples:
+# mcafee endpoint security=endpoint.app
+# configuration manager client=ccm.app
+#
+# Note: The above examples are commented out with the pound sign.
+#       Any line that begins with a pound sign in this file is
+#       ignored.  Do not begin lines that should be evaulated
+#       with a pound sign.
+#

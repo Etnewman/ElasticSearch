@@ -1,0 +1,45 @@
+{"description":"Heartbeat pipeline provided by Enterprise Services","pipeline":"input {
+    beats {
+        port => 5047
+        ssl => true
+        ssl_certificate_authorities => [\"/etc/logstash/certs/cachain.pem\"]
+        ssl_certificate => \"/etc/logstash/certs/${HOSTNAME}.crt\"
+        ssl_key => \"/etc/logstash/certs/${HOSTNAME}_pkcs8.key\"
+        ssl_key_passphrase => \"${SSL_PASSPHRASE}\"
+        ssl_verify_mode => \"peer\"
+    }
+}
+
+filter {
+    # Add Orignating Site to document
+    mutate {
+        add_field => { \"DCGS_Site\" => \"${SITE}\" }
+        add_field => { \"DCGS_Site_Name\" => \"${SITELOC}\" }
+        add_field => { \"[geo][name]\" => \"${SITELOC}\" }
+    }
+    translate {
+        field => \"DCGS_Site_Name\"
+        destination => \"[geo][location]\"
+        override => \"true\"
+        fallback => \"0,0\"
+        dictionary_path => '/etc/logstash/dictionaries/site_coordinates.yml'
+    }
+    # Copies geo information into the observer for the pipeline
+    mutate {
+        copy => { \"[geo][name]\" => \"[observer][geo][name]\" }
+        copy => { \"[geo][location]\" => \"[observer][geo][location]\" }
+        copy => { \"[monitor][ip]\" => \"[observer][ip]\" }
+        copy => { \"[agent][name]\" => \"[observer][name]\" }
+    }
+}
+
+output {
+    elasticsearch {
+        hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+        index => \"%{[@metadata][beat]}-%{[@metadata][version]}\"
+        user => \"ls_internal\"
+        password => \"${LS_INTERNAL_PW}\"
+        ssl => true
+        cacert => \"/etc/logstash/certs/cachain.pem\"
+    }
+}","settings":{"pipeline.batch.delay":50,"pipeline.batch.size":125,"pipeline.workers":1,"queue.checkpoint.writes":1024,"queue.max_bytes":"1gb","queue.type":"memory"}}

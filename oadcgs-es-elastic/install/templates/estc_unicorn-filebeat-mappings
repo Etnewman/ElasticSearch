@@ -1,0 +1,262 @@
+{
+  "template": {
+    "mappings": {
+      "properties": {
+        "agent": {
+          "properties": {
+            "ephemeral_id": {
+              "type": "keyword"
+            },
+            "id": {
+              "type": "keyword"
+            },
+            "name": {
+              "type": "keyword"
+            }
+          }
+        },
+        "broker": {
+          "type": "object",
+          "properties": {
+            "curl_Get": {
+              "type": "keyword"
+            },
+            "exception": {
+              "type": "keyword"
+            },
+            "exception_Code": {
+              "type": "keyword"
+            },
+            "exception_Message": {
+              "type": "keyword"
+            },
+            "host": {
+              "type": "keyword"
+            },
+            "host_Env": {
+              "type": "keyword"
+            },
+            "html_Footers": {
+              "type": "keyword"
+            },
+            "html_Headers": {
+              "type": "keyword"
+            },
+            "javaScript_Code": {
+              "type": "keyword"
+            },
+            "open_Conn": {
+              "type": "keyword"
+            },
+            "route_Name": {
+              "type": "keyword"
+            },
+            "route_Url": {
+              "type": "keyword"
+            },
+            "webpage_Title": {
+              "type": "keyword"
+            }
+          }
+        },
+        "class_Name": {
+          "type": "keyword"
+        },
+        "cron": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "keyword"
+            },
+            "value": {
+              "type": "keyword"
+            },
+            "value_Function": {
+              "type": "keyword"
+            }
+          }
+        },
+        "doc_Empty": {
+          "type": "keyword"
+        },
+        "exception": {
+          "type": "object",
+          "properties": {
+            "inner_Exception_Message": {
+              "type": "keyword"
+            },
+            "inner_Exception_Number": {
+              "type": "keyword"
+            },
+            "inner_Exception_Type": {
+              "type": "keyword"
+            },
+            "inner_Trace": {
+              "type": "keyword"
+            },
+            "message": {
+              "type": "keyword"
+            },
+            "trace": {
+              "type": "keyword"
+            },
+            "type": {
+              "type": "keyword"
+            }
+          }
+        },
+        "input": {
+          "properties": {
+            "type": {
+              "type": "keyword"
+            }
+          }
+        },
+        "job": {
+          "type": "object",
+          "properties": {
+            "class": {
+              "type": "keyword"
+            },
+            "family": {
+              "type": "keyword"
+            },
+            "ID": {
+              "type": "integer"
+            },
+            "init_Job": {
+              "type": "keyword"
+            },
+            "job": {
+              "type": "keyword"
+            },
+            "job_Service": {
+              "type": "keyword"
+            },
+            "name": {
+              "type": "keyword"
+            },
+            "onstart_Job": {
+              "type": "keyword"
+            },
+            "service": {
+              "type": "keyword"
+            },
+            "type": {
+              "type": "keyword"
+            }
+          }
+        },
+        "log": {
+          "properties": {
+            "flags": {
+              "type": "keyword"
+            }
+          }
+        },
+        "namespace": {
+          "type": "keyword"
+        },
+        "payload_Msg": {
+          "type": "keyword"
+        },
+        "quartz": {
+          "type": "object",
+          "properties": {
+            "config_Concurrency_Number": {
+              "type": "integer"
+            },
+            "config_Name": {
+              "type": "keyword"
+            },
+            "config_Obj": {
+              "type": "keyword"
+            },
+            "from_Service": {
+              "type": "keyword"
+            },
+            "group": {
+              "type": "keyword"
+            },
+            "job": {
+              "type": "keyword"
+            },
+            "job_Service": {
+              "type": "keyword"
+            },
+            "loaded_From": {
+              "type": "keyword"
+            },
+            "loaded_Properties": {
+              "type": "keyword"
+            },
+            "name": {
+              "type": "keyword"
+            },
+            "scheduler": {
+              "type": "keyword"
+            },
+            "scheduler_Created": {
+              "type": "keyword"
+            },
+            "scheduler_Init": {
+              "type": "keyword"
+            },
+            "service": {
+              "type": "keyword"
+            },
+            "to_Service": {
+              "type": "keyword"
+            },
+            "trigger_Instruction": {
+              "type": "keyword"
+            },
+            "trigger_Number": {
+              "type": "keyword"
+            },
+            "version": {
+              "type": "keyword"
+            }
+          }
+        },
+        "service": {
+          "dynamic": true,
+          "type": "object",
+          "enabled": true,
+          "properties": {
+            "family": {
+              "type": "keyword"
+            },
+            "job": {
+              "type": "keyword"
+            },
+            "name": {
+              "type": "keyword"
+            },
+            "notification": {
+              "type": "keyword"
+            },
+            "service": {
+              "type": "keyword"
+            }
+          }
+        },
+        "thread_Id": {
+          "type": "keyword"
+        },
+        "trigger": {
+          "type": "object",
+          "properties": {
+            "instruction": {
+              "type": "keyword"
+            },
+            "number": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    }
+  },
+  "version": 0
+}

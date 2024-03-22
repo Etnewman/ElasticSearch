@@ -1,0 +1,21 @@
+This is the "certs" directory for the elastic repo.  It should exist under the "install" directory in the elastic repo.
+
+The public cert along with the private key for each Elastic and logstash node should be present in this directory when preforming
+the initial installation of Elasticsearch on a DCGS enclave.
+
+The naming convention for each elastic nodes cert files is:
+    xxxsu01elxx.crt
+    xxxsu01elxx.key
+
+The nameing convention for each Logstash node cert files is:
+    xxxsu01lsxx.crt
+    xxxsu01lsxx.key
+
+    Where xxx is the site designator.  (ex: s00, t00)
+
+
+The ROOT CA and SUB CA chain should be in the file
+    elastic_cachain.pem
+
+
+All of these files are required to preform the initial installation of Elastic.

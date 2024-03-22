@@ -1,0 +1,19 @@
+{
+    "template" : {
+      "settings" : {
+        "index" : {
+          "lifecycle" : {
+            "rollover_alias" : "dcgs-db_idm-iaas-ent"
+          }
+        }
+       }
+      },
+    "priority" : 200,
+    "index_patterns" : [ "dcgs-db_idm-iaas-ent*" ],
+    "composed_of" : [ "estc_dcgs_defaults", "estc_idm-mappings" ],
+    "version" : 0,
+    "_meta" : {
+      "description" : "settings for idam indexes installed by DCGS Enterprise Services`",
+      "managed" : true
+    }
+}

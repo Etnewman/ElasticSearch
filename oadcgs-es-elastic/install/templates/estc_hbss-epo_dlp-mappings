@@ -1,0 +1,718 @@
+{
+  "template" : {
+    "settings" : {
+      "mapping" : {
+        "total_fields" : {
+          "limit" : "10000"
+        }
+      }
+    },
+    "mappings" : {
+      "properties" : {
+        "@timestamp" : {
+          "type" : "date"
+        },
+        "@version" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "DCGS_Site" : {
+          "type" : "keyword"
+        },
+        "DCGS_Site_Name" : {
+          "type" : "keyword"
+        },
+        "_cefVer" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "ad" : {
+          "properties" : {
+            "ApplicationId" : {
+              "properties" : {
+                "l" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "CdDvdDrive" : {
+              "properties" : {
+                "i" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "ClassificationsToDisplay" : {
+              "type" : "keyword"
+            },
+            "ComputerID" : {
+              "properties" : {
+                "l" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "ConnectionDirection" : {
+              "properties" : {
+                "i" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "DestPort" : {
+              "properties" : {
+                "l" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "DeviceClassName" : {
+              "type" : "keyword"
+            },
+            "EncryptionProvider" : {
+              "type" : "keyword"
+            },
+            "EvidenceId" : {
+              "properties" : {
+                "l" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "EvidenceLocationPrefix" : {
+              "type" : "keyword"
+            },
+            "ExpectedAction" : {
+              "properties" : {
+                "i" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "ID" : {
+              "properties" : {
+                "l" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "IncidentId" : {
+              "properties" : {
+                "l" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "McAfeeAgentGuid" : {
+              "properties" : {
+                "c" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "NetworkProtocol" : {
+              "properties" : {
+                "i" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "NetworkTransport" : {
+              "properties" : {
+                "i" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "OriginalIncidentId" : {
+              "properties" : {
+                "l" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "PCIDeviceId" : {
+              "properties" : {
+                "c" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "PCIVendorId" : {
+              "properties" : {
+                "c" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "PlugDurationInSec" : {
+              "properties" : {
+                "l" : {
+                  "type" : "long"
+                }
+              }
+            },
+            "PluginUTCTime" : {
+              "properties" : {
+                "d" : {
+                  "type" : "date"
+                }
+              }
+            },
+            "PolicyInfoId" : {
+              "properties" : {
+                "l" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "PolicyName" : {
+              "type" : "keyword"
+            },
+            "PrimaryUserAccountID" : {
+              "type" : "keyword"
+            },
+            "ProcessId" : {
+              "properties" : {
+                "l" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "ResolutionId" : {
+              "properties" : {
+                "i" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "ResolutionKey" : {
+              "type" : "keyword"
+            },
+            "RuleSetToDisplay" : {
+              "type" : "keyword"
+            },
+            "SourceApplicationId" : {
+              "properties" : {
+                "l" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "SourcePort" : {
+              "properties" : {
+                "l" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "StatusId" : {
+              "properties" : {
+                "l" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "StatusKey" : {
+              "type" : "keyword"
+            },
+            "USBClass" : {
+              "properties" : {
+                "l" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "UserID" : {
+              "properties" : {
+                "l" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "policyInfoId" : {
+              "properties" : {
+                "l" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "productname" : {
+              "type" : "keyword"
+            },
+            "resolutionID" : {
+              "properties" : {
+                "i" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "statusID" : {
+              "properties" : {
+                "l" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "threatcategory" : {
+              "type" : "keyword"
+            },
+            "threathandled" : {
+              "properties" : {
+                "i" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "userId" : {
+              "properties" : {
+                "l" : {
+                  "type" : "keyword"
+                }
+              }
+            }
+          }
+        },
+        "agent" : {
+          "properties" : {
+            "id" : {
+              "type" : "keyword"
+            },
+            "ip" : {
+              "type" : "ip"
+            },
+            "mac" : {
+              "type" : "keyword"
+            },
+            "name" : {
+              "type" : "keyword"
+            },
+            "type" : {
+              "type" : "keyword"
+            },
+            "version" : {
+              "type" : "keyword"
+            }
+          }
+        },
+        "categoryBehavior" : {
+          "type" : "keyword"
+        },
+        "categoryDeviceGroup" : {
+          "type" : "keyword"
+        },
+        "categoryObject" : {
+          "type" : "keyword"
+        },
+        "categoryOutcome" : {
+          "type" : "keyword"
+        },
+        "categorySignificance" : {
+          "type" : "keyword"
+        },
+        "categoryTechnique" : {
+          "type" : "keyword"
+        },
+        "cef" : {
+          "properties" : {
+            "agent" : {
+              "properties" : {
+                "timezone" : {
+                  "type" : "keyword"
+                },
+                "zone" : {
+                  "properties" : {
+                    "uri" : {
+                      "type" : "keyword"
+                    }
+                  }
+                }
+              }
+            },
+            "category" : {
+              "type" : "keyword"
+            },
+            "destination" : {
+              "properties" : {
+                "zone" : {
+                  "properties" : {
+                    "uri" : {
+                      "type" : "keyword"
+                    }
+                  }
+                }
+              }
+            },
+            "device_custom_ipv6_address_2" : {
+              "properties" : {
+                "label" : {
+                  "type" : "keyword"
+                },
+                "value" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "device_custom_ipv6_address_3" : {
+              "properties" : {
+                "label" : {
+                  "type" : "keyword"
+                },
+                "value" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "device_custom_number_1" : {
+              "properties" : {
+                "label" : {
+                  "type" : "keyword"
+                },
+                "value" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "device_custom_number_2" : {
+              "properties" : {
+                "label" : {
+                  "type" : "keyword"
+                },
+                "value" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "device_custom_number_3" : {
+              "properties" : {
+                "label" : {
+                  "type" : "keyword"
+                },
+                "value" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "device_custom_string_1" : {
+              "properties" : {
+                "label" : {
+                  "type" : "keyword"
+                },
+                "value" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "device_custom_string_2" : {
+              "properties" : {
+                "label" : {
+                  "type" : "keyword"
+                },
+                "value" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "device_custom_string_3" : {
+              "properties" : {
+                "label" : {
+                  "type" : "keyword"
+                },
+                "value" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "device_custom_string_4" : {
+              "properties" : {
+                "label" : {
+                  "type" : "keyword"
+                },
+                "value" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "device_custom_string_5" : {
+              "properties" : {
+                "label" : {
+                  "type" : "keyword"
+                },
+                "value" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "device_custom_string_6" : {
+              "properties" : {
+                "label" : {
+                  "type" : "keyword"
+                },
+                "value" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "device_type" : {
+              "type" : "keyword"
+            },
+            "external_id" : {
+              "type" : "keyword"
+            },
+            "name" : {
+              "type" : "keyword"
+            },
+            "old_file" : {
+              "properties" : {
+                "extension" : {
+                  "type" : "keyword"
+                },
+                "group" : {
+                  "type" : "keyword"
+                },
+                "inode" : {
+                  "type" : "keyword"
+                },
+                "name" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "source" : {
+              "properties" : {
+                "zone" : {
+                  "properties" : {
+                    "uri" : {
+                      "type" : "keyword"
+                    }
+                  }
+                }
+              }
+            },
+            "version" : {
+              "type" : "keyword"
+            },
+            "zone" : {
+              "properties" : {
+                "uri" : {
+                  "type" : "keyword"
+                }
+              }
+            }
+          }
+        },
+        "destination" : {
+          "properties" : {
+            "bytes" : {
+              "type" : "long"
+            },
+            "domain" : {
+              "type" : "keyword"
+            },
+            "ip" : {
+              "type" : "ip"
+            },
+            "mac" : {
+              "type" : "keyword"
+            },
+            "port" : {
+              "type" : "long"
+            },
+            "process" : {
+              "properties" : {
+                "name" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "user" : {
+              "properties" : {
+                "group" : {
+                  "properties" : {
+                    "name" : {
+                      "type" : "keyword"
+                    }
+                  }
+                },
+                "id" : {
+                  "type" : "keyword"
+                },
+                "name" : {
+                  "type" : "keyword"
+                }
+              }
+            }
+          }
+        },
+        "deviceCustomDate1" : {
+          "type" : "keyword"
+        },
+        "deviceCustomDate1Label" : {
+          "type" : "keyword"
+        },
+        "deviceCustomDate2" : {
+          "type" : "keyword"
+        },
+        "deviceCustomDate2Label" : {
+          "type" : "keyword"
+        },
+        "deviceSeverity" : {
+          "type" : "keyword"
+        },
+        "event" : {
+          "properties" : {
+            "action" : {
+              "type" : "keyword"
+            },
+            "code" : {
+              "type" : "keyword"
+            },
+            "created" : {
+              "type" : "date"
+            },
+            "end" : {
+              "type" : "date"
+            },
+            "id" : {
+              "type" : "keyword"
+            },
+            "original" : {
+              "type" : "keyword"
+            },
+            "reason" : {
+              "type" : "keyword"
+            },
+            "severityname" : {
+              "type" : "keyword"
+            },
+            "timezone" : {
+              "type" : "keyword"
+            }
+          }
+        },
+        "file" : {
+          "properties" : {
+            "extension" : {
+              "type" : "keyword"
+            },
+            "group" : {
+              "type" : "keyword"
+            },
+            "inode" : {
+              "type" : "keyword"
+            },
+            "size" : {
+              "type" : "long"
+            }
+          }
+        },
+        "flexString2" : {
+          "type" : "keyword"
+        },
+        "geid" : {
+          "type" : "keyword"
+        },
+        "geo" : {
+          "properties" : {
+            "location" : {
+              "type" : "geo_point"
+            },
+            "name" : {
+              "type" : "keyword"
+            }
+          }
+        },
+        "host" : {
+          "properties" : {
+            "hostname" : {
+              "type" : "keyword"
+            },
+            "ip" : {
+              "type" : "ip"
+            }
+          }
+        },
+        "http" : {
+          "properties" : {
+            "request" : {
+              "properties" : {
+                "referrer" : {
+                  "type" : "keyword"
+                }
+              }
+            }
+          }
+        },
+        "message" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "observer" : {
+          "properties" : {
+            "hostname" : {
+              "type" : "keyword"
+            },
+            "ip" : {
+              "type" : "ip"
+            },
+            "product" : {
+              "type" : "keyword"
+            },
+            "vendor" : {
+              "type" : "keyword"
+            },
+            "version" : {
+              "type" : "keyword"
+            }
+          }
+        },
+        "source" : {
+          "properties" : {
+            "bytes" : {
+              "type" : "long"
+            },
+            "domain" : {
+              "type" : "keyword"
+            },
+            "ip" : {
+              "type" : "ip"
+            },
+            "mac" : {
+              "type" : "keyword"
+            },
+            "registered_domain" : {
+              "type" : "keyword"
+            },
+            "user" : {
+              "properties" : {
+                "name" : {
+                  "type" : "keyword"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "version" : 0,
+  "_meta" : {
+      "description" : "default mappings for the hbss DLP data",
+      "managed" : true
+  }
+}

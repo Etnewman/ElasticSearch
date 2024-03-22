@@ -1,0 +1,185 @@
+{"description":"Metricbeat pipeline provided by Enterprise Services","pipeline":"input {
+    beats {
+        port => 5048
+        ssl => true
+        ssl_certificate_authorities => [\"/etc/logstash/certs/cachain.pem\"]
+        ssl_certificate => \"/etc/logstash/certs/${HOSTNAME}.crt\"
+        ssl_key => \"/etc/logstash/certs/${HOSTNAME}_pkcs8.key\"
+        ssl_key_passphrase => \"${SSL_PASSPHRASE}\"
+        ssl_verify_mode => \"peer\"
+    }
+}
+filter {
+
+    # Add Orignating Site to document
+    mutate {
+        add_field => { \"DCGS_Site\" => \"${SITE}\" }
+        add_field => { \"DCGS_Site_Name\" => \"${SITELOC}\" }
+        add_field => { \"[geo][name]\" => \"${SITELOC}\" }
+        lowercase => \"[host][name]\"
+        lowercase => \"[host][hostname]\"
+    }
+    translate {
+        field => \"DCGS_Site_Name\"
+        destination => \"[geo][location]\"
+        override => \"true\"
+        fallback => \"0,0\"
+        dictionary_path => '/etc/logstash/dictionaries/site_coordinates.yml'
+    }
+    if [event][module] == \"vsphere\" {
+        if [metricset][name] == \"virtualmachine\" {
+            ruby {
+                code => '
+                    mem_tot_bytes = event.get(\"[vsphere][virtualmachine][memory][total][guest][bytes]\")
+                    mem_used_bytes = event.get(\"[vsphere][virtualmachine][memory][used][guest][bytes]\")
+                    mem_pct = 0
+                    if(mem_tot_bytes != nil and mem_tot_bytes != 0)
+                        mem_pct = (mem_used_bytes.fdiv(mem_tot_bytes))
+                    end
+                    event.set(\"[vsphere][virtualmachine][memory][used_pct]\", mem_pct)
+                '
+            }
+        }
+        else if [metricset][name] == \"host\" {
+            ruby {
+                code => '
+                    cpu_tot_mhz = event.get(\"[vsphere][host][cpu][total][mhz]\")
+                    cpu_used_mhz = event.get(\"[vsphere][host][cpu][used][mhz]\")
+                    cpu_pct = (cpu_used_mhz.fdiv(cpu_tot_mhz))
+                    event.set(\"[vsphere][host][cpu][used][pct]\", cpu_pct)
+                    mem_tot_bytes = event.get(\"[vsphere][host][memory][total][bytes]\")
+                    mem_used_bytes = event.get(\"[vsphere][host][memory][used][bytes]\")
+                    mem_pct = 0
+                    if(mem_tot_bytes != 0)
+                        mem_pct = (mem_used_bytes.fdiv(mem_tot_bytes))
+                    end
+                    event.set(\"[vsphere][host][memory][used][pct]\", mem_pct)
+                '
+            }
+            dissect {
+                mapping => {
+                    \"[vsphere][host][name]\" => \"%{[vsphere][host][shortname]}.%{}.%{}.%{}\"
+                }
+            }
+        }
+    }
+    else if [metricset][name] == 'process_summary' {
+
+        ruby {
+            code => \"
+                require 'pry'
+                progs = event.get('APPS')
+                # Only do if progs is not nil
+                unless progs.nil?
+                    applist=[]
+                    desclist=[]
+                    progs.each do |val|
+                        app_event = LogStash::Event.new()
+
+                        name, desc = val['Name'].split('_',2)
+                        if !applist.include? name
+                            applist.append(name)
+                        end
+                        desclist.append(desc)
+                        val['Name']=name
+                        val['Description']=desc
+
+                        app_event.set('app', val)
+                        app_event.set('@timestamp', event.get('@timestamp'))
+                        app_event.set('DCGS_Site',  event.get('DCGS_Site'))
+                        app_event.set('DCGS_Site_Name',  event.get('DCGS_Site_Name'))
+                        app_event.set('[metadata][DocType]', 'health')
+                        app_event.set('[metadata][DocSubtype]', 'app-host')
+                        app_event.set('agent', event.get('agent'))
+                        app_event.set('host', event.get('host'))
+                        app_event.set('[host][name]', event.get('[host][name]').split('.')[0])
+                        app_event.set('updated_By', 'LOGSTASH')
+                        val = event.get('[@metadata][version]')
+                        app_event.set('[@metadata][version]', val)
+                        val1 = event.get('[@metadata][beat]')
+                        app_event.set('[@metadata][beat]', val1)
+                        new_event_block.call(app_event)
+                    end
+
+                    host_event = LogStash::Event.new()
+                    host_event.set('app.Name', applist)
+                    host_event.set('app.Description', desclist)
+                    host_event.set('[metadata][DocType]', 'Health')
+                    host_event.set('[metadata][DocSubtype]', 'Host')
+                    host_event.set('Metrics', event.get('Metrics'))
+                    host_event.set('@timestamp', event.get('@timestamp'))
+                    # Host records are written to disk and processed by
+                    # the elasticDataCollector then processed by filebeat
+                    # where DCGS_Site will be added
+                    host_event.set('host', event.get('host'))
+                    # Keep a copy of the applications in the app-host doc
+                    host_event.set('Applications', event.get('APPS'))
+                    new_event_block.call(host_event)
+
+                end
+            \"
+        }
+    }
+}
+output {
+
+    if [@metadata][index] =~ /^.monitoring-*/ {
+        # route stack monitoring data to monitoring Elasticsearch cluster
+        elasticsearch {
+            index => \"%{[@metadata][index]}\"
+            action => \"create\"
+            hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+            user => \"ls_internal\"
+            password => \"${LS_INTERNAL_PW}\"
+            ssl => true
+            cacert => \"/etc/logstash/certs/cachain.pem\"
+        }
+    }else if [metadata][DocType] {
+        if [metadata][DocSubtype] == 'app-host'
+        {
+            elasticsearch {
+                hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+                index => \"dcgs-healthdata-iaas-ent\"
+                user => \"ls_internal\"
+                password => \"${LS_INTERNAL_PW}\"
+                ssl => true
+                cacert => \"/etc/logstash/certs/cachain.pem\"
+            }
+            elasticsearch {
+                document_id => \"%{[host][name]}-%{[app][Description]}\"
+                hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+                index => \"dcgs-current-healthdata-iaas-ent\"
+                user => \"ls_internal\"
+                password => \"${LS_INTERNAL_PW}\"
+                ssl => true
+                cacert => \"/etc/logstash/certs/cachain.pem\"
+            }
+        } else {
+            file {
+                path => \"/ELK-local/metrics_in/hosthealth-%{+YYYY-MM-dd}.json\"
+                id => \"dcgs_hostinfo\"
+            }
+        }
+    }else {
+        if [agent][version] == '7.9.1' or [agent][version] == '7.11.1'  {
+            elasticsearch {
+                hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+                index => \"%{[@metadata][beat]}-%{[@metadata][version]}\"
+                user => \"ls_internal\"
+                password => \"${LS_INTERNAL_PW}\"
+                ssl => true
+                cacert => \"/etc/logstash/certs/cachain.pem\"
+            }
+        }
+        else {
+            elasticsearch {
+                hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+                index => \"%{[@metadata][beat]}-%{[@metadata][version]}-${SITENUM}\"
+                user => \"ls_internal\"
+                password => \"${LS_INTERNAL_PW}\"
+                ssl => true
+                cacert => \"/etc/logstash/certs/cachain.pem\"
+            }
+        }
+    }
+}","settings":{"pipeline.batch.delay":50,"pipeline.batch.size":500,"pipeline.workers":6,"queue.checkpoint.writes":1024,"queue.max_bytes":"1gb","queue.type":"memory"}}

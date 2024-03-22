@@ -1,0 +1,21 @@
+{
+  "template" : {
+    "settings" : {
+      "index" : {
+		"lifecycle" : {
+		  "rollover_alias" : "dcgs-db_serena-iaas-ent"
+		}
+	  }
+    }
+  },
+    "index_patterns" : [
+	  "dcgs-db_serena-iaas-ent*"
+	],
+    "composed_of" : [ "estc_dcgs_defaults", "estc_serena-mappings" ],
+    "priority" : 150,
+	"version" : 0,
+	"_meta" : {
+	  "description" : "settings for Serena indexes installed by DCGS Enterprise Services",
+	  "managed" : true
+	}
+}

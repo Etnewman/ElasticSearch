@@ -1,0 +1,25 @@
+# This file contains a list of all MIB files needed by the Elastic Data Collector.  All MIB files listed should be
+# uploaded to the Infrastructure_MIBS folder on Nexus:
+#    https://nexus.di2e.net/nexus3/#browse/browse:Private_OADCGS-Infrastructure:Enterprise_Services%2FExternal_Files%2FElastic%2FInfrastructure_MIBS%2F1.0
+# When uploading the MIB file will be prefixed with the Artifact_id and the Artifact_version.
+# The prefix will be removed during packaging for distribution.
+#
+# Note: This file is used by the job.sh script, all lines beginning with # are ignored.  All other lines
+# should contain the name of a valid MIB file in the INfrastructure_MIBS folder on Nexus
+#
+CISCO-ENTITY-FRU-CONTROL-MIB.py
+CISCO-ENTITY-SENSOR-MIB.py
+CISCO-PROCESS-MIB.py
+CISCO-SMI.py
+CISCO-TC.py
+DATA-DOMAIN-MIB.py
+DELL-RAC-MIB.py
+DISMAN-EVENT-MIB.py
+ENTITY-MIB.py
+HCNUM-TC.py
+IANAifType-MIB.py
+IDRAC-MIB-SMIv2.py
+IF-MIB.py
+IP-MIB.py
+RFC1212-MIB.py
+SNMPv2-MIB.py

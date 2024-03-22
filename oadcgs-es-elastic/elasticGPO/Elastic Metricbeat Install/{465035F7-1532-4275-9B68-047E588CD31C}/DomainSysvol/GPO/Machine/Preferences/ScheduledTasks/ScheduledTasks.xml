@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ScheduledTasks clsid="{CC63F200-7309-4ba0-B154-A71CD118DBCC}">
+  <TaskV2 clsid="{D8896631-B747-47a7-84A6-C155337F3BC8}" name="Elastic Metricbeat Install" image="2" changed="2021-06-24 16:23:46" uid="{261B062D-424C-4633-A02B-DB8509CA191A}" userContext="0" removePolicy="0">
+    <Properties action="U" name="Elastic Metricbeat Install" runAs="system">
+      <Task version="1.3">
+        <RegistrationInfo>
+          <Author>DCGS\Administrator</Author>
+          <Description>Metricbeat Installation</Description>
+        </RegistrationInfo>
+        <Principals>
+          <Principal id="Author">
+            <UserId>%LogonDomain%\%LogonUser%</UserId>
+            <LogonType>InteractiveToken</LogonType>
+            <RunLevel>HighestAvailable</RunLevel>
+          </Principal>
+        </Principals>
+        <Settings>
+          <IdleSettings>
+            <Duration>PT5M</Duration>
+            <WaitTimeout>PT1H</WaitTimeout>
+            <StopOnIdleEnd>false</StopOnIdleEnd>
+            <RestartOnIdle>false</RestartOnIdle>
+          </IdleSettings>
+          <MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy>
+          <DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>
+          <StopIfGoingOnBatteries>false</StopIfGoingOnBatteries>
+          <AllowHardTerminate>false</AllowHardTerminate>
+          <AllowStartOnDemand>true</AllowStartOnDemand>
+          <Enabled>true</Enabled>
+          <Hidden>false</Hidden>
+          <ExecutionTimeLimit>P3D</ExecutionTimeLimit>
+          <Priority>7</Priority>
+        </Settings>
+        <Triggers>
+          <CalendarTrigger>
+            <StartBoundary>2021-06-24T04:00:00</StartBoundary>
+            <Enabled>true</Enabled>
+            <ScheduleByDay>
+              <DaysInterval>1</DaysInterval>
+            </ScheduleByDay>
+          </CalendarTrigger>
+        </Triggers>
+        <Actions Context="Author">
+          <Exec>
+            <Command>powershell</Command>
+            <Arguments>-command "&amp; '\\u00sm01sc02\ELASTIC BEATS\install_beats_windows.ps1' "</Arguments>
+          </Exec>
+        </Actions>
+      </Task>
+    </Properties>
+  </TaskV2>
+</ScheduledTasks>

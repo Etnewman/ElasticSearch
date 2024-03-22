@@ -1,0 +1,4 @@
+- type: log
+  paths:
+    - 'C:\ProgramData\Test_App\*.log'
+  scan_frequency: 30s

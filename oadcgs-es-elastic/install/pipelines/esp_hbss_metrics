@@ -1,0 +1,52 @@
+{"description":"This pipeline will ingest data from custom HBSS powershell script","pipeline":"input {
+    tcp {
+        port => 5046
+        codec => \"json\"
+        ecs_compatibility => v8
+        ssl_enable => true
+        ssl_certificate_authorities => [\"/etc/logstash/certs/cachain.pem\"]
+        ssl_cert => \"/etc/logstash/certs/${HOSTNAME}.crt\"
+        ssl_key => \"/etc/logstash/certs/${HOSTNAME}_pkcs8.key\"
+        ssl_key_passphrase => \"${SSL_PASSPHRASE}\"
+        ssl_verify => false
+    }
+}
+filter {
+
+    # Add Orignating Site to document
+    mutate {
+        add_field => { \"DCGS_Site\" => \"${SITE}\" }
+        add_field => { \"DCGS_Site_Name\" => \"${SITELOC}\" }
+        add_field => { \"[geo][name]\" => \"${SITELOC}\" }
+        copy => { \"[event][created]\" => \"@timestamp\"}
+        add_tag => [ \"HBSS_EPO\" ]
+    }
+    translate {
+        field => \"DCGS_Site_Name\"
+        destination => \"[geo][location]\"
+        override => \"true\"
+        fallback => \"0,0\"
+        dictionary_path => '/etc/logstash/dictionaries/site_coordinates.yml'
+    }
+    # Parse host data to ecs
+    mutate {
+
+        rename => { \"[totalMemoryMB]\" => \"[system][memory][total]\" }
+        rename => { \"[freeMemMB]\" => \"[system][memory][free]\" }
+        rename => { \"[MemoryUtilizationPercent]\" => \"[system][memory][used][pct]\" }
+        rename => { \"[CPUProcessorTimePercent]\" => \"[system][cpu][total][pct]\" }
+        rename => { \"[CPUAverageUtilizationPercent]\" => \"[system][cpu][total][norm][pct]\" }
+        rename => { \"[CertExpires]\" => \"[tls][client][not_after]\" }
+        rename => { \"[CertCreated]\" => \"[tls][client][not_before]\" }
+    }
+}
+output {
+    elasticsearch {
+        hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+        index => \"dcgs-hbss-metrics-iaas-ent\"
+        user => \"ls_internal\"
+        password => \"${LS_INTERNAL_PW}\"
+        ssl => true
+        cacert => \"/etc/logstash/certs/cachain.pem\"
+   }
+}","settings":{"pipeline.batch.delay":50,"pipeline.batch.size":125,"pipeline.workers":1,"queue.checkpoint.writes":1024,"queue.max_bytes":"1gb","queue.type":"memory"}}

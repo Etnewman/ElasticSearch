@@ -1,0 +1,26 @@
+actions:
+  1:
+    action: snapshot
+    description: 'Snapshot Windows and Linux data'
+    options:
+      repository: ${dirname}
+      include_global_state: False
+      ignore_unavailable: False
+      partial: False
+      wait_for_completion: True
+      allow_ilm_indices: True
+      ignore_empty_list: True
+    filters:
+      - filtertype: pattern
+        kind: regex
+        value: '^(linux-syslog-|winlogbeat-).*$'
+      - filtertype: age
+        source: creation_date
+        direction: older
+        unit: days
+        unit_count: 8
+      - filtertype: age
+        source: creation_date
+        direction: younger
+        unit: days
+        unit_count: 9

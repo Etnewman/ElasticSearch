@@ -1,0 +1,127 @@
+{"description":"Winlogbeat pipeline provided by Enterprise Services","pipeline":"input {
+    beats {
+        port => 5045
+        ssl => true
+        ssl_certificate_authorities => [\"/etc/logstash/certs/cachain.pem\"]
+        ssl_certificate => \"/etc/logstash/certs/${HOSTNAME}.crt\"
+        ssl_key => \"/etc/logstash/certs/${HOSTNAME}_pkcs8.key\"
+        ssl_key_passphrase => \"${SSL_PASSPHRASE}\"
+        ssl_verify_mode => \"peer\"
+    }
+}
+
+filter {
+
+    mutate {
+        copy => { \"message\" => \"[event][original]\" }
+        add_field => { \"DCGS_Site\" => \"${SITE}\" }
+        add_field => { \"DCGS_Site_Name\" => \"${SITELOC}\" }
+        add_field => { \"[geo][name]\" => \"${SITELOC}\" }
+    }
+    translate {
+        field => \"DCGS_Site_Name\"
+        destination => \"[geo][location]\"
+        override => \"true\"
+        fallback => \"0,0\"
+        dictionary_path => '/etc/logstash/dictionaries/site_coordinates.yml'
+    }
+
+    ruby {
+        code => '
+             event.set(\"[event][ingested]\", Time.now())
+        '
+    }
+
+
+
+    # Because of Windows event collector the origin of events are mismatched, changing [host] fields to [observer] to annotate its coming from WEC
+    # Note that this may not be needed on the latest versions of winlogbeat
+    if \"[host][name]\" != \"[winlog][computer_name]\" {
+        mutate {
+          copy => { \"[host]\" => \"[observer]\" }
+          remove_field => [ \"[host]\" ]
+          add_field => { \"[observer][type]\" => \"Windows Event Collector\" }
+        }
+
+        # Deconflict and annotate correct hostname of where events originate
+        mutate {
+            add_field => { \"[host][name]\" => \"%{[winlog][computer_name]}\" }
+            replace => { \"[observer][name]\" => \"%{[observer][hostname]}\" }
+        }
+
+        mutate {
+            split => [\"[host][name]\", \".\"]
+            add_field => { \"shortname\"  => \"%{[host][name][0]}\" }
+        }
+
+        mutate {
+            rename => [ \"shortname\", \"[host][name]\" ]
+            lowercase => [ \"[host][name]\", \"[winlog][computer_name]\" ]
+        }
+
+        # Making the assumption that the observer and host os family is the same for Windows Event Collector to enable easier filtering
+        mutate {
+            add_field => { \"[host][os][family]\" => \"%{[observer][os][family]}\" }
+        }
+    }
+
+    if \"[winlog][event_id]\" {
+        translate {
+            field => \"[winlog][event_id]\"
+            destination => \"[winlog][event_id_desc]\"
+            dictionary_path => '/etc/logstash/dictionaries/windows_ids.yml'
+            fallback => \"no match\"
+        }
+    }
+    # Copy winlog.event_data.ImpersonationLevel to new field
+    mutate {
+        copy => { \"[winlog][event_data][ImpersonationLevel]\" => \"[Impersonation][level]\" }
+    }
+
+    # Change numerical impersonation values from numerical to word values
+    if \"[Impersonation][level]\" {
+        translate {
+           source => \"[Impersonation][level]\"
+           target => \"[Impersonation][level]\"
+           fallback => \"no match\"
+               dictionary => {
+                \"%%1832\" => \"Identification\"
+                \"%%1833\" => \"Impersonation\"
+                \"%%1840\" => \"Delegation\"
+                \"%%1841\" => \"Denied by Process Trust Label ACE\"
+                \"%%1842\" => \"Yes\"
+                \"%%1843\" => \"No\"
+                \"%%1844\" => \"System\"
+                \"%%1845\" => \"Not Available\"
+                \"%%1846\" => \"Default\"
+                \"%%1847\" => \"DisallowMmConfig\"
+                \"%%1848\" => \"Off\"
+                \"%%1849\" => \"Auto\"
+            }
+        }
+    }
+}
+
+output {
+    if [agent][version] == '7.16.3' or [agent][version] == '7.17.6'  {
+        elasticsearch {
+            hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+            index => \"%{[@metadata][beat]}-%{[@metadata][version]}\"
+            user => \"ls_internal\"
+            password => \"${LS_INTERNAL_PW}\"
+            ssl => true
+            cacert => \"/etc/logstash/certs/cachain.pem\"
+        }
+    }
+    else {
+        elasticsearch {
+            hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+            index => \"%{[@metadata][beat]}-%{[@metadata][version]}\"
+            user => \"ls_internal\"
+            password => \"${LS_INTERNAL_PW}\"
+            pipeline => \"winlogbeat-%{[@metadata][version]}-routing\"
+            ssl => true
+            cacert => \"/etc/logstash/certs/cachain.pem\"
+        }
+    }
+}","settings":{"pipeline.batch.delay":50,"pipeline.batch.size":2250,"pipeline.workers":4,"queue.checkpoint.writes":1024,"queue.max_bytes":"75gb","queue.type":"persisted"}}

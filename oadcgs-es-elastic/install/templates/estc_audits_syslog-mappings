@@ -1,0 +1,870 @@
+{
+        "template" : {
+          "mappings" : {
+            "dynamic_templates" : [
+              {
+                "auditd.log.number" : {
+                  "path_match" : "auditd.log.*",
+                  "mapping" : {
+                    "type" : "keyword"
+                  },
+                  "match_mapping_type" : "string"
+                }
+              }
+            ],
+            "properties" : {
+              "agent" : {
+                "type" : "object",
+                "properties" : {
+                  "hostname" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "name" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "id" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "ephemeral_id" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "type" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "version" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  }
+                }
+              },
+              "process" : {
+                "type" : "object",
+                "properties" : {
+                  "args" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "parent" : {
+                    "type" : "object",
+                    "properties" : {
+                      "name" : {
+                        "eager_global_ordinals" : false,
+                        "norms" : false,
+                        "index" : true,
+                        "store" : false,
+                        "type" : "keyword",
+                        "index_options" : "docs",
+                        "split_queries_on_whitespace" : false,
+                        "doc_values" : true
+                      }
+                    }
+                  },
+                  "exit_code" : {
+                    "type" : "long"
+                  },
+                  "name" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "pid" : {
+                    "type" : "long"
+                  },
+                  "working_directory" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "args_count" : {
+                    "type" : "long"
+                  },
+                  "executable" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "ppid" : {
+                    "type" : "long"
+                  }
+                }
+              },
+              "log" : {
+                "type" : "object",
+                "properties" : {
+                  "file" : {
+                    "type" : "object",
+                    "properties" : {
+                      "path" : {
+                        "eager_global_ordinals" : false,
+                        "norms" : false,
+                        "index" : true,
+                        "store" : false,
+                        "type" : "keyword",
+                        "index_options" : "docs",
+                        "split_queries_on_whitespace" : false,
+                        "doc_values" : true
+                      }
+                    }
+                  },
+                  "offset" : {
+                    "type" : "long"
+                  },
+                  "level" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "source" : {
+                    "type" : "object",
+                    "properties" : {
+                      "address" : {
+                        "eager_global_ordinals" : false,
+                        "norms" : false,
+                        "index" : true,
+                        "store" : false,
+                        "type" : "keyword",
+                        "index_options" : "docs",
+                        "split_queries_on_whitespace" : false,
+                        "doc_values" : true
+                      }
+                    }
+                  },
+                  "syslog" : {
+                    "type" : "object",
+                    "properties" : {
+                      "severity" : {
+                        "type" : "object",
+                        "properties" : {
+                          "code" : {
+                            "type" : "long"
+                          },
+                          "name" : {
+                            "eager_global_ordinals" : false,
+                            "norms" : false,
+                            "index" : true,
+                            "store" : false,
+                            "type" : "keyword",
+                            "index_options" : "docs",
+                            "split_queries_on_whitespace" : false,
+                            "doc_values" : true
+                          }
+                        }
+                      },
+                      "sd-id" : {
+                        "eager_global_ordinals" : false,
+                        "norms" : false,
+                        "index" : true,
+                        "store" : false,
+                        "type" : "keyword",
+                        "index_options" : "docs",
+                        "split_queries_on_whitespace" : false,
+                        "doc_values" : true
+                      },
+                      "source" : {
+                        "type" : "object",
+                        "properties" : {
+                          "host" : {
+                            "eager_global_ordinals" : false,
+                            "index_phrases" : false,
+                            "fielddata" : false,
+                            "norms" : false,
+                            "index" : true,
+                            "store" : false,
+                            "type" : "text",
+                            "index_options" : "docs"
+                          }
+                        }
+                      },
+                      "priority" : {
+                        "coerce" : true,
+                        "index" : true,
+                        "ignore_malformed" : false,
+                        "store" : false,
+                        "type" : "long",
+                        "doc_values" : true
+                      },
+                      "facility" : {
+                        "type" : "object",
+                        "properties" : {
+                          "code" : {
+                            "type" : "long"
+                          },
+                          "name" : {
+                            "eager_global_ordinals" : false,
+                            "norms" : false,
+                            "index" : true,
+                            "store" : false,
+                            "type" : "keyword",
+                            "index_options" : "docs",
+                            "split_queries_on_whitespace" : false,
+                            "doc_values" : true
+                          }
+                        }
+                      },
+                      "version" : {
+                        "eager_global_ordinals" : false,
+                        "norms" : false,
+                        "index" : true,
+                        "store" : false,
+                        "type" : "keyword",
+                        "index_options" : "docs",
+                        "split_queries_on_whitespace" : false,
+                        "doc_values" : true
+                      }
+                    }
+                  },
+                  "facility" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  }
+                }
+              },
+              "swtid" : {
+                "path" : "user.audit.id",
+                "type" : "alias"
+              },
+              "source" : {
+                "type" : "object",
+                "properties" : {
+                  "geo" : {
+                    "type" : "object",
+                    "properties" : {
+                      "continent_name" : {
+                        "eager_global_ordinals" : false,
+                        "norms" : false,
+                        "index" : true,
+                        "store" : false,
+                        "type" : "keyword",
+                        "index_options" : "docs",
+                        "split_queries_on_whitespace" : false,
+                        "doc_values" : true
+                      },
+                      "country_iso_code" : {
+                        "eager_global_ordinals" : false,
+                        "norms" : false,
+                        "index" : true,
+                        "store" : false,
+                        "type" : "keyword",
+                        "index_options" : "docs",
+                        "split_queries_on_whitespace" : false,
+                        "doc_values" : true
+                      },
+                      "country_name" : {
+                        "eager_global_ordinals" : false,
+                        "norms" : false,
+                        "index" : true,
+                        "store" : false,
+                        "type" : "keyword",
+                        "index_options" : "docs",
+                        "split_queries_on_whitespace" : false,
+                        "doc_values" : true
+                      },
+                      "location" : {
+                        "type" : "object",
+                        "properties" : {
+                          "lon" : {
+                            "ignore_malformed" : false,
+                            "type" : "geo_point",
+                            "ignore_z_value" : true
+                          },
+                          "lat" : {
+                            "ignore_malformed" : false,
+                            "type" : "geo_point",
+                            "ignore_z_value" : true
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "as" : {
+                    "type" : "object",
+                    "properties" : {
+                      "number" : {
+                        "type" : "long"
+                      },
+                      "organization" : {
+                        "type" : "object",
+                        "properties" : {
+                          "name" : {
+                            "eager_global_ordinals" : false,
+                            "norms" : false,
+                            "index" : true,
+                            "store" : false,
+                            "type" : "keyword",
+                            "index_options" : "docs",
+                            "split_queries_on_whitespace" : false,
+                            "doc_values" : true
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "address" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "ip" : {
+                    "index" : true,
+                    "store" : false,
+                    "type" : "ip",
+                    "doc_values" : true
+                  }
+                }
+              },
+              "auditd" : {
+                "type" : "object",
+                "properties" : {
+                  "log" : {
+                    "type" : "object",
+                    "properties" : {
+                      "msg" : {
+                        "type" : "text"
+                      },
+                      "sequence" : {
+                        "type" : "long"
+                      },
+                      "size" : {
+                        "type" : "long"
+                      },
+                      "ksize" : {
+                        "type" : "long"
+                      },
+                      "rport" : {
+                        "type" : "long"
+                      },
+                      "id" : {
+                        "coerce" : true,
+                        "index" : true,
+                        "ignore_malformed" : false,
+                        "store" : false,
+                        "type" : "long",
+                        "doc_values" : true
+                      },
+                      "lport" : {
+                        "type" : "long"
+                      }
+                    }
+                  }
+                }
+              },
+              "error" : {
+                "type" : "object",
+                "properties" : {
+                  "message" : {
+                    "type" : "text"
+                  }
+                }
+              },
+              "message" : {
+                "type" : "text"
+              },
+              "tags" : {
+                "eager_global_ordinals" : false,
+                "norms" : false,
+                "index" : true,
+                "store" : false,
+                "type" : "keyword",
+                "index_options" : "docs",
+                "split_queries_on_whitespace" : false,
+                "doc_values" : true
+              },
+              "input" : {
+                "type" : "object",
+                "properties" : {
+                  "type" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  }
+                }
+              },
+              "observer" : {
+                "type" : "object",
+                "properties" : {
+                  "hostname" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "host" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "type" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  }
+                }
+              },
+              "@timestamp" : {
+                "type" : "date"
+              },
+              "ecs" : {
+                "type" : "object",
+                "properties" : {
+                  "version" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  }
+                }
+              },
+              "@version" : {
+                "eager_global_ordinals" : false,
+                "norms" : false,
+                "index" : true,
+                "store" : false,
+                "type" : "keyword",
+                "index_options" : "docs",
+                "split_queries_on_whitespace" : false,
+                "doc_values" : true
+              },
+              "host" : {
+                "type" : "object",
+                "properties" : {
+                  "hostname" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "name" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "architecture" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  }
+                }
+              },
+              "event" : {
+                "type" : "object",
+                "properties" : {
+                  "severity" : {
+                    "type" : "long"
+                  },
+                  "ingested" : {
+                    "type" : "date"
+                  },
+                  "original" : {
+                    "eager_global_ordinals" : false,
+                    "index_phrases" : false,
+                    "fielddata" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "text",
+                    "index_options" : "docs"
+                  },
+                  "created" : {
+                    "type" : "date"
+                  },
+                  "kind" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "module" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "action" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "category" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "type" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "dataset" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "outcome" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  }
+                }
+              },
+              "user" : {
+                "type" : "object",
+                "properties" : {
+                  "owner" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "eager_global_ordinals" : false,
+                        "norms" : false,
+                        "index" : true,
+                        "store" : false,
+                        "type" : "keyword",
+                        "index_options" : "docs",
+                        "split_queries_on_whitespace" : false,
+                        "doc_values" : true
+                      },
+                      "group" : {
+                        "type" : "object",
+                        "properties" : {
+                          "id" : {
+                            "eager_global_ordinals" : false,
+                            "norms" : false,
+                            "index" : true,
+                            "store" : false,
+                            "type" : "keyword",
+                            "index_options" : "docs",
+                            "split_queries_on_whitespace" : false,
+                            "doc_values" : true
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "effective" : {
+                    "type" : "object",
+                    "properties" : {
+                      "name" : {
+                        "eager_global_ordinals" : false,
+                        "norms" : false,
+                        "index" : true,
+                        "store" : false,
+                        "type" : "keyword",
+                        "index_options" : "docs",
+                        "split_queries_on_whitespace" : false,
+                        "doc_values" : true
+                      },
+                      "id" : {
+                        "eager_global_ordinals" : false,
+                        "norms" : false,
+                        "index" : true,
+                        "store" : false,
+                        "type" : "keyword",
+                        "index_options" : "docs",
+                        "split_queries_on_whitespace" : false,
+                        "doc_values" : true
+                      },
+                      "group" : {
+                        "type" : "object",
+                        "properties" : {
+                          "id" : {
+                            "eager_global_ordinals" : false,
+                            "norms" : false,
+                            "index" : true,
+                            "store" : false,
+                            "type" : "keyword",
+                            "index_options" : "docs",
+                            "split_queries_on_whitespace" : false,
+                            "doc_values" : true
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "saved" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "eager_global_ordinals" : false,
+                        "norms" : false,
+                        "index" : true,
+                        "store" : false,
+                        "type" : "keyword",
+                        "index_options" : "docs",
+                        "split_queries_on_whitespace" : false,
+                        "doc_values" : true
+                      },
+                      "group" : {
+                        "type" : "object",
+                        "properties" : {
+                          "id" : {
+                            "eager_global_ordinals" : false,
+                            "norms" : false,
+                            "index" : true,
+                            "store" : false,
+                            "type" : "keyword",
+                            "index_options" : "docs",
+                            "split_queries_on_whitespace" : false,
+                            "doc_values" : true
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "audit" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "eager_global_ordinals" : false,
+                        "norms" : false,
+                        "index" : true,
+                        "store" : false,
+                        "type" : "keyword",
+                        "index_options" : "docs",
+                        "split_queries_on_whitespace" : false,
+                        "doc_values" : true
+                      }
+                    }
+                  },
+                  "name" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "id" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "terminal" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "filesystem" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "eager_global_ordinals" : false,
+                        "norms" : false,
+                        "index" : true,
+                        "store" : false,
+                        "type" : "keyword",
+                        "index_options" : "docs",
+                        "split_queries_on_whitespace" : false,
+                        "doc_values" : true
+                      },
+                      "group" : {
+                        "type" : "object",
+                        "properties" : {
+                          "id" : {
+                            "eager_global_ordinals" : false,
+                            "norms" : false,
+                            "index" : true,
+                            "store" : false,
+                            "type" : "keyword",
+                            "index_options" : "docs",
+                            "split_queries_on_whitespace" : false,
+                            "doc_values" : true
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "group" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "eager_global_ordinals" : false,
+                        "norms" : false,
+                        "index" : true,
+                        "store" : false,
+                        "type" : "keyword",
+                        "index_options" : "docs",
+                        "split_queries_on_whitespace" : false,
+                        "doc_values" : true
+                      }
+                    }
+                  },
+                  "target" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "eager_global_ordinals" : false,
+                        "norms" : false,
+                        "index" : true,
+                        "store" : false,
+                        "type" : "keyword",
+                        "index_options" : "docs",
+                        "split_queries_on_whitespace" : false,
+                        "doc_values" : true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+}

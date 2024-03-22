@@ -1,0 +1,77 @@
+  {
+    "trigger" : {
+      "schedule" : {
+        "interval" : "30s"
+      }
+    },
+    "input" : {
+      "search" : {
+        "request" : {
+          "search_type" : "query_then_fetch",
+          "indices" : [
+            "dcgs-current-healthdata-iaas-ent-(DCGS_SITE)"
+          ],
+          "rest_total_hits_as_int" : true,
+          "body" : {
+            "size" : 10000,
+            "query": {
+              "bool": {
+                "should": [
+                  { "term": { "updated_By": "LOGSTASH" } }
+                ],
+                "must_not": {
+                  "range": {
+                    "@timestamp": {
+                      "lt": "now-7d"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "condition" : {
+      "compare" : {
+        "ctx.payload.hits.total" : {
+          "gt" : 0
+        }
+      }
+    },
+    "actions" : {
+      "index_payload" : {
+        "transform" : {
+          "script" : {
+            "source" : "
+          List documents = [];
+          for (def hit: ctx.payload.hits.hits) {
+            Map doc = new HashMap();
+            doc.putAll(hit['_source']);
+            doc['_id'] = hit['_id'];
+            def updater = doc['updated_By'];
+            if (updater == 'LOGSTASH') {
+              doc['updated_By'] = 'WATCHER-UPDATER';
+            }
+            documents.add(doc);
+          }
+        if (documents.size() > 0) {
+          return [ \"_doc\" : documents];
+        }
+        ",
+            "lang" : "painless"
+          }
+        },
+        "index" : {
+          "index" : "dcgs-current-healthdata-iaas-ent"
+        }
+      }
+    },
+    "metadata" : {
+      "name" : "esw_current-healthdata-updater",
+      "xpack" : {
+        "type" : "json"
+      }
+    }
+  }
+}

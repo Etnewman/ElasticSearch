@@ -1,0 +1,49 @@
+{"description":"","pipeline":"input {
+    tcp {
+        port => 5051
+    }
+}
+filter {
+    mutate {
+        add_field => {\"DCGS_Site\" => \"${SITE}\"}
+        add_field => {\"DCGS_Site_Name\" => \"${SITELOC}\" }
+        add_field => {\"[geo][name]\" => \"${SITELOC}\" }
+        add_field => [ \"[app][Kind]\", \"Mission\"]
+        add_field => [ \"[app][Category]\", \"ST\"]
+        add_field => [ \"[app][Name]\", \"Ashes\"]
+        add_field => [ \"[app][DocType]\", \"log\"]
+        rename => {\"@timestamp\" => \"[event][ingested]\"}
+        rename => { \"message\" => \"[event][original]\" }
+        rename => { \"host\" => \"[host][name]\" }
+        add_tag => [ \"Ashes\" ]
+    }
+    translate {
+        field => \"DCGS_Site_Name\"
+        destination => \"[geo][location]\"
+        override => \"true\"
+        fallback => \"0,0\"
+        dictionary_path => '/etc/logstash/dictionaries/site_coordinates.yml'
+    }
+    json {
+        source => \"[event][original]\"
+        target => \"[log]\"
+    }
+    date {
+        match => [\"[log][timestamp]\", \"UNIX\"]
+        target => \"@timestamp\"
+    }
+    mutate {
+        copy => { \"[log][fields][log][level]\" => \"[log][level]\"}
+    }
+}
+output {
+        elasticsearch {
+        hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+        index => \"dcgs-filebeat-sr-ashes\"
+        user => \"logstash_internal\"
+        password => \"${LOGSTASH_WRITER}\"
+        ssl => true
+        cacert => \"/etc/logstash/certs/cachain.pem\"
+    }
+    stdout { codec => rubydebug }
+}","settings":{"pipeline.batch.delay":50,"pipeline.batch.size":125,"pipeline.workers":1,"queue.checkpoint.writes":1024,"queue.max_bytes":"1gb","queue.type":"memory"}}

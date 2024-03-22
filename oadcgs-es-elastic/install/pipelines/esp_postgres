@@ -1,0 +1,59 @@
+{"description":"This provides connection to the postgresql database","pipeline":"input {
+  http_poller {
+    id => \"postgres_status\"
+    urls => {
+        etcd => \"https://u00su01etcd01.ech.dcgs.mil:2379/v2/members\"
+        postgres => \"https://u00su02pg01.ech.dcgs.mil:8009/cluster\"
+    }
+    client_cert => \"/etc/logstash/certs/${HOSTNAME}.crt\"
+    client_key => \"/etc/logstash/certs/${HOSTNAME}.key\"
+    cacert => \"/etc/logstash/certs/cachain.pem\"
+    request_timeout => 60
+    schedule => { every => \"5m\"}
+    codec => \"json\"
+  }
+}
+
+filter {
+    split {
+        field => \"members\"
+    }
+
+    ruby {
+        code => '
+             event.set(\"[event][ingested]\", Time.now())
+        '
+    }
+
+    mutate {
+        add_field => { \"DCGS_Site\" => \"${SITE}\" }
+        add_field => { \"DCGS_Site_Name\" => \"${SITELOC}\" }
+        add_field => { \"[geo][name]\" => \"${SITELOC}\" }
+        add_field => {\"[event][module]\" => \"postgres\"}
+        add_field => {\"[event][category]\" => \"database\"}
+        add_tag => [ \"Postgres\" ]
+        copy => { \"[members][name]\" => \"[host][name]\" }
+    }
+    translate {
+        field => \"DCGS_Site_Name\"
+        destination => \"[geo][location]\"
+        override => \"true\"
+        fallback => \"0,0\"
+        dictionary_path => '/etc/logstash/dictionaries/site_coordinates.yml'
+    }
+}
+
+output {
+#   file {
+#        codec => \"rubydebug\"
+#        path => \"/etc/logstash/output/postgresout\"
+#    }
+    elasticsearch {
+        hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+        index => \"dcgs-db_postgres-iaas-ent\"
+        user => \"ls_internal\"
+        password => \"${LS_INTERNAL_PW}\"
+        ssl => true
+        cacert => \"/etc/logstash/certs/cachain.pem\"
+    }
+}","settings":{"pipeline.batch.delay":50,"pipeline.batch.size":125,"pipeline.workers":1,"queue.checkpoint.writes":1024,"queue.max_bytes":"1gb","queue.type":"memory"}}

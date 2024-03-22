@@ -1,0 +1,15 @@
+- type: log
+  enabled: true
+  paths:
+    - D:\UNICORN\Services\Broker\log\*.log
+    - D:\UNICORN\Services\Job\log\*.log
+    - D:\UNICORN\Services\ObjectDetection\log\*.log
+    - D:\UNICORN\Services\SceneIngest\logger\*.log
+
+  multiline.type: pattern
+  multiline.pattern: '^[0-9]{4}-[0-9]{2}-[0-9]{2}'
+  multiline.negate: true
+  multiline.match: after
+
+  tags: ['unicorn']
+  scan_frequency: 30s

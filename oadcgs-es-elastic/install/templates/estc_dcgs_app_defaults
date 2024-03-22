@@ -1,0 +1,236 @@
+{
+  "template" : {
+    "mappings" : {
+      "dynamic_templates": [
+        {
+          "labels": {
+            "mapping": {
+              "type": "keyword"
+            },
+            "match_mapping_type": "*",
+            "path_match": "labels.*"
+          }
+        },
+        {
+          "container.labels": {
+            "mapping": {
+              "type": "keyword"
+            },
+            "match_mapping_type": "*",
+            "path_match": "container.labels.*"
+          }
+        }
+      ],
+      "properties" : {
+        "@timestamp": {
+          "type": "date"
+        },
+        "@version": {
+          "type": "keyword"
+        },
+        "agent": {
+          "properties": {
+            "hostname": {
+              "type": "keyword"
+            },
+            "type": {
+              "type": "keyword"
+            },
+            "version": {
+              "type": "keyword"
+            }
+          }
+        },
+        "app": {
+          "properties": {
+            "Kind": {
+              "type": "keyword"
+            },
+            "Category": {
+              "type": "keyword"
+            },
+            "Type": {
+              "type": "keyword"
+            },
+            "Name": {
+              "type": "keyword"
+            },
+            "DocType": {
+              "type": "keyword"
+            },
+            "DocSubtype": {
+              "type": "keyword"
+            }
+          }
+        },
+        "container": {
+          "properties": {
+            "image": {
+              "properties": {
+                "name": {
+                  "type": "keyword"
+                }
+              }
+            },
+            "labels": {
+              "type": "object"
+            },
+            "name": {
+              "type": "keyword"
+            },
+            "runtime": {
+              "type": "keyword"
+            }
+          }
+        },
+        "ecs": {
+          "properties": {
+            "version": {
+              "type": "keyword"
+            }
+          }
+        },
+        "error": {
+          "properties": {
+            "id": {
+              "type": "keyword"
+            }
+          }
+        },
+        "event": {
+          "properties": {
+            "action": {
+              "type": "keyword"
+            },
+            "category": {
+              "type": "keyword"
+            },
+            "code": {
+              "type": "keyword"
+            },
+            "created": {
+              "type": "date"
+            },
+            "dataset": {
+              "type": "keyword"
+            },
+            "duration": {
+              "type": "long"
+            },
+            "end": {
+              "type": "date"
+            },
+            "id": {
+              "type": "keyword"
+            },
+            "ingested": {
+              "type": "date"
+            },
+            "kind": {
+              "type": "keyword"
+            },
+            "module": {
+              "type": "keyword"
+            },
+            "original": {
+              "type": "text"
+            },
+            "outcome": {
+              "type": "keyword"
+            },
+            "provider": {
+              "type": "keyword"
+            },
+            "reason": {
+              "type": "keyword"
+            },
+            "risk_score": {
+              "type": "float"
+            },
+            "severity": {
+              "type": "long"
+            },
+            "start": {
+              "type": "date"
+            },
+            "type": {
+              "type": "keyword"
+            }
+          }
+        },
+        "file": {
+          "properties": {
+            "name": {
+              "type": "keyword"
+            }
+          }
+        },
+        "host": {
+          "properties": {
+            "hostname": {
+              "type": "keyword"
+            },
+            "name": {
+              "type": "keyword"
+            }
+          }
+        },
+        "labels": {
+          "type": "object"
+        },
+        "log": {
+          "properties": {
+            "file": {
+              "properties": {
+                "path": {
+                  "type": "keyword"
+                }
+              }
+            },
+            "level": {
+              "type": "keyword"
+            },
+            "origin" : {
+              "properties": {
+                "file" : {
+                  "properties": {
+                    "line" : {
+                      "type": "long"
+                    },
+                    "name" : {
+                      "type": "keyword"
+                    }
+                  }
+                },
+                "function" : {
+                  "type": "keyword"
+                }
+              }
+            },
+            "Timestamp": {
+              "type": "date"
+            }
+          }
+        },
+        "message": {
+          "type": "text"
+        },
+        "tags": {
+          "type": "keyword"
+        },
+        "user": {
+          "properties": {
+            "name": {
+              "type": "keyword"
+            }
+          }
+        }
+      }
+    }
+  },
+  "version" : 0,
+  "_meta" : {
+    "managed" : true,
+    "description" : "defauls mappings for all app indexes installed by DCGS ART integrations"
+  }
+}

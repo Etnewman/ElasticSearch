@@ -1,0 +1,74 @@
+{
+   "template" : {
+    "settings": {
+      "index": {
+        "query": {
+          "default_field": [
+            "ag",
+            "ag name",
+            "connected_state_desc",
+            "database",
+            "operational_state_desc",
+            "recovery_health_desc",
+            "role_desc",
+            "suspend_reason_desc",
+            "synchronization_health_desc",
+            "Testing"
+          ]
+        }
+      }
+    },
+    "mappings" : {
+      "properties" : {
+        "connected_state_desc" : {
+          "ignore_above" : 1024,
+          "type" : "keyword"
+        },
+        "recovery_health_desc" : {
+          "ignore_above" : 1024,
+          "type" : "keyword"
+        },
+        "@timestamp" : {
+          "type" : "date"
+        },
+        "replica_server_name" : {
+          "ignore_above" : 256,
+          "type" : "keyword"
+        },
+        "endpoint_url" : {
+          "ignore_above" : 256,
+          "type" : "keyword"
+        },
+        "synchronization_health_desc" : {
+          "ignore_above" : 1024,
+          "type" : "keyword"
+        },
+        "availability_mode_desc" : {
+          "ignore_above" : 1024,
+          "type" : "keyword"
+        },
+        "@version" : {
+          "ignore_above" : 256,
+          "type" : "keyword"
+        },
+        "failover_mode_desc" : {
+          "ignore_above" : 1024,
+          "type" : "keyword"
+        },
+        "role_desc" : {
+          "ignore_above" : 1024,
+          "type" : "keyword"
+        },
+        "operational_state_desc" : {
+          "ignore_above" : 1024,
+          "type" : "keyword"
+        }
+      }
+     }
+    },
+        "version" : 0,
+        "_meta" : {
+          "description" : "default mappings for the sql db data",
+          "managed" : true
+        }
+}

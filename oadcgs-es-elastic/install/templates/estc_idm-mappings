@@ -1,0 +1,96 @@
+{
+  "template" : {
+    "mappings" : {
+      "properties" : {
+        "@timestamp" : {
+          "type" : "date"
+        },
+        "@version" : {
+          "type" : "keyword",
+          "ignore_above" : 1024
+        },
+        "ccc_applicationname" : {
+          "type" : "keyword",
+          "ignore_above" : 1024
+        },
+        "ccc_columnname" : {
+          "type" : "keyword",
+          "ignore_above" : 1024
+        },
+        "ccc_hostname" : {
+          "type" : "keyword",
+          "ignore_above" : 1024
+        },
+        "ccc_newvalue" : {
+          "type" : "keyword",
+          "ignore_above" : 1024
+        },
+        "ccc_oldvalue" : {
+          "type" : "keyword",
+          "ignore_above" : 1024
+        },
+        "ccc_operationdate" : {
+          "type" : "date"
+        },
+        "ccc_operationdisplayvalue" : {
+          "type" : "keyword",
+          "ignore_above" : 1024
+        },
+        "ccc_operationtype" : {
+          "type" : "keyword",
+          "ignore_above" : 1024
+        },
+        "ccc_operationuser" : {
+          "type" : "keyword",
+          "ignore_above" : 1024
+        },
+        "ccc_severity" : {
+          "type" : "keyword",
+          "ignore_above" : 1024
+        },
+        "ccc_successfailure" : {
+          "type" : "keyword",
+          "ignore_above" : 1024
+        },
+        "ccc_tablename" : {
+          "type" : "keyword",
+          "ignore_above" : 1024
+        },
+        "ccc_xobjectkey" : {
+          "type" : "keyword",
+          "ignore_above" : 1024
+        },
+        "uid_cccdialogwatchpropertyexp" : {
+          "type" : "keyword",
+          "ignore_above" : 1024
+        },
+        "xdateinserted" : {
+          "type" : "date"
+        },
+        "xdateupdated" : {
+          "type" : "date"
+        },
+        "xmarkedfordeletion" : {
+          "type" : "long"
+        },
+        "xobjectkey" : {
+          "type" : "keyword",
+          "ignore_above" : 1024
+        },
+        "xuserinserted" : {
+          "type" : "keyword",
+          "ignore_above" : 1024
+        },
+        "xuserupdated" : {
+          "type" : "keyword",
+          "ignore_above" : 1024
+        }
+      }
+    }
+  },
+  "version" : 0,
+   "_meta" : {
+    "description" : "default mappings for the IDAM db data",
+    "managed" : true
+   }
+}

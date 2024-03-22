@@ -1,0 +1,180 @@
+{"description":"Filebeat pipeline for Logstash hosts provided by Enterprise Services","pipeline":"input {
+    beats {
+        port => 5042
+        ssl_enabled => true
+        ssl_certificate_authorities => [\"/etc/logstash/certs/cachain.pem\"]
+        ssl_certificate => \"/etc/logstash/certs/${HOSTNAME}.crt\"
+        ssl_key => \"/etc/logstash/certs/${HOSTNAME}_pkcs8.key\"
+        ssl_key_passphrase => \"${SSL_PASSPHRASE}\"
+        ssl_client_authentication => \"optional\"
+    }
+}
+
+filter {
+    # Add Orignating Site to document
+    mutate {
+        add_field => { \"DCGS_Site\" => \"${SITE}\" }
+        add_field => { \"DCGS_Site_Name\" => \"${SITELOC}\" }
+        add_field => { \"[geo][name]\" => \"${SITELOC}\" }
+        add_field => { \"updated_By\" => \"LOGSTASH\" }
+    }
+    translate {
+        source => \"DCGS_Site_Name\"
+        target => \"[geo][location]\"
+        override => \"true\"
+        fallback => \"0,0\"
+        dictionary_path => '/etc/logstash/dictionaries/site_coordinates.yml'
+    }
+
+    # Check to see if this is a datacollector document.  They are currently
+    # the only ones with the DocType field
+    if [metadata][DocType] {
+        if [metadata][DocSubtype] == \"vsphere\"
+        {
+            date {
+                match => [\"createdTime\", \"ISO8601\" ]
+            }
+        }
+
+        if [host][type] == \"hbss_dlp\"
+        {
+            date {
+                add_tag => [\"dlp\"]
+                remove_tag => [\"beats_input_raw_event\"]
+                match => [ \"[generalDetails][occurred_UTC]\", \"MMM d, yyyy H:mm:ss a\" ]
+            }
+        }
+        else if [time]
+        {
+            date {
+                match => [\"time\", \"UNIX\", \"yyyy-MM-dd HH:mm:ss.SSSSSS\", \"ISO8601\" ]
+                remove_field => [ \"time\" ]
+            }
+        }
+
+        # Ensure our metadata is all lowercase
+        mutate {
+            lowercase => \"[metadata][DocType]\"
+            lowercase => \"[metadata][DocSubtype]\"
+            lowercase => \"[host][name]\"
+            lowercase => \"[host][hostname]\"
+        }
+
+        if [metadata][DocSubtype] == \"vsphere\"
+        {
+            mutate { add_field => [ \"[@metadata][index]\", \"dcgs-vsphere-iaas-ent\" ] }
+        }
+        else if [metadata][DocType] == 'acas'
+        {
+            mutate { add_field => [ \"[@metadata][index]\", \"dcgs-acas-iaas-ent\" ] }
+        }
+        else if [metadata][DocSubtype] == 'host' or [metadata][DocSubtype] == 'app-overall' or [metadata][DocSubtype] == 'group' or [metadata][DocSubtype] == 'datacollector'
+        {
+            mutate {
+                add_field => [ \"[@metadata][index]\", \"dcgs-healthdata-iaas-ent\" ]
+                add_field => [ \"[@metadata][2ndindex]\", \"dcgs-current-healthdata-iaas-ent\" ]
+            }
+            if [metadata][DocSubtype] == 'host'
+            {
+                mutate { add_field => [ \"[@metadata][doc_id]\", \"%{[host][name]}\"] }
+            }
+            else if [metadata][DocSubtype] == 'app-overall'
+            {
+                mutate { add_field => [ \"[@metadata][doc_id]\", \"${SITENUM}-%{[app][Name]}\"] }
+            }
+            else if [metadata][DocSubtype] == 'group'
+            {
+                mutate { add_field => [ \"[@metadata][doc_id]\", \"${SITENUM}-%{[group][Name]}\"] }
+            }
+            else if [metadata][DocSubtype] == 'datacollector'
+            {
+                mutate { add_field => [ \"[@metadata][doc_id]\", \"${SITENUM}-DataCollector\"] }
+            }
+        }
+        else if [host][type] == \"xtremio\"
+        {
+            mutate { add_field => [ \"[@metadata][index]\", \"dcgs-device_xtremio-iaas-ent\" ] }
+        }
+        else if [host][type] == \"isilon\"
+        {
+            mutate { add_field => [ \"[@metadata][index]\", \"dcgs-device_isilon-iaas-ent\" ] }
+        }
+        else if [host][type] == \"fx2\"
+        {
+            mutate { add_field => [ \"[@metadata][index]\", \"dcgs-device_fx2-iaas-ent\" ] }
+        }
+        else if [host][type] == \"fc630\" or [host][type] == 'fc640'
+        {
+            mutate { add_field => [ \"[@metadata][index]\", \"dcgs-device_idrac_fc6xx-iaas-ent\" ] }
+        }
+        else if [host][type] == \"r630\"
+        {
+            mutate { add_field => [ \"[@metadata][index]\", \"dcgs-device_idrac_r6xx-iaas-ent\" ] }
+        }
+        else if [host][type] == \"nexus5k\"
+        {
+            mutate { add_field => [ \"[@metadata][index]\", \"dcgs-device_switch_5k-iaas-ent\" ] }
+        }
+        else if [host][type] == \"nexus7k\"
+        {
+            mutate { add_field => [ \"[@metadata][index]\", \"dcgs-device_switch_7k-iaas-ent\" ] }
+        }
+        else if [host][type] == \"catalyst\"
+        {
+            mutate { add_field => [ \"[@metadata][index]\", \"dcgs-device_switch_cat-iaas-ent\" ] }
+        }
+        else if [host][type] == \"datadomain\"
+        {
+            mutate { add_field => [ \"[@metadata][index]\", \"dcgs-device_datadomain-iaas-ent\" ] }
+        }
+        else if [host][type] == \"hbss_dlp\"
+        {
+            mutate { add_field => [ \"[@metadata][index]\", \"dcgs-hbss_epo-iaas-ent\" ] }
+        }
+    }
+}
+
+output {
+    if [@metadata][index] {
+        elasticsearch {
+            hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+            index => \"%{[@metadata][index]}\"
+            user => \"ls_internal\"
+            password => \"${LS_INTERNAL_PW}\"
+            ssl_enabled => true
+            ssl_certificate_authorities => \"/etc/logstash/certs/cachain.pem\"
+        }
+        if [@metadata][2ndindex] {
+            elasticsearch {
+                hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+                document_id => \"%{[@metadata][doc_id]}\"
+                index => \"%{[@metadata][2ndindex]}\"
+                user => \"ls_internal\"
+                password => \"${LS_INTERNAL_PW}\"
+                ssl_enabled => true
+                ssl_certificate_authorities => \"/etc/logstash/certs/cachain.pem\"
+            }
+        }
+    }
+    else if [@metadata][pipeline] {
+        elasticsearch {
+            hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+            index => \"%{[@metadata][beat]}-%{[@metadata][version]}\"
+            pipeline => \"%{[@metadata][pipeline]}\"
+            user => \"ls_internal\"
+            password => \"${LS_INTERNAL_PW}\"
+            ssl_enabled => true
+            ssl_certificate_authorities => \"/etc/logstash/certs/cachain.pem\"
+        }
+    }
+    else {
+        elasticsearch {
+            hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+            index => \"%{[@metadata][beat]}-%{[@metadata][version]}\"
+            user => \"ls_internal\"
+            password => \"${LS_INTERNAL_PW}\"
+            ssl_enabled => true
+            ssl_certificate_authorities => \"/etc/logstash/certs/cachain.pem\"
+        }
+    }
+}","settings":{"pipeline.batch.delay":50,"pipeline.batch.size":125,"pipeline.workers":6,"queue.checkpoint.writes":1024,"queue.max_bytes":"1gb","queue.type":"memory"}}

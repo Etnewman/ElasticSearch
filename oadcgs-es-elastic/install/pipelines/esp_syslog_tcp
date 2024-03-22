@@ -1,0 +1,128 @@
+{"description":"Linux syslog_tcp pipeline provided by Enterprise Services","pipeline":"input {
+    tcp {
+        port => 5055
+        ssl_enable => false
+        ecs_compatibility => v8
+    }
+}
+
+filter {
+    if [@metadata][input][tcp][source] and ![host] {
+        mutate {
+            copy => {
+                \"[@metadata][input][tcp][source][name]\" => \"[host][hostname]\"
+                \"[@metadata][input][tcp][source][ip]\"   => \"[host][ip]\"
+            }
+        }
+    }
+
+    # Add Orignating Site to document
+    mutate {
+        add_field => { \"DCGS_Site\" => \"${SITE}\" }
+        add_field => { \"DCGS_Site_Name\" => \"${SITELOC}\" }
+        add_field => { \"[geo][name]\" => \"${SITELOC}\" }
+    }
+    translate {
+        field => \"DCGS_Site_Name\"
+        destination => \"[geo][location]\"
+        override => \"true\"
+        fallback => \"0,0\"
+        dictionary_path => '/etc/logstash/dictionaries/site_coordinates.yml'
+    }
+    # Add time of ingest to event
+    ruby {
+        code => '
+            event.set(\"[event][ingested]\", Time.now())
+        '
+    }
+
+    grok {
+        match => {
+            \"message\" => [
+                \"^(?:<(?<[log][syslog][priority]>[0-9]{1,3})>)(?:(?<[log][syslog][version]>[0-9]{1,2}))? ?(?:%{SYSLOGTIMESTAMP:ts}|%{TIMESTAMP_ISO8601:ts}|(?<ts>[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(UTC)?)|(?<ts>[a-zA-Z]{3}\\s+[0-9]{1,2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2})) %{GREEDYDATA:payload_msg}\",
+                \"^(?:<(?<[log][syslog][priority]>[0-9]{1,3})>)(?:(?<[log][syslog][version]>[0-9]{1,3}))?: %{NUMBER:[Log][count]}: ?(?:%{SYSLOGTIMESTAMP:ts}|%{TIMESTAMP_ISO8601:ts}|(?<ts>[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(UTC)?)|(?<ts>[a-zA-Z]{3}\\s+[0-9]{1,2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2})): %{GREEDYDATA:payload_msg}\"
+            ]
+        }
+        add_tag => [ \"header_parsed0\" ]
+        id => \"parse_header0\"
+        tag_on_failure => [ \"malformed\" ]
+    }
+
+    if \"header_parsed0\" in [tags] {
+        grok {
+            match => {
+                \"payload_msg\" => [
+                    \"^%{IPORHOST:[host][name]} (?:-|\\[?%{PROG:[process][name]}\\]?) +(?:-|(?<[process][pid]>[0-9]{1,8})) %{GREEDYDATA}\\)%{SPACE}\\%%{WORD:[error][type]}\\: +%{GREEDYDATA:payload_msg1}\",
+                    \"^%{IPORHOST:[host][name]} (?:-|\\[?%{PROG:[process][name]}\\]?) +(?:-|(?<[process][pid]>[0-9]{1,8})) +(?:-|%{DATA:[log][syslog][msgid]}) +(?:-|\\[%{DATA:payload_sd}\\]) +%{GREEDYDATA:payload_msg1}\",
+                    \"^%{IPORHOST:[host][name]}? (?:%{PROG:[process][name]})(?:\\[(?<[process][pid]>[0-9]{1,8})\\]):? +%{GREEDYDATA:payload_msg1}\",
+                    \"^%{IPORHOST:[host][name]} (?:%{PROG:[process][name]})\\[?\\]?: +%{GREEDYDATA:payload_msg1}\",
+                    \"^%{IPORHOST:[host][name]} (?:%{PROG:[process][name]})?\\[?\\]? +%{GREEDYDATA:payload_msg1}\",
+                    \"^%{IPORHOST:[host][name]} +%{GREEDYDATA:payload_msg1}\",
+                    \"^\\%%{DATA:[error][type]}: %{GREEDYDATA:payload_msg1}\"
+                ]
+            }
+            add_tag => [ \"header_parsed1\" ]
+            id => \"parse_header1\"
+        }
+
+        # Lowercase hostname and process name
+        mutate {
+            lowercase => [ \"[process][name]\", \"[host][name]\" ]
+            id => \"lowercase\"
+        }
+        if [host][name] =~ /^[a-zA-Z]{1}[0-9a-fA-F]{2}su[0-9]{2}[a-zA-Z]+[0-9]/ {
+            mutate {
+               add_tag => [\"Linux\"]
+            }
+        }
+    }
+
+    # Parse syslog priority code
+    if [log][syslog][priority] {
+        syslog_pri {
+            ecs_compatibility => v8
+        }
+
+        mutate {
+            copy => { \"[log][syslog][facility][name]\" => \"[log][facility]\" }
+            copy => { \"[log][syslog][severity][name]\" => \"[log][level]\" }
+            id => \"syslog_field_rename\"
+        }
+
+        # Add severity code to event
+        if ![event][severity] {
+            mutate {
+                copy => { \"[log][syslog][severity][code]\" => \"[event][severity]\" }
+            }
+        }
+    }
+    else {
+        mutate {
+            add_tag => [ \"no_syslog_priority\" ]
+        }
+    }
+
+    # Fix timestamp
+    date {
+        match => [ \"ts\", \"MMM dd HH:mm:ss\", \"MMM d HH:mm:ss\", \"MMM  d HH:mm:ss\", \"ISO8601\" ]
+        target => \"@timestamp\"
+    }
+
+
+    mutate {
+        rename => { \"payload_msg1\" => \"message\" }
+        remove_field => [ \"payload_msg\", \"payload_msg1\" ]
+        add_tag => [ \"syslog_tcp\" ]
+    }
+}
+
+output {
+  elasticsearch {
+    hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+    index => \"dcgs-audits_syslog-iaas-ent-${SITENUM}\"
+    user => \"ls_internal\"
+    password => \"${LS_INTERNAL_PW}\"
+    ssl => true
+    cacert => \"/etc/logstash/certs/cachain.pem\"
+  }
+}","settings":{"pipeline.batch.delay":50,"pipeline.batch.size":1000,"pipeline.workers":3,"queue.checkpoint.writes":1024,"queue.max_bytes":"1gb","queue.type":"persisted"}}

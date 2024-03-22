@@ -1,0 +1,55 @@
+{
+  "template" : {
+    "settings" : {
+      "index" : {
+        "lifecycle" : {
+          "name" : "dcgs_default_policy"
+        },
+        "routing" : {
+          "allocation" : {
+            "include" : {
+              "_tier_preference" : "data_hot"
+            }
+          }
+        },
+        "mapping" : {
+          "total_fields" : {
+            "limit" : "10000"
+          }
+        },
+        "refresh_interval" : "5s",
+        "number_of_shards" : "1",
+        "number_of_routing_shards" : "30",
+        "number_of_replicas" : "1",
+        "query": {
+          "default_field": [ "event.original" ]
+        }
+      }
+    },
+    "mappings" : {
+      "properties" : {
+        "geo" : {
+          "properties" : {
+            "name" : {
+              "type" : "keyword"
+            },
+            "location" : {
+              "type" : "geo_point"
+            }
+          }
+        },
+        "DCGS_Site" : {
+          "type" : "keyword"
+        },
+        "DCGS_Site_Name" : {
+          "type" : "keyword"
+        }
+      }
+    }
+  },
+  "version" : 0,
+  "_meta" : {
+    "managed" : true,
+    "description" : "default settings and mappings for all indexes installed by DCGS Enterprise Services`"
+  }
+}

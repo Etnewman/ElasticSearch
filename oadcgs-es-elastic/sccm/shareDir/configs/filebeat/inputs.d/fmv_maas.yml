@@ -1,0 +1,10 @@
+- type: log
+  enabled: true
+  paths:
+    - ${MAAS_HOME}\config\default\temp\logs\*
+  tags: ['MAAS']
+  scan_frequency: 30s
+  multiline.type: pattern
+  multiline.pattern: '^\[?([0-9]{4}-|[0-9]{2}:)'
+  multiline.negate: true
+  multiline.match: after

@@ -1,0 +1,23 @@
+{
+    "index_patterns" : [
+      "dcgs-device_switch_5k-iaas-ent*"
+    ],
+        "template" : {
+          "settings" : {
+            "index" : {
+              "lifecycle" : {
+                "rollover_alias" : "dcgs-device_switch_5k-iaas-ent"
+              }
+            }
+          }
+        },
+    "composed_of" : [
+      "estc_dcgs_defaults",
+      "estc_ciscoswitch-mappings"
+    ],
+    "priority" : 200,
+    "version" : 0,
+    "_meta" : {
+      "description" : "Cisco switch Nexus 5k template installed by DCGS Enterprise Services"
+    }
+}

@@ -1,0 +1,31 @@
+{
+    "description" : "Pipeline for parsing Kibana audit logs",
+    "processors" : [
+      {
+        "pipeline" : {
+          "name" : "filebeat-8.11.3-kibana-audit-pipeline-json"
+        }
+      },
+      {
+        "set" : {
+          "field" : "event.kind",
+          "value" : "event"
+        }
+      },
+      {
+        "append" : {
+          "value" : "{{user.name}}",
+          "if" : "ctx?.user?.name != null",
+          "field" : "related.user"
+        }
+      }
+    ],
+    "on_failure" : [
+      {
+        "set" : {
+          "field" : "error.message",
+          "value" : "{{ _ingest.on_failure_message }}"
+        }
+      }
+    ]
+  }

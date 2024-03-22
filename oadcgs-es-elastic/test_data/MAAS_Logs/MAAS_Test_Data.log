@@ -1,0 +1,49 @@
+01:11:39.033 Process ID: 2016@EC2AMAZ-VBH3HGU
+01:11:39.038 System Property (user.name): Administrator
+01:11:39.038 System Property (java.home): C:\Progra~1\MAAS\Dva\jre\jre1.8.0_242-openjdk-x64
+01:11:39.039 System Environment (JAVAMEM): 2048m
+YYYY-MM-DD 01:12:46,315 MAAS-Payload To DB-Processor: CMT-05e239dc-642a-475d-8c8c-4f51d6d72db1 INFO [commandLineLogger:82] - QUEUE <<<<<PROCESS<<<<< Payload: <?xml version="1.0" encoding="UTF-8"?>
+<DbPayload PayloadClass="com.gd_is.maas.system.capture.db_queue_action.common.payload.DbUpdatePayload_EventLog" DateTime="YYYY-MM-DD 01:12:46.304" Type="INFORMATION" Category="CAPTURE" Source="com.gd_is.maas.admin.sitesupport.capturemanager.dialogs.jmsbroker.JmsBrokerController" Computer="EC2AMAZ-VBH3HGU" Description="Added new JMS Broker [#3] &quot;Health&quot; &quot;10.22.48.103&quot;" />
+
+
+YYYY-MM-DD 01:12:28,896 CM User Status Publisher-PublisherThread ERROR [com.gd_is.maas.system.capture.common.AbstractPublishManager#General:80] - Error performing publish action for: CM User Status Publisher
+java.lang.NullPointerException: null
+	at com.gd_is.maas.admin.sitesupport.capturemanager.UserStatusPublisherThread.publish(UserStatusPublisherThread.java:40) ~[classes/:na]
+	at com.gd_is.maas.system.capture.common.AbstractPublishManager$PublisherThread.run(AbstractPublishManager.java:78) ~[classes/:na]
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149) [na:1.8.0_242]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624) [na:1.8.0_242]
+	at java.lang.Thread.run(Thread.java:748) [na:1.8.0_242]
+YYYY-MM-DD 18:25:36,261 JavaFX Application Thread INFO [org.springframework.beans.factory.xml.XmlBeanDefinitionReader:317] [maasfsr] - Loading XML bean definitions from URL [jar:file:/C:/Program%20Files/MAAS/10x/apps/Capture/CaptureManager/lib/gdais-maas-domain-local-1.6.0-SNAPSHOT.jar!/applicationContext.xml]
+YYYY-MM-DD 02:22:44,857 On Start/Stop INFO [com.gdais.maas.client.dvax.Init:21] [Administrator] - Process ID: 3748@EC2AMAZ-VBH3HGU
+YYYY-MM-DD 13:23:14,787 main INFO [commandLineLogger:78] [maasfsr] - MapCoordinator layer turned on, enabling map server socket: 7892
+YYYY-MM-DD 13:23:18,266 AWT-EventQueue-0 WARN [com.gd.maas.mapcoordinator.ui.MCFrame#General:4171] [maasfsr] - Parent is NOT NULL. parent:Live Tracks
+YYYY-MM-DD 22:09:41,532 main INFO [com.gdais.maas.rtsv.RealTimeStreamViewer:96] [maasfsr] - Site is MAASInstance
+YYYY-MM-DD 22:09:54,316 pool-4-thread-3 INFO [com.gdais.rtsv.services.maas.v1.RTSVEnterpriseSupportLibraryService:77] [maasfsr] - Loaded system setting S-RealtimeStreamViewerColorMapXML for site MAASInstance at https://10.22.48.103:8443 with authMode=USERNAME into local cache in 1099 ms.
+YYYY-MM-DD 22:09:59,676 main INFO [com.gdais.maas.rtsv.bean.BeanFactory:31] [maasfsr] - Spring initializing for RealTimeStreamViewer
+YYYY-MM-DD 20:28:41,453 MAAS-pool-1-thread-53 WARN [com.gdais.maas.capture.services.capture.common.AbstractCaptureProcessor:379] [svcmaas] - Capture processor warning: Unable to detect incoming video stream.
+YYYY-MM-DD 20:28:41,455 MAAS-pool-1-thread-53 INFO [com.gdais.maas.capture.dbqueue.processor.PayloadUtils:84] [svcmaas] - QUEUE >>>>>ADD>>>>> Payload: <?xml version="1.0" encoding="UTF-8"?>
+<DbPayload PayloadClass="com.gdais.maas.capture.dbqueue.action.common.payload.DbUpdatePayload_EventLog" DateTime="YYYY-MM-DD 20:28:41.455" Type="WARNING" Category="CAPTURE" Source="com.gdais.maas.capture.services.capture.video_stream_processor.VideoStreamProcessor" Computer="EC2AMAZ-VBH3HGU" Tag="Capture1" Description="Unable to detect incoming video stream." />
+
+
+YYYY-MM-DD 22:07:53,396 MAAS-pool-1-thread-31 WARN [com.gdais.maas.capture.services.capture.common.AbstractCaptureProcessor:379] [svcmaas] - Capture processor warning: Unable to detect incoming KLV metadata.
+YYYY-MM-DD 22:07:53,396 MAAS-pool-1-thread-31 INFO [com.gdais.maas.capture.dbqueue.processor.PayloadUtils:84] [svcmaas] - QUEUE >>>>>ADD>>>>> Payload: <?xml version="1.0" encoding="UTF-8"?>
+<DbPayload PayloadClass="com.gdais.maas.capture.dbqueue.action.common.payload.DbUpdatePayload_EventLog" DateTime="YYYY-MM-DD 22:07:53.397" Type="WARNING" Category="CAPTURE" Source="com.gdais.maas.capture.services.capture.video_stream_processor.VideoStreamProcessor" Computer="EC2AMAZ-VBH3HGU" Tag="Capture1" Description="Unable to detect incoming KLV metadata." />
+
+
+YYYY-MM-DD 22:07:38,359 MAAS-pool-1-thread-31 WARN [com.gdais.maas.capture.services.capture.MonitorStateContainer:76] [svcmaas] - Missing Packets: First observed ... [reference id=89ef4732-f35c-4c87-b6f5-b4bc2c293568]
+YYYY-MM-DD 22:07:43,375 MAAS-pool-1-thread-31 INFO [com.gdais.maas.capture.services.capture.MonitorStateContainer:125] [svcmaas] - Missing Packets: Reset Monitor - no longer occurring. Lasted 5 seconds.
+YYYY-MM-DD 22:07:53,461 MAAS-pool-1-thread-31 WARN [com.gdais.maas.capture.services.capture.MonitorStateContainer:76] [svcmaas] - Discontinuities: First observed ... [reference id=9cdcea0d-690a-435d-9bc4-96bcbf7f1421]
+YYYY-MM-DD 22:07:53,461 MAAS-pool-1-thread-31 WARN [com.gdais.maas.capture.services.capture.MonitorStateContainer:110] [svcmaas] - Discontinuities: immediately CONFIRMED! [reference id=9cdcea0d-690a-435d-9bc4-96bcbf7f1421]
+YYYY-MM-DD 22:07:53,462 MAAS-pool-1-thread-31 INFO [com.gdais.maas.capture.services.capture.MonitorStateContainer:125] [svcmaas] - Discontinuities: Reset Monitor - no longer occurring. Lasted 0 seconds.
+YYYY-MM-DD 16:10:06,845 main INFO [org.springframework.beans.factory.xml.XmlBeanDefinitionReader:317] [svcmaas] - Loading XML bean definitions from URL [jar:file:/C:/Program%20Files/MAAS/10x/apps/Capture/MCCS/lib/gdais-maas-domain-local-1.6.0-SNAPSHOT.jar!/applicationContext.xml]
+YYYY-MM-DD 16:10:21,955 main INFO [com.gdais.maas.capture.services.mccs.MasterCaptureCoordinationService:72] [svcmaas] - Starting MCCS service
+YYYY-MM-DD 03:00:51,722 Camel (camel-1) thread #2 - JmsConsumer[MAAS.Capture.CaptureEvent] INFO [com.gdais.maas.capture.dbqueue.processor.PayloadUtils:84] [svcmaas] - QUEUE >>>>>ADD>>>>> Payload: <?xml version="1.0" encoding="UTF-8"?>
+<DbPayload PayloadClass="com.gdais.maas.capture.dbqueue.action.common.payload.DbUpdatePayload_EventLog" DateTime="YYYY-MM-DD 03:00:51.721" Type="ERROR" Category="CAPTURE" Source="com.gdais.maas.capture.services.mccs.CaptureStateMonitor" Computer="EC2AMAZ-VBH3HGU" Tag="Capture1" Description="Failing over Capture1: Unexpected capture state change to Offline when it should be Online" />
+
+
+YYYY-MM-DD 16:09:19,307 main INFO [org.springframework.beans.factory.xml.XmlBeanDefinitionReader:317] [svcmaas] - Loading XML bean definitions from URL [jar:file:/C:/Program%20Files/MAAS/10x/apps/Capture/LCCS/lib/gdais-maas-domain-local-1.6.0-SNAPSHOT.jar!/applicationContext.xml]
+YYYY-MM-DD 16:10:08,504 main INFO [com.gdais.maas.capture.services.lccs.LocalCaptureCoordinationService:56] [svcmaas] - Starting LCCS service
+YYYY-MM-DD 22:04:39,877 Timer-1 INFO [com.gdais.maas.capture.services.mccs.AoiServicesMonitor:370] [svcmaas] - Trying Next Available AOI Service EC2AMAZ-VBH3HGU for Processing Capture1
+YYYY-MM-DD 22:04:39,976 Timer-1 INFO [com.gdais.maas.capture.services.mccs.AoiServicesMonitor:380] [svcmaas] - Started AOI processing for Capture1 on EC2AMAZ-VBH3HGU
+YYYY-MM-DD 01:06:18,224 main ERROR [ROOT:197] - 	at com.gd_is.maas.admin.systemconfig.storagepoolmgr.StoragePoolMgrApp.main(StoragePoolMgrApp.java:23)
+YYYY-MM-DD 01:09:35,691 Thread-4 ERROR [com.gdais.common.framework.core.element.file.SerialStorage#File Operations:64] - Could not save file: C:\Users\Administrator\AppData\Roaming\MAAS\config\default\settings\sticky-files\com.gd_is.maas.admin.systemconfig.storagepoolmgr.StoragePoolManager$MyHelpFrame-_init_.stickyValues.

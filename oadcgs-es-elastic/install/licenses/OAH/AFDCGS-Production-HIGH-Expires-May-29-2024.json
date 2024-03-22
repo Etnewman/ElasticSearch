@@ -1,0 +1,14 @@
+{
+  "license": {
+    "uid": "264ccdb7-c3ad-4bd1-a7cb-666d69b010c3",
+    "type": "enterprise",
+    "issue_date_in_millis": 1687219200000,
+    "expiry_date_in_millis": 1717027199999,
+    "max_nodes": null,
+    "max_resource_units": 26,
+    "issued_to": "AF DCGS",
+    "issuer": "API",
+    "signature": "AAAABQAAAA1tJEVZGa/i3Ek+aaQFAAAAIAo5/x6hrsGh1GqqrJmy4qgmEC7gK0U4zQ6q5ZEMhm4jAAABAEs3U/kvoGkVYckytAW9ZT3NH5WLwdXDMqHD99PfChx12GzXwcSxIgxojZre0H+uMwgXGw7T/xX6/7BQJ0onXj5EzWA2Io4SDfDH8hopBPhqSrqajYyYn+iuateXa3z3PUPdKnWp8WQjcUV9cYyzDotPOdM3iS1SqUTJr8Bqklh2WbNdvF/rD5ItG/EyuNcbLcAxNy/b11tlQ4qVaPxA7c190GlkfCVtHoijbJD6eRPdf75t4ZtCNobukkMpn33DqwkWMt1Z+j25sX+AGOUMyzQuzapMJeaxSPmFftEo6gMpBG6hq7G/WZmELgRJJ2tLQLlfU48ux9752gHOpPTLZSE=",
+    "start_date_in_millis": 1622332800000
+  }
+}

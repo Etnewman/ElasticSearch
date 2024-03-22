@@ -1,0 +1,730 @@
+{"description":"Generic Filebeat pipeline provided by Enterprise Services","pipeline":"input {
+    beats {
+        port => 5044
+        ssl => true
+        ssl_certificate_authorities => [\"/etc/logstash/certs/cachain.pem\"]
+        ssl_certificate => \"/etc/logstash/certs/${HOSTNAME}.crt\"
+        ssl_key => \"/etc/logstash/certs/${HOSTNAME}_pkcs8.key\"
+        ssl_key_passphrase => \"${SSL_PASSPHRASE}\"
+        ssl_verify_mode => \"peer\"
+    }
+}
+
+filter {
+
+    # Add Orignating Site to document
+    mutate {
+        add_field => { \"DCGS_Site\" => \"${SITE}\" }
+        add_field => { \"DCGS_Site_Name\" => \"${SITELOC}\" }
+        add_field => { \"[geo][name]\" => \"${SITELOC}\" }
+    }
+    translate {
+        field => \"DCGS_Site_Name\"
+        destination => \"[geo][location]\"
+        override => \"true\"
+        fallback => \"0,0\"
+        dictionary_path => '/etc/logstash/dictionaries/site_coordinates.yml'
+    }
+
+    ##### Start SOCET Filter #####
+    if \"SOCET_GXP\" in [tags] {
+        mutate {
+            add_field => [ \"[@metadata][index]\", \"dcgs-filebeat-geo-ha-socetgxp\"]
+            add_field => [ \"[app][Kind]\", \"Mission\"]
+            add_field => [ \"[app][Category]\", \"HA\"]
+            add_field => [ \"[app][Name]\", \"SOCET_GXP\"]
+            rename => {\"@timestamp\" => \"[event][ingested]\"}
+        }
+        grok {
+            pattern_definitions => {
+                \"SOCET_METRIC_LOG_LEVEL\" => \"METRIC\"
+                \"SOCET_LOG_LEVEL\" => \"(ERROR|WARN|INFO|EVENT|%{SOCET_METRIC_LOG_LEVEL}|DEBUG|TRACE|FATAL)\"
+                \"SPACE_PLUS\" => \"\\s+\"
+                \"TIMESTAMP_SOCET\" => \"%{YEAR}/%{MONTHNUM}/%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?%{ISO8601_TIMEZONE}?\"
+                \"TIMESTAMP_GWE\" => \"%{YEAR}/%{MONTHNUM}/%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}%{SECOND}\"
+                \"GWE_PLUGIN_LOG_LEVEL\" => \"(INFO|FINE|SEVERE)\"
+            }
+            # SocetGxp.log log message
+            match => {
+                \"message\" => \"%{TIMESTAMP_SOCET:occuredAt}%{SPACE_PLUS}\\|%{SPACE_PLUS}%{SOCET_LOG_LEVEL:[log][level]}%{SPACE_PLUS}\\|%{SPACE_PLUS}%{NOTSPACE}\\\\%{NOTSPACE:[log][origin][file][name]}%{SPACE_PLUS}\\|%{SPACE_PLUS}%{INT:[log][origin][file][line]}%{SPACE_PLUS}\\|%{SPACE_PLUS}%{GREEDYDATA:logText}\"
+            }
+            # AFPluginLog0.txt log message
+            match => {
+                \"message\" => \"%{TIMESTAMP_SOCET:occuredAt}%{SPACE_PLUS}Method%{SPACE_PLUS}%{NOTSPACE:[log][origin][function]}%{SPACE_PLUS}:%{SPACE_PLUS}%{GWE_PLUGIN_LOG_LEVEL:[log][level]}%{SPACE_PLUS}:%{GREEDYDATA:logText}\"
+            }
+        }
+
+        date {
+            match => [ \"occuredAt\", \"yyyy/MM/dd HH:mm:ss,SSS\",
+                                      \"yyyy/MM/dd HH:mm:ss\" ]
+        }
+
+        if [log][level] == \"METRIC\" {
+
+            # Parse the message as json for metrics
+            json {
+                source => \"logText\"
+                target => \"Metrics\"
+            }
+            mutate {
+                #Extract known fields
+                rename => { \"[Metrics][event.action]\" => \"[event][action]\" }
+                rename => { \"[Metrics][event.category]\" => \"[event][category]\" }
+                rename => { \"[Metrics][event.code]\" => \"[event][code]\" }
+                rename => { \"[Metrics][event.dataset]\" => \"[event][dataset]\" }
+                rename => { \"[Metrics][event.duration]\" => \"[event][duration]\" }
+                rename => { \"[Metrics][event.outcome]\" => \"[event][outcome]\" }
+                rename => { \"[Metrics][event.type]\" => \"[event][type]\" }
+                merge => { \"[tags]\" => \"[Metrics][tags]\" }
+                rename => { \"[Metrics][labels]\" => \"[labels]\" }
+                rename => { \"[Metrics][user.name]\" => \"[user][name]\" }
+
+                add_field => [ \"[app][DocSubtype]\", \"metric\"]
+
+            }
+
+            date {
+                match => [ \"[Metrics][event.start]\", \"ISO8601\" ]
+                target => \"[event][start]\"
+            }
+            date {
+                match => [ \"[Metrics][event.end]\", \"ISO8601\" ]
+                target => \"[event][end]\"
+            }
+            mutate {
+                remove_field => [ \"[Metrics][tags]\", \"[Metrics][event.start]\", \"[Metrics][event.end]\", \"logText\" ]
+            }
+        } else if [log][level] {
+            if [log][file][path] =~ /AFPluginLog/ {
+                mutate {
+                    add_field => [ \"[app][DocType]\", \"afpluginlog\"]
+                }
+            } else if [log][file][path] =~ /SocetGxp/ {
+                mutate {
+                    add_field => [ \"[app][DocType]\", \"socetgxp\"]
+                }
+            }
+        } else {
+            drop { }
+        }
+        mutate {
+            rename => { \"message\" => \"[event][original]\" }
+            rename => { \"logText\" => \"message\" }
+            remove_field => [ \"occuredAt\" ]
+            remove_tag => [ \"SOCET_GXP\" ]
+        }
+    } #SOCET_GXP
+    ##### End SOCET Filter #####
+    ##### Start GXP_Xplorer Filter #####
+    if \"GXP_XPLORER\" in [tags] {
+        grok {
+            match => {
+                \"message\" => \"%{GREEDYDATA:jsonMsg}\"
+            }
+        }
+        mutate {
+            rename => { \"message\" => \"[event][original]\" }
+            add_field => [ \"[@metadata][index]\", \"dcgs-filebeat-geo-ha-gxpxplorer\" ]
+            add_field => [ \"[app][Kind]\", \"Mission\"]
+            add_field => [ \"[app][Category]\", \"HA\"]
+            add_field => [ \"[app][Name]\", \"GXP_XPLORER\"]
+            add_field => [ \"[app][DocType]\", \"log\"]
+            add_field => [ \"[event][ingested]\", \"%{@timestamp}\" ]
+            remove_tag => [ \"GXP_XPLORER\" ]
+        }
+        if [log][file][path] =~ /ecs.log/ {
+            mutate {
+                    add_field => [ \"[app][DocSubtype]\", \"ecs\"]
+            }
+            if [jsonMsg] {
+                json {
+                    source => \"jsonMsg\"
+                    target => \"Log\"
+                }
+            }
+            #Extract known fields
+            date {
+                match => [ \"[Log][@timestamp]\", \"ISO8601\" ]
+            }
+            date {
+                match => [ \"[Log][event.start]\", \"ISO8601\" ]
+                target => \"[event][start]\"
+            }
+            date {
+                match => [ \"[Log][event.end]\", \"ISO8601\" ]
+                target => \"[event][end]\"
+            }
+            mutate {
+                remove_field => [ \"[Log][@timestamp]\", \"[Log][event.start]\", \"[Log][event.end]\" ]
+                rename => { \"[Log][error.id]\" => \"[error.id]\" }
+                rename => { \"[Log][event.action]\" => \"[event][action]\" }
+                rename => { \"[Log][event.category]\" => \"[event][category]\" }
+                rename => { \"[Log][event.dataset]\" => \"[event][dataset]\" }
+                rename => { \"[Log][event.duration]\" => \"[event][duration]\" }
+                rename => { \"[Log][event.id]\" => \"[event][id]\" }
+                rename => { \"[Log][event.kind]\" => \"[event][kind]\" }
+                rename => { \"[Log][event.outcome]\" => \"[event][outcome]\" }
+                rename => { \"[Log][event.provider]\" => \"[event][provider]\" }
+                rename => { \"[Log][event.risk_score]\" => \"[event][risk_score]\" }
+                rename => { \"[Log][event.severity]\" => \"[event][severity]\" }
+                rename => { \"[Log][event.type]\" => \"[event][type]\" }
+                rename => { \"[Log][file.name]\" => \"[file.name]\" }
+                rename => { \"[Log][ingest.event]\" => \"[ingest][event]\" }
+                rename => { \"[Log][input][type]\" => \"[input][type]\" }
+                rename => { \"[Log][message]\" => \"[message]\" }
+                rename => { \"[Log][labels]\" => \"[labels]\" }
+                rename => { \"[Log][url.original]\" => \"[url][original]\" }
+            }
+        }
+        if [log][file][path] =~ /event.log/ {
+            mutate {
+                    add_field => [ \"[app][DocSubtype]\", \"event\"]
+            }
+            if [jsonMsg] {
+                json {
+                    source => \"jsonMsg\"
+                    target => \"Log\"
+                }
+            #Extract known fields
+                date {
+                    match => [ \"[Log][timestamp]\", \"YYYY-MM-dd HH:mm:ss,SSS\",
+                                                    \"MMMM d YYYY, H:m:s.SSS\",
+                                                    \"ISO8601\" ]
+                }
+                date {
+                    match => [ \"[Log][endTime]\", \"YYYY-MM-dd HH:mm:ss,SSS\",
+                                                    \"MMMM d YYYY, H:m:s.SSS\",
+                                                    \"ISO8601\" ]
+                    target => \"endTime\"
+                }
+
+                date {
+                    match => [ \"[Log][startTime]\", \"YYYY-MM-dd HH:mm:ss,SSS\",
+                                                    \"MMMM d YYYY, H:m:s.SSS\",
+                                                    \"ISO8601\" ]
+                    target => \"startTime\"
+                }
+
+                mutate {
+                    rename => { \"[Log][action]\" => \"[action]\" }
+                    rename => { \"[Log][avgDurationPerFile]\" => \"[avgDurationPerFile]\" }
+                    rename => { \"[Log][cellCount]\" => \"[cellCount]\" }
+                    rename => { \"[Log][compartment]\" => \"[compartment]\" }
+                    rename => { \"[Log][componentIndex]\" => \"[componentIndex]\" }
+                    rename => { \"[Log][datasetMetadata]\" => \"[datasetMetadata]\" }
+                    rename => { \"[Log][description]\" => \"[description]\" }
+                    rename => { \"[Log][destination]\" => \"[destination]\" }
+                    rename => { \"[Log][destinationUrl]\" => \"[destinationUrl]\" }
+                    rename => { \"[Log][duration]\" => \"[duration]\" }
+                    rename => { \"[Log][eventID]\" => \"[eventID]\" }
+                    rename => { \"[Log][exportType]\" => \"[exportType]\" }
+                    rename => { \"[Log][file]\" => \"[file][name]\" }
+                    rename => { \"[Log][folderUri]\" => \"[folderUri]\" }
+                    rename => { \"[Log][fromState]\" => \"[fromState]\" }
+                    rename => { \"[Log][includeBrowse]\" => \"[includeBrowse]\" }
+                    rename => { \"[Log][includeFiles]\" => \"[includeFiles]\" }
+                    rename => { \"[Log][isNotifiable]\" => \"[isNotifiable]\" }
+                    rename => { \"[Log][isOffline]\" => \"[isOffline]\" }
+                    rename => { \"[Log][isPaused]\" => \"[isPaused]\" }
+                    rename => { \"[Log][isResync]\" => \"[isResync]\" }
+                    rename => { \"[Log][numFiles]\" => \"[numFiles]\" }
+                    rename => { \"[Log][numOutputProducts]\" => \"[numOutputProducts]\" }
+                    rename => { \"[Log][onIngest]\" => \"[onIngest]\" }
+                    rename => { \"[Log][operation]\" => \"[operation]\" }
+                    rename => { \"[Log][orderIdentifier]\" => \"[orderIdentifier]\" }
+                    rename => { \"[Log][primaryFile]\" => \"[primaryFile]\" }
+                    rename => { \"[Log][principle]\" => \"[principle]\" }
+                    rename => { \"[Log][processDeletes]\" => \"[processDeletes]\" }
+                    rename => { \"[Log][processUpdates]\" => \"[processUpdates]\" }
+                    rename => { \"[Log][requestIP]\" => \"[requestIP]\" }
+                    rename => { \"[Log][resource]\" => \"[resource]\" }
+                    rename => { \"[Log][securityClassification]\" => \"[securityClassification]\" }
+                    rename => { \"[Log][service]\" => \"[service]\" }
+                    rename => { \"[Log][sourceUrl]\" => \"[sourceUrl]\" }
+                    rename => { \"[Log][status]\" => \"[status]\" }
+                    rename => { \"[Log][subCompartment]\" => \"[subCompartment]\" }
+                    merge => { \"[tags]\" => \"[Log][tags]\" }
+                    rename => { \"[Log][taskName]\" => \"[taskName]\" }
+                    rename => { \"[Log][toState]\" => \"[toState]\" }
+                    rename => { \"[Log][transportType]\" => \"[transportType]\" }
+                    rename => { \"[Log][type]\" => \"[type]\" }
+                    rename => { \"[Log][user]\" => \"[user.name]\" }
+                    rename => { \"[Log][userID]\" => \"[userID]\" }
+                    rename => { \"[Log][userUUID]\" => \"[userUUID]\" }
+                    rename => { \"[Log][token]\" => \"[token]\" }
+                    remove_field => [ \"[Log][timestamp]\", \"[Log][startTime]\", \"[Log][endTime]\", \"[Log][tags]\" ]
+                }
+                if [service] and [operation] {
+                    mutate {
+                        add_field => [\"serviceOperation\", \"%{service}/%{operation}\"]
+                    }
+                }
+                if [userUUID] and [resource] {
+                    mutate {
+                        add_field => [\"userUUIDAndResource\", \"%{resource}/%{userUUID}\"]
+                    }
+                }
+            }
+        }
+        if [log][file][path] =~ /notification.log/ {
+            mutate {
+                    add_field => [ \"[app][DocSubtype]\", \"notification\"]
+            }
+            if [jsonMsg] {
+                json {
+                    source => \"jsonMsg\"
+                    target => \"Log\"
+                }
+                mutate {
+                    rename => { \"[Log][service]\" => \"[service]\" }
+                    rename => { \"[Log][operation]\" => \"[operation]\" }
+                }
+                if [service] and [operation] {
+                    mutate {
+                        add_field => [\"serviceOperation\", \"%{service}/%{operation}\"]
+                    }
+                }
+            }
+        }
+        if ! [log.level] {
+            mutate { add_field => [ \"log.level\", \"UNKNOWN\" ] }
+        } else {
+            mutate {
+                strip => [ \"log.level\" ]
+                uppercase => [ \"log.level\" ]
+            }
+        }
+        mutate {
+            remove_field => [ \"jsonMsg\" ]
+        }
+    }
+    ##### End GXP_Xplorer Filter #####
+    ##### Start FMV_MAAS Filter #####
+    if \"MAAS\" in [tags] {
+        mutate {
+            strip => [\"message\"]
+        }
+        if [message] == \"\" {
+            drop { }
+        }
+        ruby {
+            code => \"event.set('[event][originalLength]', event.get('message').length)\"
+        }
+        if [event][originalLength] > 1000 {
+            truncate {
+                fields => \"message\"
+                length_bytes => 1000
+                add_tag => [ \"truncated_msg\" ]
+            }
+        }
+        grok {
+            pattern_definitions => {\"ONOFF\" => \"(On)|(Off)\" \"ELEMENT\" => \"[^\\[\\]]+\"}
+            match => {\"message\" => \"\\[%{TIMESTAMP_ISO8601:datetime}\\] \\[%{WORD:[log][level]}\\]  \\[%{ELEMENT:location}\\] %{GREEDYDATA:msg}\"}
+            match => {\"message\" => \"%{TIMESTAMP_ISO8601:datetime} {%{NUMBER:[log][level_Num]}} %{GREEDYDATA:msg}\"}
+            match => {\"message\" => \"%{TIMESTAMP_ISO8601:datetime} %{ONOFF:state} %{DATA:function} %{WORD:[log][level]} \\[%{ELEMENT:location}\\] \\[%{ELEMENT:user.name}\\] - %{GREEDYDATA:msg}\"}
+            match => {\"message\" => \"%{TIMESTAMP_ISO8601:datetime} %{WORD:[log][level]} *\\[%{ELEMENT:location}\\] \\(%{DATA:thread}\\) %{GREEDYDATA:msg}\"}
+            match => {\"message\" => \"%{TIMESTAMP_ISO8601:datetime} %{WORD:[log][level]} *\\[%{ELEMENT:location}\\] \\(%{DATA:thread}\\) *\"}
+            match => {\"message\" => \"%{TIMESTAMP_ISO8601:datetime} %{DATA:thread} %{WORD:[log][level]} \\[%{ELEMENT:location}\\] - %{GREEDYDATA:msg}\"}
+            match => {\"message\" => \"%{TIMESTAMP_ISO8601:datetime} %{DATA:thread} %{WORD:[log][level]} \\[%{ELEMENT:location}\\] \\[%{ELEMENT:user.name}\\] - %{GREEDYDATA:msg}\"}
+            match => {\"message\" => \"%{TIMESTAMP_ISO8601:datetime} %{GREEDYDATA:msg}\"}
+            match => {\"message\" => \"%{TIME:time} *%{WORD:[log][level]} *\\[%{ELEMENT:location}\\] *\\(%{DATA:thread}\\) *%{GREEDYDATA:msg}\"}
+            match => {\"message\" => \"%{TIME:time} *%{WORD:[log][level]} *\\[%{ELEMENT:location}\\] *\\(%{DATA:thread}\\) *\"}
+            match => {\"message\" => \"%{TIME:time} %{GREEDYDATA:msg}\"}
+            match => {\"message\" => \"%{GREEDYDATA:msg}\"}
+        }
+        if [datetime] {
+            date {
+                match => [\"datetime\", \"yyyy-MM-dd HH:mm:ss,SSS\", \"yyyy-MM-dd HH:mm:ss\"]
+                timezone => \"Zulu\"
+                target => \"[event][created]\"
+            }
+            mutate {
+                remove_field => [\"datetime\"]
+            }
+        } else if [time] {
+            mutate {
+                rename => {\"time\" => \"[event][createdTime]\"}
+            }
+        }
+        if [log][level_Num] {
+            if [log][level_Num] == \"0\" {
+                mutate { add_field => [\"[log][level]\", \"INFO\"]}
+            } else if [log][level_Num] == \"1\" {
+                mutate { add_field => [\"[log][level]\", \"WARN\"]}
+            } else if [log][level_Num] == \"2\" {
+                mutate { add_field => [\"[log][level]\", \"ERROR\"]}
+            }
+        }
+        if ! [log][level] {
+            mutate { add_field => [\"[log][level]\", \"UNKNOWN\"]}
+        }
+        if [log][file][path] =~ /JBOSS/ {
+            mutate { add_field => [ \"[app][DocSubtype]\", \"jboss\"] }
+        } else if [log][file][path] =~ /MAAS/ {
+            mutate { add_field => [ \"[app][DocSubtype]\", \"maas\"] }
+        }
+
+        mutate {
+            add_field => [ \"[@metadata][index]\", \"dcgs-filebeat-geo-fmv-maas_logs\" ]
+            add_field => [ \"[app][Kind]\", \"Mission\"]
+            add_field => [ \"[app][Category]\", \"FMV\"]
+            add_field => [ \"[app][Name]\", \"MAAS\"]
+            add_field => [ \"[app][DocType]\", \"log\"]
+            remove_tag => [ \"MAAS\" ]
+            add_field => [ \"[event][ingested]\", \"%{@timestamp}\" ]
+            uppercase => [ \"[log][level]\" ]
+            rename => { \"message\" => \"[event][original]\" }
+        }
+        mutate {
+            rename => {\"msg\" => \"message\"}
+        }
+    }
+    ##### End FMV_MAAS Filter #####
+    ##### Start UNICORN Filter #####
+    if \"unicorn\" in [tags] {
+
+        # Add Application Categorizing Fields to Document
+        mutate {
+            add_field => { \"[app][Kind]\" => \"Mission\" }
+            add_field => { \"[app][Category]\" => \"GEOINT\" }
+            add_field => { \"[app][Type]\" => \"HA\" }
+            add_field => { \"[app][Name]\" => \"UNICORN\" }
+            add_field => { \"[app][DocType]\" => \"log\" }
+        }
+        # Copy Original Data
+        mutate {
+            copy => { \"@timestamp\" => \"[event][created]\" }
+            copy => { \"message\" => \"[event][original]\" }
+        }
+        truncate {
+            fields => \"[event][original]\"
+            length_bytes => 32000
+        }
+
+        grok {
+            match => {
+
+                \"message\" => [
+                    \"%{TIMESTAMP_ISO8601:ts} *\\[\\s*%{INT:thread_Id}\\] *%{LOGLEVEL:[log][level]} *\\(\\) *%{DATA:class_Name} - %{GREEDYDATA:payload_Msg}\",
+                    \"%{TIMESTAMP_ISO8601:ts} *\\[\\s*%{INT:thread_Id}\\] *%{LOGLEVEL:[log][level]} - *%{GREEDYDATA:payload_Msg}\",
+                    \"%{TIMESTAMP_ISO8601:ts} *\\[\\s*%{INT:thread_Id}\\] *%{LOGLEVEL:[log][level]}.*\" ]
+
+                tag_on_failure => [ \"grok_failure\" ]
+            }
+        }
+
+        mutate {
+            copy => { \"class_Name\" => \"class_Split\" }
+        }
+
+        mutate {
+            convert => { \"class_Split\" => \"string\" }
+        }
+
+        ruby {
+            code => 'event.set(\"class_Split\", event.get(\"class_Split\").to_s.split(\".\"))'
+        }
+
+        if \"Jobs\" in [class_Split] {
+            grok {
+                match => {
+
+                    \"class_Name\" => [
+                        \"%{WORD:namespace}\\.%{WORD:job.service}\\.%{WORD:job.family}\\.%{WORD:job.type}\\.%{WORD:job.class}\\.%{WORD:job.name}\",
+                        \"%{WORD:namespace}\\.%{WORD:job.service}\\.%{WORD:job.family}\\.%{WORD:job.type}\\.%{WORD:job.name}\"
+                    ]
+                }
+
+                tag_on_failure => [ \"grok_failure\" ]
+            }
+
+            grok {
+                match => {
+
+                    \"payload_Msg\" => [
+                        \"(?m)%{DATA:job.job} Job run %{INT:job.ID}\\r\\n\\s*%{DATA:exception.message}\\r\\n\\s*%{GREEDYDATA:exception.trace}\",
+                        \"Executing %{GREEDYDATA:job.job} Job %{INT:job.ID}\",
+                        \"Scheduling job: %{WORD:job.job}\",
+                        \"Executing %{WORD:job.job}\",
+                        \"%{WORD:job.job} Finished\"
+                    ]
+                }
+
+                tag_on_failure => [ \"grok_failure\" ]
+            }
+        }
+
+        if \"Services\" in [class_Split] {
+            grok {
+                match => {
+
+                    \"class_Name\" => [
+                        \"%{WORD:namespace}\\.%{WORD:service.service}\\.%{WORD:service.family}\\.%{WORD:service.name}\"
+                    ]
+                }
+
+                tag_on_failure => [ \"grok_failure\" ]
+            }
+
+            grok {
+                match => {
+
+                    \"payload_Msg\" => [
+                        \"(?m).*the %{WORD:service.job}.*?\\r\\n\\s*%{DATA:exception.message}\\r\\n\\s*%{GREEDYDATA:exception.trace}--->\\s*%{DATA:exception.inner_Message}\\r\\n\\s*%{GREEDYDATA:exception.inner_Trace}\",
+                        \"(?m).*the %{WORD:service.job}.*?\\r\\n\\s*%{GREEDYDATA:exception.message}\\.\\r\\n\\s*%{GREEDYDATA:exception.trace}\",
+                        \"Retrieved value %{DATA:cron.value} for variable %{WORD:cron.name}.%{WORD:cron.value_Function}\",
+                        \".*- %{GREEDYDATA:service.notification} -.*\",
+                        \"Scheduling job: %{WORD:service.job}\",
+                        \"%{WORD:service.job} Finished\",
+                        \"Executing %{WORD:service.job}\",
+                        \"Starting %{WORD:service.job}\"
+                    ]
+                }
+
+                tag_on_failure => [ \"grok_failure\" ]
+            }
+        }
+
+        if \"Quartz\" in [class_Split] {
+            grok {
+                match => {
+
+                    \"class_Name\" => [
+                        \"%{WORD:namespace}\\.%{WORD:quartz.service}\\.%{WORD:quartz.name}\"
+                    ]
+                }
+
+                tag_on_failure => [ \"grok_failure\" ]
+            }
+
+            grok {
+                match => {
+
+                    \"payload_Msg\" => [
+                        \"(?m)Scheduler meta-data: %{GREEDYDATA:quartz.metadata}\\r\\n\\s*Scheduler class: '%{GREEDYDATA:quartz.class}'.*\\r\\n\\s*%{GREEDYDATA:quartz.status}\\r\\n\\s*Currently in %{WORD:quartz.mode}.*executed: %{INT:quartz.jobs_Executed}.*'%{GREEDYDATA:quartz.thread_Pool}' - with %{INT:quartz.num_Threads}.*'%{GREEDYDATA:quartz.job_Store}' - %{GREEDYDATA:quartz.job_Store_Description}\",
+                        \"(?m)Job %{WORD:quartz.group}.%{WORD:quartz.job}.*?\\r?\\n%{DATA:exception.message}\\.\\r?\\n\\s*%{GREEDYDATA:exception.trace}\",
+                        \"%{WORD:quartz.config_Name} .* of %{INT:quartz.config_Concurrency_Number} and %{GREEDYDATA:quartz.config_Obj}\",
+                        \"Initialized %{GREEDYDATA:quartz.job_Service} of type: %{WORD}.%{WORD}.%{WORD:quartz.job}\",
+                        \"%{GREEDYDATA:quartz.loaded_Properties} loaded from %{GREEDYDATA:quartz.loaded_From}\",
+                        \"%{WORD:quartz.from_Service} set to: %{GREEDYDATA:quartz.to_Service}\",
+                        \"Quartz scheduler %{GREEDYDATA:quartz.scheduler_Init} initialized\",
+                        \"Calling Execute on job %{WORD:quartz.group}.%{WORD:quartz.job}\",
+                        \"Quartz scheduler version: %{GREEDYDATA:quartz.version}\",
+                        \"Scheduler %{GREEDYDATA:quartz.scheduler} started.\",
+                        \"%{GREEDYDATA:quartz.scheduler_Created} created\",
+                        \"%{WORD:quartz.job} initialized\",
+
+                        \"Trigger instruction : %{WORD:quartz.trigger_Instruction}\",
+                        \"Batch acquisition of %{INT:quartz.trigger_Number} triggers\",
+                        \"(?m)%{GREEDYDATA:payload_Msg}\"
+
+                    ]
+                }
+
+                tag_on_failure => [ \"grok_failure\" ]
+            }
+        }
+
+        date {
+            match => [ \"ts\", \"yyyy-MM-dd HH:mm:ss,SSS\" ]
+            target => \"@timestamp\"
+        }
+
+        mutate {
+            add_field => [ \"[@metadata][index]\", \"dcgs-filebeat-geo-ha-unicorn-logs\" ]
+            remove_field => [\"class_Split\", \"ts\"]
+        }
+    }
+    ##### End UNICORN Filter #####
+    ##### Start ECP Filter #####
+    if \"ECP\" in [tags] {
+        grok {
+            pattern_definitions => {
+                \"VAMMP_DATETIME\" => \"[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2}\"
+                \"XML\" => \"\\<\\?xml%{GREEDYDATA}\\>\"
+            }
+
+            #XML: yyyy-mm-dd hh:mm:ss,SSS [Level] [SourceFile:SourceLine]: Message XML
+            match => {\"message\" => \"%{TIMESTAMP_ISO8601:datetime} *\\[ *%{WORD:log.level} *\\] *\\[ *%{DATA:log.origin.file.name} *: *%{NUMBER:log.origin.file.line} *\\] *: *%{DATA:msg} *%{XML:XmlMsg}\"}
+
+            #Log: yyyy-mm-dd hh:mm:ss,SSS [Level] [SourceFile:SourceLine]: Message
+            #     yyyy-mm-ddThh:mm:ss,SSS [Level] [SourceFile:SourceLine]: Message
+            match => {\"message\" => \"%{TIMESTAMP_ISO8601:datetime} *\\[ *%{WORD:log.level} *\\] *\\[ *%{DATA:log.origin.file.name} *: *%{NUMBER:log.origin.file.line} *\\] *: *%{GREEDYDATA:msg}\"}
+
+            #DataManager: [yyyy-mm-dd hh:mm:ss] [Level] ( SourceFile:SourceLine) [Thread.Id] Message
+            match => {\"message\" => \"\\[ *%{TIMESTAMP_ISO8601:datetime} *\\] *\\[ *%{WORD:log.level} *\\] *\\( *%{DATA:log.origin.file.name} *: *%{NUMBER:log.origin.file.line} *\\) *\\[ *%{NUMBER:Thread.Id} *\\] *%{GREEDYDATA:msg}\"}
+
+            #ECPOPProcessStarter: [yyyy-mm-dd hh:mm:ss] [Level] [Thread.Id] Message
+            match => {\"message\" => \"\\[ *%{TIMESTAMP_ISO8601:datetime} *\\] *\\[ *%{WORD:log.level} *\\] *\\[ *%{NUMBER:Thread.Id} *\\] *%{GREEDYDATA:msg}\"}
+
+            #STDERR: javax.net.ssl|FINE|01|main|yyyy-mm-dd hh:mm:ss.SSS zzz|SourceFile:SourceLoc|Message
+            match => {\"message\" => \"%{DATA:java.class}\\|%{DATA:log.level}\\|%{DATA:Thread.Id}\\|%{DATA:Thread.Name}\\|%{TIMESTAMP_ISO8601:datetime} %{DATA:TZ}\\|%{DATA:log.origin.file.name}:%{NUMBER:log.origin.file.line}\\|%{GREEDYDATA:msg}\"}
+
+            #VAMMP: Level mm/dd/yyyy hh:mm:ss:  Message
+            match => {\"message\" => \"%{WORD:log.level} +%{VAMMP_DATETIME:datetime}: *%{GREEDYDATA:msg}\"}
+
+            #message:   yyyy-mm-dd hh:mm:dd Message
+            match => {\"message\" => \"%{TIMESTAMP_ISO8601:datetime} *%{GREEDYDATA:msg}\"}
+
+            #unknown: Drop Unknown Formats
+            match => {\"message\" => \"%{GREEDYDATA:msg2}\"}
+        }
+        mutate {
+            add_field => [ \"message\", \"event.original\" ]
+            add_field => [ \"event.ingested\", \"%{@timestamp}\" ]
+        }
+        if [TZ] {
+            # Convert missing timezone values (EST & MST do exist)
+            if [TZ] == \"EDT\" {
+                mutate { replace => { \"TZ\" => \"EST5EDT\" } }
+            } else if [TZ] == \"CST\" or [TZ] == \"CDT\" {
+                mutate { replace => { \"TZ\" => \"CST6CDT\" } }
+            } else if [TZ] == \"MDT\" {
+                mutate { replace => { \"TZ\" => \"MST7MDT\" } }
+            } else if [TZ] == \"PST\" or [TZ] == \"PDT\" {
+                mutate { replace => { \"TZ\" => \"PST8PDT\" } }
+            }
+            date {
+                match => [\"datetime\", \"yyyy-MM-dd HH:mm:ss,SSS\",
+                                      \"yyyy-MM-dd'T'HH:mm:ss,SSS\",
+                                      \"yyyy-MM-dd HH:mm:ss\",
+                                      \"yyyy/MM/dd HH:mm:ss\",
+                                      \"yyyy-MM-dd HH:mm:ss.SSS ZZZ\",
+                                      \"MM/dd/yyyy HH:mm:ss\",
+                                      \"ISO8601\"
+                         ]
+                target => \"@timestamp\"
+                timezone => \"%{TZ}\"
+            }
+        } else {
+            date {
+                match => [\"datetime\", \"yyyy-MM-dd HH:mm:ss,SSS\",
+                                      \"yyyy-MM-dd'T'HH:mm:ss,SSS\",
+                                      \"yyyy-MM-dd HH:mm:ss\",
+                                      \"yyyy/MM/dd HH:mm:ss\",
+                                      \"yyyy-MM-dd HH:mm:ss.SSS ZZZ\",
+                                      \"MM/dd/yyyy HH:mm:ss\",
+                                      \"ISO8601\"
+                         ]
+                target => \"@timestamp\"
+            }
+        }
+
+        #Parse out XML content
+        if [XmlMsg] {
+            xml {
+                source => \"XmlMsg\"
+                target => \"Xml\"
+                force_array => false
+                remove_namespaces => false
+            }
+            # Extract message type (top-level XML object name, ignored by XML filter)
+            grok {
+                match => {\"XmlMsg\" => \"\\<\\?%{DATA}\\?\\>[^<]*<(%{WORD}:)?%{DATA:[Xml][MessageType]} %{GREEDYDATA}\"}
+            }
+            mutate {
+                remove_field => [ \"XmlMsg\" ]
+            }
+            if \"uas-c2-initiative.mil\" in [Xml][xmlns:uci] or \"uas-c2-initiative.mil\" in [Xml][xmlns] {
+               mutate {add_field => [ \"[Xml][Namespace]\", \"uas\" ] }
+            } else if \"ucistandard.org\" in [Xml][xmlns:uci] or \"ucistandard.org\" in [Xml][xmlns] {
+                mutate {add_field => [ \"[Xml][Namespace]\", \"uci\" ] }
+            }
+            #--Rename e.g. Xml.uas.QueryRequestStatus.*, Xml.uci.QueryRequestStatus.*
+            if [Xml][MessageType] {
+                if [Xml][Namespace] {
+                    mutate {
+                        rename => [ \"[Xml][MessageHeader]\", \"[Xml][%{[Xml][Namespace]}][%{[Xml][MessageType]}][MessageHeader]\" ]
+                        rename => [ \"[Xml][MessageData]\", \"[Xml][%{[Xml][Namespace]}][%{[Xml][MessageType]}][MessageData]\" ]
+                    }
+                } else {
+                    mutate {
+                        rename => [ \"[Xml][MessageHeader]\", \"[Xml][%{[Xml][MessageType]}][MessageHeader]\" ]
+                        rename => [ \"[Xml][MessageData]\", \"[Xml][%{[Xml][MessageType]}][MessageData]\" ]
+                    }
+                }
+            } else if [Xml][Namespace] {
+                    mutate {
+                        rename => [ \"[Xml][MessageHeader]\", \"[Xml][%{[Xml][Namespace]}][MessageHeader]\" ]
+                        rename => [ \"[Xml][MessageData]\", \"[Xml][%{[Xml][Namespace]}][MessageData]\" ]
+                    }
+            }
+            # else keep Xml.*
+            mutate {
+                add_field => [ \"[app][DocType]\", \"XML\"]
+            }
+        } else {
+            mutate {
+                add_field => [ \"[app][DocType]\", \"Log\"]
+            }
+        }
+        # Replace all consecutive spaces with single in event.original
+        mutate {
+            gsub => [ \"[event][original]\", \" +\", \" \" ]
+        }
+
+        if ! [log.level] {
+            mutate { add_field => [ \"log.level\", \"UNKNOWN\" ] }
+        } else {
+            mutate {
+                strip => [ \"log.level\" ]
+                uppercase => [ \"log.level\" ]
+            }
+        }
+        mutate {
+            rename => [ \"msg\", \"message\" ]
+            rename => [ \"msg2\", \"message\" ]
+            remove_field => [ \"datetime\", \"TZ\" ]
+        }
+        mutate {
+            add_field => [ \"[@metadata][index]\", \"dcgs-filebeat-geo-sensors-ecp\" ]
+            add_field => [ \"[app][Kind]\", \"Mission\"]
+            add_field => [ \"[app][Category]\", \"Sensors\"]
+            add_field => [ \"[app][Name]\", \"ECP\"]
+            remove_tag => [ \"ECP\" ]
+        }
+    }
+    ##### End ECP Filter #####
+    ##### Add New Filter Sections Here #####
+
+    if [fileset][name] == \"audit\" {
+        mutate {
+            add_field => [ \"[@metadata][index]\", \"dcgs-logindata-iaas-ent\" ]
+        }
+    }
+
+   if [@metadata][index] {
+        mutate {
+            add_field => [ \"[@metadata][destindex]\", \"%{[@metadata][index]}\" ]
+        }
+    }
+    else {
+        mutate {
+            add_field => [ \"[@metadata][destindex]\", \"%{[@metadata][beat]}-%{[@metadata][version]}\" ]
+        }
+    }
+}
+
+output {
+    if [@metadata][pipeline] {
+        elasticsearch {
+            hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+            index => \"%{[@metadata][destindex]}\"
+            pipeline => \"%{[@metadata][pipeline]}\"
+            user => \"ls_internal\"
+            password => \"${LS_INTERNAL_PW}\"
+            ssl => true
+            cacert => \"/etc/logstash/certs/cachain.pem\"
+        }
+    }
+    else {
+        elasticsearch {
+            hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+            index => \"%{[@metadata][destindex]}\"
+            user => \"ls_internal\"
+            password => \"${LS_INTERNAL_PW}\"
+            ssl => true
+            cacert => \"/etc/logstash/certs/cachain.pem\"
+        }
+    }
+}","settings":{"pipeline.batch.delay":50,"pipeline.batch.size":800,"pipeline.workers":3,"queue.checkpoint.writes":1024,"queue.max_bytes":"10gb","queue.type":"persisted"}}

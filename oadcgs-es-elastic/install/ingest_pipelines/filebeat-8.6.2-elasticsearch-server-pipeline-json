@@ -1,0 +1,31 @@
+{
+    "description" : "Pipeline for parsing the Elasticsearch server log file in JSON format.",
+    "on_failure" : [
+      {
+        "set" : {
+          "value" : "{{ _ingest.on_failure_message }}",
+          "field" : "error.message"
+        }
+      }
+    ],
+    "processors" : [
+      {
+        "json" : {
+          "field" : "message",
+          "target_field" : "elasticsearch.server"
+        }
+      },
+      {
+        "pipeline" : {
+          "if" : "ctx.elasticsearch.server.containsKey('type')",
+          "name" : "filebeat-8.6.2-elasticsearch-server-pipeline-json-7"
+        }
+      },
+      {
+        "pipeline" : {
+          "if" : "ctx.elasticsearch.server.containsKey('ecs.version')",
+          "name" : "filebeat-8.6.2-elasticsearch-server-pipeline-json-8"
+        }
+      }
+    ]
+  }

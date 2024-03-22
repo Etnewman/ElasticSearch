@@ -1,0 +1,96 @@
+{
+    "description" : "Pipeline for parsing elasticsearch deprecation logs",
+    "processors" : [
+      {
+        "set" : {
+          "field" : "event.ingested",
+          "value" : "{{_ingest.timestamp}}"
+        }
+      },
+      {
+        "rename" : {
+          "field" : "@timestamp",
+          "target_field" : "event.created"
+        }
+      },
+      {
+        "grok" : {
+          "patterns" : [
+            "^%{CHAR:first_char}"
+          ],
+          "pattern_definitions" : {
+            "CHAR" : "."
+          },
+          "field" : "message"
+        }
+      },
+      {
+        "pipeline" : {
+          "if" : "ctx.first_char != '{'",
+          "name" : "filebeat-7.16.3-elasticsearch-deprecation-pipeline-plaintext"
+        }
+      },
+      {
+        "pipeline" : {
+          "if" : "ctx.first_char == '{'",
+          "name" : "filebeat-7.16.3-elasticsearch-deprecation-pipeline-json"
+        }
+      },
+      {
+        "set" : {
+          "field" : "event.kind",
+          "value" : "event"
+        }
+      },
+      {
+        "set" : {
+          "field" : "event.category",
+          "value" : "database"
+        }
+      },
+      {
+        "set" : {
+          "field" : "event.type",
+          "value" : "info"
+        }
+      },
+      {
+        "set" : {
+          "ignore_empty_value" : true,
+          "field" : "host.id",
+          "value" : "{{elasticsearch.node.id}}"
+        }
+      },
+      {
+        "set" : {
+          "ignore_empty_value" : true,
+          "field" : "host.name",
+          "value" : "{{elasticsearch.node.name}}"
+        }
+      },
+      {
+        "remove" : {
+          "field" : [
+            "elasticsearch.deprecation.timestamp",
+            "elasticsearch.deprecation.@timestamp"
+          ],
+          "ignore_missing" : true
+        }
+      },
+      {
+        "remove" : {
+          "field" : [
+            "first_char"
+          ]
+        }
+      }
+    ],
+    "on_failure" : [
+      {
+        "set" : {
+          "value" : "{{ _ingest.on_failure_message }}",
+          "field" : "error.message"
+        }
+      }
+    ]
+  }

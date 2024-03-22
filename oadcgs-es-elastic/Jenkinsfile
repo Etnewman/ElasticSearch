@@ -1,0 +1,77 @@
+pipeline {
+    agent any
+    environment {
+        VERSION = readFile ("${env.WORKSPACE}/VERSION.md").trim()
+    }
+    options {
+        buildDiscarder( logRotator( numToKeepStr: '5' ) )
+        throttle(['OneJobAtATime'])
+    }
+    stages {
+        stage('test') {
+	    agent {
+              node {
+                label 'oadcgs-cent-7.oadcgs.di2e.net'
+              }
+            }
+            steps {
+                sh 'tox'
+            }
+        }
+        stage('archive') {
+	    agent {
+              node {
+                label 'oadcgs-cent-7.oadcgs.di2e.net'
+              }
+            }
+	    steps {
+              withCredentials([usernamePassword(
+                    credentialsId: 'aedaaa69-cc1e-410a-9ffb-410506af15b8',
+                    usernameVariable: 'DI2E_USER',
+                    passwordVariable: 'DI2E_PASSWORD'
+                )]) {
+                  sh "VERSION=${env.VERSION} BUILD_ID=${env.BUILD_ID} ./job.sh"
+              }
+            }
+        }
+        stage('publish') {
+	    agent {
+              node {
+                label 'oadcgs-cent-7.oadcgs.di2e.net'
+              }
+            }
+            when {
+                branch 'master'
+            }
+            steps {
+                nexusArtifactUploader (
+                    nexusVersion: 'nexus3',
+                    protocol: 'https',
+                    nexusUrl: 'nexus.di2e.net/nexus3',
+                    groupId: 'Enterprise_Services/Elastic',
+                    version: env.VERSION + '.' + env.BUILD_ID,
+                    repository: 'Private_OADCGS-Infrastructure',
+                    credentialsId: 'aedaaa69-cc1e-410a-9ffb-410506af15b8',
+                    artifacts : [
+                      [artifactId: 'oadcgs-es-elastic-sccm',
+                      type: 'zip',
+                      classifier: '',
+                      file: 'pkg/oadcgs-es-elastic-sccm-' + env.VERSION
+                        + '.' + env.BUILD_ID + '.zip'],
+                      [artifactId: 'oadcgs-es-elastic-reposerver',
+                      type: 'tar.gz',
+                      classifier: '',
+                      file: 'pkg/oadcgs-es-elastic-reposerver-' + env.VERSION
+                        + '.' + env.BUILD_ID + '.tar.gz'],
+                    ]
+                )
+                archiveArtifacts artifacts: 'pkg/**', excludes: 'pkg/.gitkeep', fingerprint: true
+            }
+        }
+    }
+    post {
+        always {
+            deleteDir()
+        }
+    }
+}

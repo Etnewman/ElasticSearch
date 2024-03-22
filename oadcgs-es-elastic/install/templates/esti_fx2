@@ -1,0 +1,23 @@
+{
+        "index_patterns" : [
+          "dcgs-device_fx2-iaas-ent*"
+        ],
+        "template" : {
+          "settings" : {
+            "index" : {
+              "lifecycle" : {
+                "rollover_alias" : "dcgs-device_fx2-iaas-ent"
+              }
+            }
+          }
+        },
+        "composed_of" : [
+          "estc_dcgs_defaults",
+          "estc_fx2-mappings"
+        ],
+        "priority" : 200,
+        "version" : 0,
+        "_meta" : {
+          "description" : "Fx2 template installed by DCGS Enterprise Services"
+        }
+}

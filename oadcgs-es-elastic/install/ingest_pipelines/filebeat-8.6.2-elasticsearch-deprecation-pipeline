@@ -1,0 +1,96 @@
+{
+    "processors" : [
+      {
+        "set" : {
+          "field" : "event.ingested",
+          "value" : "{{_ingest.timestamp}}"
+        }
+      },
+      {
+        "set" : {
+          "field" : "event.created",
+          "copy_from" : "@timestamp"
+        }
+      },
+      {
+        "grok" : {
+          "field" : "message",
+          "patterns" : [
+            "^%{CHAR:first_char}"
+          ],
+          "pattern_definitions" : {
+            "CHAR" : "."
+          }
+        }
+      },
+      {
+        "pipeline" : {
+          "if" : "ctx.first_char != '{'",
+          "name" : "filebeat-8.6.2-elasticsearch-deprecation-pipeline-plaintext"
+        }
+      },
+      {
+        "pipeline" : {
+          "if" : "ctx.first_char == '{'",
+          "name" : "filebeat-8.6.2-elasticsearch-deprecation-pipeline-json"
+        }
+      },
+      {
+        "set" : {
+          "field" : "event.kind",
+          "value" : "event"
+        }
+      },
+      {
+        "set" : {
+          "field" : "event.category",
+          "value" : "database"
+        }
+      },
+      {
+        "set" : {
+          "field" : "event.type",
+          "value" : "info"
+        }
+      },
+      {
+        "set" : {
+          "field" : "host.id",
+          "value" : "{{elasticsearch.node.id}}",
+          "ignore_empty_value" : true
+        }
+      },
+      {
+        "set" : {
+          "ignore_empty_value" : true,
+          "field" : "host.name",
+          "value" : "{{elasticsearch.node.name}}"
+        }
+      },
+      {
+        "remove" : {
+          "field" : [
+            "elasticsearch.deprecation.timestamp",
+            "elasticsearch.deprecation.@timestamp"
+          ],
+          "ignore_missing" : true
+        }
+      },
+      {
+        "remove" : {
+          "field" : [
+            "first_char"
+          ]
+        }
+      }
+    ],
+    "on_failure" : [
+      {
+        "set" : {
+          "field" : "error.message",
+          "value" : "{{ _ingest.on_failure_message }}"
+        }
+      }
+    ],
+    "description" : "Pipeline for parsing elasticsearch deprecation logs"
+  }

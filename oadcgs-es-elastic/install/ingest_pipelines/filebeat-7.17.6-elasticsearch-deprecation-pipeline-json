@@ -1,0 +1,185 @@
+{
+    "description" : "Pipeline for parsing the Elasticsearch deprecation log file in JSON format.",
+    "on_failure" : [
+      {
+        "set" : {
+          "field" : "error.message",
+          "value" : "{{ _ingest.on_failure_message }}"
+        }
+      }
+    ],
+    "processors" : [
+      {
+        "json" : {
+          "field" : "message",
+          "target_field" : "elasticsearch.deprecation"
+        }
+      },
+      {
+        "drop" : {
+          "if" : "![\"deprecation\", \"deprecation.elasticsearch\"].contains(ctx.elasticsearch.deprecation.type)"
+        }
+      },
+      {
+        "remove" : {
+          "field" : "elasticsearch.deprecation.type"
+        }
+      },
+      {
+        "dot_expander" : {
+          "field" : "service.name",
+          "path" : "elasticsearch.deprecation"
+        }
+      },
+      {
+        "rename" : {
+          "field" : "elasticsearch.deprecation.service.name",
+          "target_field" : "service.name",
+          "ignore_missing" : true
+        }
+      },
+      {
+        "rename" : {
+          "field" : "elasticsearch.deprecation.level",
+          "target_field" : "log.level",
+          "ignore_missing" : true
+        }
+      },
+      {
+        "dot_expander" : {
+          "field" : "log.level",
+          "path" : "elasticsearch.deprecation"
+        }
+      },
+      {
+        "rename" : {
+          "ignore_missing" : true,
+          "field" : "elasticsearch.deprecation.log.level",
+          "target_field" : "log.level"
+        }
+      },
+      {
+        "dot_expander" : {
+          "field" : "log.logger",
+          "path" : "elasticsearch.deprecation"
+        }
+      },
+      {
+        "rename" : {
+          "target_field" : "log.logger",
+          "ignore_missing" : true,
+          "field" : "elasticsearch.deprecation.log.logger"
+        }
+      },
+      {
+        "dot_expander" : {
+          "field" : "process.thread.name",
+          "path" : "elasticsearch.deprecation"
+        }
+      },
+      {
+        "rename" : {
+          "ignore_missing" : true,
+          "field" : "elasticsearch.deprecation.process.thread.name",
+          "target_field" : "process.thread.name"
+        }
+      },
+      {
+        "rename" : {
+          "target_field" : "elasticsearch.component",
+          "ignore_missing" : true,
+          "field" : "elasticsearch.deprecation.component"
+        }
+      },
+      {
+        "dot_expander" : {
+          "field" : "cluster.name",
+          "path" : "elasticsearch.deprecation"
+        }
+      },
+      {
+        "rename" : {
+          "field" : "elasticsearch.deprecation.cluster.name",
+          "target_field" : "elasticsearch.cluster.name"
+        }
+      },
+      {
+        "dot_expander" : {
+          "path" : "elasticsearch.deprecation",
+          "field" : "node.name"
+        }
+      },
+      {
+        "rename" : {
+          "target_field" : "elasticsearch.node.name",
+          "field" : "elasticsearch.deprecation.node.name"
+        }
+      },
+      {
+        "dot_expander" : {
+          "field" : "cluster.uuid",
+          "path" : "elasticsearch.deprecation"
+        }
+      },
+      {
+        "rename" : {
+          "field" : "elasticsearch.deprecation.cluster.uuid",
+          "target_field" : "elasticsearch.cluster.uuid",
+          "ignore_missing" : true
+        }
+      },
+      {
+        "dot_expander" : {
+          "field" : "node.id",
+          "path" : "elasticsearch.deprecation"
+        }
+      },
+      {
+        "rename" : {
+          "field" : "elasticsearch.deprecation.node.id",
+          "target_field" : "elasticsearch.node.id",
+          "ignore_missing" : true
+        }
+      },
+      {
+        "remove" : {
+          "field" : "message"
+        }
+      },
+      {
+        "rename" : {
+          "field" : "elasticsearch.deprecation.message",
+          "target_field" : "message"
+        }
+      },
+      {
+        "date" : {
+          "field" : "elasticsearch.deprecation.@timestamp",
+          "formats" : [
+            "ISO8601"
+          ],
+          "ignore_failure" : true,
+          "if" : "ctx.elasticsearch?.deprecation[\"@timestamp\"] != null"
+        }
+      },
+      {
+        "date" : {
+          "field" : "elasticsearch.deprecation.timestamp",
+          "formats" : [
+            "ISO8601"
+          ],
+          "ignore_failure" : true,
+          "if" : "ctx.elasticsearch?.deprecation?.timestamp != null"
+        }
+      },
+      {
+        "remove" : {
+          "field" : [
+            "elasticsearch.deprecation.timestamp",
+            "elasticsearch.deprecation.@timestamp"
+          ],
+          "ignore_missing" : true
+        }
+      }
+    ]
+  }

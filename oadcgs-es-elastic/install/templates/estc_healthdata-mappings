@@ -1,0 +1,309 @@
+{
+  "template" : {
+    "mappings" : {
+      "properties" : {
+        "@timestamp" : {
+          "type" : "date"
+        },
+        "@version" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "Applications" : {
+          "properties" : {
+            "Description" : {
+              "type" : "text",
+              "fields" : {
+                "keyword" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                }
+              }
+            },
+            "Issues" : {
+              "properties" : {
+                "containers" : {
+                  "type" : "keyword"
+                },
+                "processes" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                },
+                "services" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                }
+              }
+            },
+            "Name" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "Status" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "Metrics" : {
+          "properties" : {
+            "cpu" : {
+              "type" : "float"
+            },
+            "cpu_threshold" : {
+              "type" : "float"
+            },
+            "filesystem" : {
+              "properties" : {
+                "max_used" : {
+                  "type" : "float"
+                },
+                "mount_point" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                },
+                "threshold" : {
+                  "type" : "float"
+                }
+              }
+            },
+            "memory" : {
+              "type" : "float"
+            },
+            "memory_threshold" : {
+              "type" : "float"
+            },
+            "network" : {
+              "properties" : {
+                "in" : {
+                  "properties" : {
+                    "bytes" : {
+                      "type" : "long"
+                    }
+                  }
+                },
+                "out" : {
+                  "properties" : {
+                    "bytes" : {
+                      "type" : "long"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "agent" : {
+          "properties" : {
+            "ephemeral_id" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "hostname" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "id" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "name" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "type" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "version" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "app" : {
+          "properties" : {
+            "Description" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "Health" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "HealthSymptoms" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "Issues" : {
+              "properties" : {
+                "containers" : {
+                  "type" : "keyword"
+                },
+                "processes" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                },
+                "services" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                }
+              }
+            },
+            "Name" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "Status" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "requiredHosts" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "audits" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "ecs" : {
+          "properties" : {
+            "version" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "group" : {
+          "properties" : {
+            "Health" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "HealthSymptoms" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "Name" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "hosts" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "minHosts" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "host" : {
+          "properties" : {
+            "Health" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "HealthSymptoms" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "name" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "input" : {
+          "properties" : {
+            "type" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "log" : {
+          "properties" : {
+            "file" : {
+              "properties" : {
+                "path" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                }
+              }
+            },
+            "offset" : {
+              "type" : "long"
+            }
+          }
+        },
+        "metadata" : {
+          "properties" : {
+            "DocSubtype" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "DocType" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "monitor" : {
+          "properties" : {
+            "status" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "tags" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "updated_By" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "threads" : {
+          "properties" : {
+            "ok" : {
+              "properties" : {
+                "count" : {
+                  "type" : "long"
+                },
+                "names" : {
+                  "type" : "text"
+                }
+              }
+            },
+            "problem" : {
+              "properties" : {
+                "count" : {
+                  "type" : "long"
+                },
+                "names" : {
+                  "type" : "text"
+                }
+              }
+            },
+            "total" : {
+              "type" : "long"
+            }
+          }
+        },
+        "version" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        }
+      }
+    }
+  },
+    "version" : 0,
+    "_meta" : {
+    "description" : "default mappings for the healthdata index template installed by DCGS Enterprise Services",
+    "managed" : true
+    }
+}

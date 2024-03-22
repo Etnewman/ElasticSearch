@@ -1,0 +1,49 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: requirements-txt-fixer
+      - id: fix-encoding-pragma
+      - id: check-ast
+      - id: check-xml
+      - id: check-added-large-files
+        exclude: 'estc_*|.ndjson$|.jar$|.docx|.pdf'
+      - id: check-case-conflict
+      - id: check-json
+      - id: check-merge-conflict
+  - repo: https://github.com/ambv/black
+    rev: 19.10b0
+    hooks:
+      - id: black
+        args: [--target-version=py27, --line-length=88, --safe]
+        additional_dependencies: ['click==8.0.4']
+  - repo: local
+    hooks:
+      - id: PSScriptAnalyzer
+        name: PS Script Analyzer
+        entry: powershell ./lint_powershell.ps1
+        pass_filenames: false
+        language: system
+        files: \.(ps1)$
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: 'v2.2.1'
+    hooks:
+      - id: prettier
+        files: \.(css|less|scss|json|js|jsx|md|yaml|yml)$
+        args: ['--no-semi', '--write', '--single-quote', '--prose-wrap=always']
+  - repo: local
+    hooks:
+      - id: shellcheck
+        name: shellcheck
+        entry: shellcheck
+        language: system
+        files: \.(sh)$
+  - repo: local
+    hooks:
+      - id: shfmt
+        name: shfmt
+        entry: shfmt -w
+        language: system
+        files: \.(sh)$

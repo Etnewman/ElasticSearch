@@ -1,0 +1,10 @@
+# Module: windows
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/7.11/metricbeat-module-windows.html
+
+- module: windows
+  metricsets:
+    - service
+  processors:
+    - add_host_metadata:
+        netinfo.enabled: true
+  period: 1m

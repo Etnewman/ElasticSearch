@@ -1,0 +1,352 @@
+{
+    "description" : "Pipeline for IPTables",
+    "processors" : [
+      {
+        "set" : {
+          "field" : "event.ingested",
+          "value" : "{{_ingest.timestamp}}"
+        }
+      },
+      {
+        "grok" : {
+          "field" : "message",
+          "patterns" : [
+            "%{SYSLOGTIMESTAMP:iptables.raw_date}%{SPACE}%{IPTABLES_HOSTNAME}%{GREEDYDATA}\\[%{UBIQUITI_LABEL}\\]%{IPTABLES}%{SPACE}",
+            "%{SYSLOGTIMESTAMP:iptables.raw_date}%{SPACE}%{IPTABLES_ACTION}%{GREEDYDATA}%{IPTABLES}%{SPACE}",
+            "%{SYSLOGTIMESTAMP:iptables.raw_date}%{SPACE}%{IPTABLES_HOSTNAME}%{SPACE}%{UDM_LOGS}%{IPTABLES_IP_PAYLOAD}",
+            "%{GREEDYDATA}\\[%{UBIQUITI_LABEL}\\]%{IPTABLES}%{SPACE}",
+            "%{GREEDYDATA}%{IPTABLES}%{SPACE}"
+          ],
+          "pattern_definitions" : {
+            "UDM_LOGS" : "(%{UNSIGNED_INT}%{SPACE})?(TTL|TL|L)=(%{UNSIGNED_INT:iptables.ttl:int})%{SPACE}(ID=(%{UNSIGNED_INT:iptables.id:int})%{SPACE})?(DF%{SPACE})?",
+            "IPTABLES_IP_PAYLOAD" : "%{IPTABLES_PROTOCOL}( %{IPTABLES_PORT_PAIR})?( (%{IPTABLES_TCP_DETAILS}|%{IPTABLES_UDP_DETAILS}|%{IPTABLES_ICMP_DETAILS}|%{IPTABLES_INCOMPLETE_PACKET}))?",
+            "UBIQUITI_FIELD" : "[^-\\]]*",
+            "IPTABLES_TCP_DETAILS" : "(?:%{IPTABLES_TCP_SEQ} )?WINDOW=%{UNSIGNED_INT:iptables.tcp.window:int} RES=0x%{BASE16NUM:iptables.tcp_reserved_bits} %{IPTABLES_TCP_FLAGS:iptables.tcp.flags}",
+            "IPTABLES_IP_START" : "SRC=%{IPV4:source.ip} DST=%{IPV4:destination.ip} LEN=%{UNSIGNED_INT:iptables.length:int} TOS=(0x)?%{BASE16NUM:iptables.tos} PREC=0x%{BASE16NUM:iptables.precedence_bits} TTL=%{UNSIGNED_INT:iptables.ttl:int} ID=%{UNSIGNED_INT:iptables.id:int}(?: %{IPTABLES_IP_FRAGFLAG:iptables.fragment_flags})?(?: FRAG: %{UNSIGNED_INT:iptables.fragment_offset:int})?",
+            "UBIQUITI_LABEL" : "%{UBIQUITI_RULESET_NAME:iptables.ubiquiti.rule_set}-%{UBIQUITI_FIELD:iptables.ubiquiti.rule_number}-%{UBIQUITI_FIELD:event.action}",
+            "IPTABLES_HOSTNAME" : "%{HOSTNAME:observer.name}%{SPACE}(%{NOTSPACE}%{SPACE})?kernel:",
+            "ETHTYPE" : "(?:[A-Fa-f0-9]{2}):(?:[A-Fa-f0-9]{2})",
+            "ETHTYPE_DISCARD" : "(?::[A-Fa-f0-9]{2})*",
+            "IPTABLES_ETHERNET" : "IN=%{DATA:iptables.input_device} OUT=%{DATA:iptables.output_device}?(?: MAC=%{NETFILTERMAC})?",
+            "UNSIGNED_INT" : "[0-9]+",
+            "IPTABLES_TCP_FLAGS" : "(CWR |ECE |URG |ACK |PSH |RST |SYN |FIN )*",
+            "IPTABLES_ICMP_EXTRA" : "( (?:%{IPTABLES_ICMP_EXTRA_ECHO}|%{IPTABLES_ICMP_EXTRA_PARAM}|%{IPTABLES_ICMP_EXTRA_REDIRECT}))*",
+            "IPTABLES_ACTION" : "(:?%{WORD:event.action}:|%{IPTABLES_HOSTNAME}%{SPACE}iptables%{SPACE}%{WORD:event.action}|%{IPTABLES_HOSTNAME})",
+            "IPTABLES_IPV6_START" : "SRC=%{IPV6:source.ip} DST=%{IPV6:destination.ip} LEN=%{UNSIGNED_INT:iptables.length:int} TC=%{UNSIGNED_INT:iptables.tos} HOPLIMIT=%{UNSIGNED_INT:iptables.ttl:int} FLOWLBL=%{UNSIGNED_INT:iptables.flow_label:int}",
+            "UBIQUITI_RULESET_NAME" : "[^\\]]*",
+            "IPTABLES_ICMP_EXTRA_REDIRECT" : "GATEWAY=%{IP:iptables.icmp.redirect}",
+            "IPTABLES" : "%{IPTABLES_ETHERNET} (:?%{IPTABLES_IP}|%{IPTABLES_IPV6})",
+            "IPTABLES_PROTOCOL" : "PROTO=(?<network.transport>[a-zA-Z0-9]+)",
+            "IPTABLES_IPV6" : "%{IPTABLES_IPV6_START} %{IPTABLES_IP_PAYLOAD}",
+            "IPTABLES_ICMP_DETAILS" : "TYPE=%{UNSIGNED_INT:iptables.icmp.type:int} CODE=%{UNSIGNED_INT:iptables.icmp.code:int}(( %{IPTABLES_INCOMPLETE_PACKET})|%{IPTABLES_ICMP_EXTRA})",
+            "IPTABLES_TCP_SEQ" : "SEQ=%{UNSIGNED_INT:iptables.tcp.seq:int} ACK=%{UNSIGNED_INT:iptables.tcp.ack:int}",
+            "IPTABLES_ICMP_EXTRA_ECHO" : "ID=%{UNSIGNED_INT:iptables.icmp.id:int} SEQ=%{UNSIGNED_INT:iptables.icmp.seq:int}",
+            "IPTABLES_ICMP_EXTRA_PARAM" : "PARAMETER=%{UNSIGNED_INT:iptables.icmp.parameter:int}",
+            "IPTABLES_IP_FRAGFLAG" : "((?<= )(CE|DF|MF))*",
+            "NETFILTERMAC" : "(?:%{MAC:destination.mac}:%{MAC:source.mac}:%{ETHTYPE:iptables.ether_type}?%{ETHTYPE_DISCARD}|%{MAC:destination.mac}%{ETHTYPE_DISCARD}:%{ETHTYPE:iptables.ether_type}?)",
+            "IPTABLES_IP" : "%{IPTABLES_IP_START} %{IPTABLES_IP_PAYLOAD}",
+            "IPTABLES_UDP_DETAILS" : "LEN=%{UNSIGNED_INT:iptables.udp.length:int}",
+            "IPTABLES_PORT_PAIR" : "SPT=%{UNSIGNED_INT:source.port:int} DPT=%{UNSIGNED_INT:destination.port:int}",
+            "IPTABLES_INCOMPLETE_PACKET" : "INCOMPLETE \\[%{UNSIGNED_INT:iptables.incomplete_bytes:int} bytes\\]"
+          }
+        }
+      },
+      {
+        "rename" : {
+          "field" : "message",
+          "target_field" : "event.original",
+          "ignore_failure" : true
+        }
+      },
+      {
+        "grok" : {
+          "pattern_definitions" : {
+            "UBIQUITI_FIELD" : "[^-]*"
+          },
+          "field" : "iptables.ubiquiti.rule_set",
+          "ignore_missing" : true,
+          "ignore_failure" : true,
+          "patterns" : [
+            "%{UBIQUITI_FIELD:iptables.ubiquiti.input_zone}-%{UBIQUITI_FIELD:iptables.ubiquiti.output_zone}"
+          ]
+        }
+      },
+      {
+        "date" : {
+          "if" : "ctx?.iptables?.raw_date != null && ctx.event.timezone == null",
+          "field" : "iptables.raw_date",
+          "formats" : [
+            "MMM  d HH:mm:ss",
+            "MMM dd HH:mm:ss"
+          ],
+          "on_failure" : [
+            {
+              "append" : {
+                "field" : "error.message",
+                "value" : "{{ _ingest.on_failure_message }}"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "date" : {
+          "formats" : [
+            "MMM  d HH:mm:ss",
+            "MMM dd HH:mm:ss"
+          ],
+          "timezone" : "{{ event.timezone }}",
+          "if" : "ctx?.iptables?.raw_date != null && ctx.event.timezone != null",
+          "field" : "iptables.raw_date",
+          "on_failure" : [
+            {
+              "append" : {
+                "field" : "error.message",
+                "value" : "{{ _ingest.on_failure_message }}"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "remove" : {
+          "field" : "iptables.raw_date",
+          "ignore_missing" : true
+        }
+      },
+      {
+        "set" : {
+          "ignore_empty_value" : true,
+          "if" : "ctx?.observer?.name == null",
+          "field" : "observer.name",
+          "value" : "{{hostname}}"
+        }
+      },
+      {
+        "set" : {
+          "if" : "ctx?.observer?.name == null",
+          "field" : "observer.hostname",
+          "value" : "{{hostname}}",
+          "ignore_empty_value" : true
+        }
+      },
+      {
+        "lowercase" : {
+          "field" : "network.transport",
+          "ignore_missing" : true
+        }
+      },
+      {
+        "lowercase" : {
+          "field" : "event.action",
+          "ignore_missing" : true
+        }
+      },
+      {
+        "rename" : {
+          "ignore_missing" : true,
+          "field" : "source.as.asn",
+          "target_field" : "source.as.number"
+        }
+      },
+      {
+        "rename" : {
+          "field" : "source.as.organization_name",
+          "target_field" : "source.as.organization.name",
+          "ignore_missing" : true
+        }
+      },
+      {
+        "rename" : {
+          "ignore_missing" : true,
+          "field" : "destination.as.asn",
+          "target_field" : "destination.as.number"
+        }
+      },
+      {
+        "rename" : {
+          "field" : "destination.as.organization_name",
+          "target_field" : "destination.as.organization.name",
+          "ignore_missing" : true
+        }
+      },
+      {
+        "script" : {
+          "lang" : "painless",
+          "params" : {
+            "mappings" : [
+              {
+                "source" : {
+                  "object" : "iptables",
+                  "key" : "ether_type"
+                },
+                "destination" : {
+                  "object" : "network",
+                  "key" : "type"
+                },
+                "map" : {
+                  "86:dd" : "ipv6",
+                  "08:00" : "ipv4"
+                }
+              },
+              {
+                "source" : {
+                  "key" : "action",
+                  "object" : "event"
+                },
+                "destination" : {
+                  "object" : "event",
+                  "key" : "action"
+                },
+                "map" : {
+                  "d" : "drop",
+                  "a" : "accept"
+                }
+              },
+              {
+                "source" : {
+                  "object" : "event",
+                  "key" : "action"
+                },
+                "destination" : {
+                  "object" : "event",
+                  "key" : "type"
+                },
+                "map" : {
+                  "drop" : "denied",
+                  "accept" : "allowed",
+                  "deny" : "denied",
+                  "drop_input" : "denied"
+                }
+              },
+              {
+                "source" : {
+                  "object" : "network",
+                  "key" : "transport"
+                },
+                "destination" : {
+                  "object" : "network",
+                  "key" : "transport"
+                },
+                "map" : {
+                  "icmpv6" : "ipv6-icmp"
+                }
+              }
+            ]
+          },
+          "source" : "for (action in params.mappings) {\n  def src = ctx[action.source.object];\n  if (src != null) {\n    Map map = action.map;\n    String key = src[action.source.key];\n    String mapping = map[key];\n    if (mapping != null) {\n      Map dst = ctx[action.destination.object];\n      if (dst == null) {\n          dst = new HashMap();\n          ctx[action.destination.object] = dst;\n      }\n      dst[action.destination.key] = mapping;\n    }\n  }\n}"
+        }
+      },
+      {
+        "community_id" : {
+          "ignore_missing" : true,
+          "icmp_type" : "iptables.icmp.type",
+          "icmp_code" : "iptables.icmp.code"
+        }
+      },
+      {
+        "script" : {
+          "lang" : "painless",
+          "params" : {
+            "hex_fields_to_convert" : [
+              "ether_type",
+              "tos",
+              "precedence_bits",
+              "tcp_reserved_bits"
+            ]
+          },
+          "source" : "def iptables = ctx['iptables']; if (iptables != null) {\n  for (key in params.hex_fields_to_convert) {\n    long value = 0;\n    def field = iptables[key];\n    if (field == null) continue;\n    char[] hex = field.toLowerCase().toCharArray();\n    for (chr in hex) {\n      long v = -1;\n      if (chr >= (char) 'a' && chr <= (char) 'f') v = (long) chr - (char) 'a' + 10;\n      else if (chr >= (char) '0' && chr <= (char) '9') v = (long) chr - (char) '0';\n      if (v >= 0) {\n        value = value * 16 + v;\n      }\n    }\n    iptables[key] = value;\n  }\n}"
+        }
+      },
+      {
+        "set" : {
+          "field" : "event.kind",
+          "value" : "event"
+        }
+      },
+      {
+        "append" : {
+          "field" : "event.category",
+          "value" : "network"
+        }
+      },
+      {
+        "append" : {
+          "field" : "event.type",
+          "value" : "connection",
+          "if" : "ctx?.source?.ip != null && ctx?.destination?.ip != null"
+        }
+      },
+      {
+        "append" : {
+          "field" : "related.ip",
+          "value" : "{{source.ip}}",
+          "if" : "ctx?.source?.ip != null"
+        }
+      },
+      {
+        "append" : {
+          "value" : "{{destination.ip}}",
+          "if" : "ctx?.destination?.ip != null",
+          "field" : "related.ip"
+        }
+      },
+      {
+        "rename" : {
+          "field" : "iptables.tcp_reserved_bits",
+          "target_field" : "iptables.tcp.reserved_bits",
+          "ignore_missing" : true
+        }
+      },
+      {
+        "split" : {
+          "separator" : "\\s+",
+          "ignore_missing" : true,
+          "field" : "iptables.tcp.flags"
+        }
+      },
+      {
+        "split" : {
+          "field" : "iptables.fragment_flags",
+          "separator" : "\\s+",
+          "ignore_missing" : true
+        }
+      },
+      {
+        "set" : {
+          "field" : "observer.egress.zone",
+          "value" : "{{iptables.ubiquiti.output_zone}}",
+          "ignore_empty_value" : true
+        }
+      },
+      {
+        "set" : {
+          "field" : "observer.ingress.zone",
+          "value" : "{{iptables.ubiquiti.input_zone}}",
+          "ignore_empty_value" : true
+        }
+      },
+      {
+        "set" : {
+          "field" : "rule.id",
+          "value" : "{{iptables.ubiquiti.rule_number}}",
+          "ignore_empty_value" : true
+        }
+      },
+      {
+        "set" : {
+          "ignore_empty_value" : true,
+          "field" : "rule.name",
+          "value" : "{{iptables.ubiquiti.rule_set}}"
+        }
+      }
+    ],
+    "on_failure" : [
+      {
+        "set" : {
+          "field" : "error.message",
+          "value" : "{{ _ingest.on_failure_message }}"
+        }
+      }
+    ]
+  }

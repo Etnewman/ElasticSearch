@@ -1,0 +1,22 @@
+{
+  "index_patterns" : [
+    "dcgs-db_postgres-iaas-ent*"
+  ],
+  "template" : {
+    "settings" : {
+      "index" : {
+        "lifecycle" : {
+          "rollover_alias" : "dcgs-db_postgres-iaas-ent"
+        }
+      }
+    }
+  },
+  "composed_of" : [
+    "estc_dcgs_defaults",
+    "estc_db_postgres-mappings",
+    "estc_db-settings"
+  ],
+  "_meta" : {
+    "description" : "settings for postgres indexes installed by DCGS Enterprise Services"
+  }
+}

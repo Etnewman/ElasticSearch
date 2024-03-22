@@ -1,0 +1,63 @@
+{
+  "template" : {
+    "settings": {
+      "index": {
+        "query": {
+          "default_field": [
+            "message"
+          ]
+        }
+      }
+    },
+    "mappings" : {
+      "properties" : {
+        "@timestamp" : {
+          "type" : "date"
+        },
+        "@version" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "message" : {
+          "type" : "text"
+        },
+        "user": {
+          "properties": {
+              "name": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+            },
+              "full_name": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+            }
+          }
+        },
+        "event": {
+          "properties": {
+              "module": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+              },
+              "id": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+              },
+              "created": {
+                  "type": "date"
+              },
+              "category": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+              }
+           }
+        }
+      }
+    }
+  },
+  "version" : 0,
+  "_meta" : {
+    "description" : "default mappings for the eracent data",
+    "managed" : true
+  }
+}

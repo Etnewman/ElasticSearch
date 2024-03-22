@@ -1,0 +1,204 @@
+{
+  "template" : {
+    "settings" : {
+      "index" : {
+        "lifecycle" : {
+          "name" : "dcgs_7day_policy"
+        }
+      }
+    },
+    "mappings" : {
+      "properties" : {
+        "process" : {
+          "properties" : {
+            "name" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            },
+            "pid" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            }
+          }
+        },
+        "@timestamp" : {
+          "type" : "date"
+        },
+        "Log" : {
+          "properties" : {
+            "comp" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            },
+            "s2comp" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            },
+            "entid" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            },
+            "level" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            },
+            "audit" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            },
+            "subcomp" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            },
+            "tname" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            },
+            "update" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            },
+            "tid" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            },
+            "reqid" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            },
+            "opid" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            },
+            "eventid" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            },
+            "sub" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            },
+            "user" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            },
+            "username" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            }
+          }
+        },
+        "log" : {
+          "properties" : {
+            "level" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            },
+            "syslog" : {
+              "properties" : {
+                "severity" : {
+                  "properties" : {
+                    "code" : {
+                      "type" : "long"
+                    },
+                    "name" : {
+                      "ignore_above" : 256,
+                      "type" : "keyword"
+                    }
+                  }
+                },
+                "sd-id" : {
+                  "ignore_above" : 256,
+                  "type" : "keyword"
+                },
+                "msgid" : {
+                  "ignore_above" : 256,
+                  "type" : "keyword"
+                },
+                "priority" : {
+                  "ignore_above" : 256,
+                  "type" : "keyword"
+                },
+                "facility" : {
+                  "properties" : {
+                    "code" : {
+                      "type" : "long"
+                    },
+                    "name" : {
+                      "ignore_above" : 256,
+                      "type" : "keyword"
+                    }
+                  }
+                },
+                "version" : {
+                  "ignore_above" : 256,
+                  "type" : "keyword"
+                }
+              }
+            },
+            "facility" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            }
+          }
+        },
+        "@version" : {
+          "ignore_above" : 256,
+          "type" : "keyword"
+        },
+        "host" : {
+          "properties" : {
+            "hostname" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            },
+            "name" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            }
+          }
+        },
+        "event" : {
+          "properties" : {
+            "severity" : {
+              "type" : "long"
+            },
+            "ingested" : {
+              "type" : "date"
+            },
+            "original" : {
+              "type" : "text"
+            },
+            "category" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            },
+            "dataset" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            },
+            "module" : {
+              "ignore_above" : 256,
+              "type" : "keyword"
+            },
+            "created" : {
+              "type" : "date"
+            }
+          }
+        },
+        "message" : {
+          "type" : "text"
+        },
+        "tags" : {
+          "ignore_above" : 256,
+          "type" : "keyword"
+        }
+      }
+    }
+  },
+  "version" : 0,
+  "_meta" : {
+      "description" : "default mappings for loginsight",
+      "managed" : true
+  }
+}

@@ -1,0 +1,43 @@
+{
+    "description" : "Pipeline for parsing Kibana audit logs",
+    "processors" : [
+      {
+        "set" : {
+          "field" : "event.ingested",
+          "value" : "{{_ingest.timestamp}}"
+        }
+      },
+      {
+        "set" : {
+          "copy_from" : "@timestamp",
+          "field" : "event.created"
+        }
+      },
+      {
+        "pipeline" : {
+          "name" : "filebeat-8.6.2-kibana-audit-pipeline-json"
+        }
+      },
+      {
+        "set" : {
+          "field" : "event.kind",
+          "value" : "event"
+        }
+      },
+      {
+        "append" : {
+          "field" : "related.user",
+          "value" : "{{user.name}}",
+          "if" : "ctx?.user?.name != null"
+        }
+      }
+    ],
+    "on_failure" : [
+      {
+        "set" : {
+          "field" : "error.message",
+          "value" : "{{ _ingest.on_failure_message }}"
+        }
+      }
+    ]
+  }

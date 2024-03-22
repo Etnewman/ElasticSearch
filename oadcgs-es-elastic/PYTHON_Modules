@@ -1,0 +1,28 @@
+# This file contains a list of all Python modules needed by the Elastic Data Collector.  All Module files listed should be
+# uploaded to the Python_Modules folder on Nexus:
+#    https://nexus.di2e.net/nexus3/#browse/browse:Private_OADCGS-Infrastructure:Enterprise_Services%2FExternal_Files%2FElastic%2FPython_Modules%2F2.0
+# When uploading the Module file will be prefixed with the Artifact_id and the Artifact_version.
+# The prefix will be removed during packaging for distribution.
+#
+# Note: This file is used by the job.sh script, all lines beginning with # are ignored.  All other lines
+# should contain the name of a valid Python Module Wheel file in the Python_Modules folder on Nexus
+#
+pip-21.3.1-py3-none-any.whl
+idna-3.3-py3-none-any.whl
+pycparser-2.21-py2.py3-none-any.whl
+cffi-1.15.0-cp36-cp36m-manylinux_2_5_x86_64.manylinux1_x86_64.whl
+six-1.16.0-py2.py3-none-any.whl
+certifi-2021.10.8-py2.py3-none-any.whl
+charset_normalizer-2.0.12-py3-none-any.whl
+urllib3-1.26.9-py2.py3-none-any.whl
+cryptography-37.0.2-cp36-abi3-manylinux_2_12_x86_64.manylinux2010_x86_64.whl
+requests-2.27.1-py2.py3-none-any.whl
+elasticsearch-7.16.3-py2.py3-none-any.whl
+pyvmomi-7.0.3-py2.py3-none-any.whl
+setproctitle-1.2.3-cp36-cp36m-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+configparser-5.2.0-py3-none-any.whl
+ply-3.11-py2.py3-none-any.whl
+pycryptodomex-3.14.1-cp35-abi3-manylinux1_x86_64.whl
+pyasn1-0.4.8-py2.py3-none-any.whl
+pysmi-0.3.4-py2.py3-none-any.whl
+pysnmp-4.4.12-py2.py3-none-any.whl

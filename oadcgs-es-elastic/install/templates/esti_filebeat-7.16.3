@@ -1,0 +1,23 @@
+{
+    "index_patterns" : [
+      "filebeat-7.16.3-*"
+    ],
+        "template" : {
+          "settings" : {
+            "index" : {
+              "lifecycle" : {
+                "rollover_alias" : "filebeat-7.16.3"
+              }
+            }
+          }
+        },
+    "composed_of" : [
+      "estc_dcgs_defaults",
+      "estc_filebeat-7.16.3-mappings"
+    ],
+    "priority" : 200,
+    "version" : 0,
+    "_meta" : {
+      "description" : "Filebeat template installed by DCGS Enterprise Services"
+    }
+}

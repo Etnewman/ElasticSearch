@@ -1,0 +1,53 @@
+{
+  "template" : {
+    "settings": {
+      "index": {
+        "query": {
+          "default_field": [
+            "message"
+          ]
+        }
+      }
+    },
+    "mappings" : {
+      "properties" : {
+        "@timestamp" : {
+          "type" : "date"
+        },
+        "@version" : {
+          "ignore_above" : 256,
+          "type" : "keyword"
+        },
+        "action_description" : {
+          "ignore_above" : 256,
+          "type" : "keyword"
+        },
+        "action_type" : {
+          "ignore_above" : 256,
+          "type" : "keyword"
+        },
+        "action_what" : {
+          "ignore_above" : 256,
+          "type" : "keyword"
+        },
+        "commit_id" : {
+          "ignore_above" : 256,
+          "type" : "keyword"
+        },
+        "id" : {
+          "ignore_above" : 256,
+          "type" : "keyword"
+        },
+        "message" : {
+          "type" : "text"
+        },
+        "rowid" : {
+          "type" : "integer"
+        },
+        "submit_time" : {
+          "type" : "date"
+        }
+      }
+    }
+  }
+}

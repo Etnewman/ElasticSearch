@@ -1,0 +1,25 @@
+{
+    "description" : "Pipeline for parsing the Elasticsearch deprecation log file in JSON format.",
+    "on_failure" : [
+      {
+        "set" : {
+          "value" : "{{ _ingest.on_failure_message }}",
+          "field" : "error.message"
+        }
+      }
+    ],
+    "processors" : [
+      {
+        "pipeline" : {
+          "if" : "!ctx.message.contains(\"ecs.version\")",
+          "name" : "filebeat-8.6.2-elasticsearch-deprecation-pipeline-json-7"
+        }
+      },
+      {
+        "pipeline" : {
+          "if" : "ctx.message.contains(\"ecs.version\")",
+          "name" : "filebeat-8.6.2-elasticsearch-deprecation-pipeline-json-8"
+        }
+      }
+    ]
+  }

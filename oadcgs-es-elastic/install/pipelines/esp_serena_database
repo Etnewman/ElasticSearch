@@ -1,0 +1,198 @@
+{"description":"Serena database pipeline provided by Enterprise Services","pipeline":"input {
+
+    # initial query for all open tickets
+    jdbc {
+
+        jdbc_driver_library => \"/etc/logstash/jdbc/mssql-jdbc-7.2.2.jre8.jar\"
+        jdbc_driver_class => \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"
+        jdbc_connection_string => \"jdbc:sqlserver://HOSTNAME:PORT_NUM;domain=DOMAIN_NAME;instanceName=INSTANCE_NAME;databaseName=DATABASE_NAME;integratedSecurity=true;authenticationScheme=JavaKerberos\"
+        jdbc_user => \"${SITENUM}_elastic.svc\"
+        jdbc_password => \"${ES_SVC_ACCT_PASSWORD}\"
+
+        statement => \"SELECT TS_LASTMODIFIEDDATE, TS_SITE, TS_TITLE, TS_ACTIVEINACTIVE, TS_IMPACT, (CASE WHEN TS_SEGMENT IS NULL THEN 0 ELSE TS_SEGMENT END) as ts_segment, (CASE TS_PRIORITY WHEN 1106 THEN 0 WHEN 2936 THEN 1 WHEN 1105 THEN 2 ELSE 3 END) as ts_mission_priority, (CASE TS_MAJOR_CATEGORY WHEN 6 THEN 0 WHEN 68 THEN 1 WHEN 73 THEN 2 ELSE 3 END) as ts_category, TS_ID, TS_SUBMITDATE FROM TSM_INCIDENTS with(nolock) WHERE TSM_INCIDENTS.TS_PROJECTID=109 and TS_ACTIVEINACTIVE=0 and ts_lastmodifieddate > :sql_last_value\"
+
+        use_column_value => true
+        tracking_column => \"ts_lastmodifieddate\"
+        tracking_column_type => \"timestamp\"
+        last_run_metadata_path => \"/etc/logstash/jdbc/lastrun_serena\"
+        add_field =>  { \"db_source\" => \"TSM_INCIDENTS\" }
+
+    }
+
+    # query for open and closed tickets that runs every hour
+    jdbc {
+
+        jdbc_driver_library => \"/etc/logstash/jdbc/mssql-jdbc-7.2.2.jre8.jar\"
+        jdbc_driver_class => \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"
+        jdbc_connection_string => \"jdbc:sqlserver://HOSTNAME:PORT_NUM;domain=DOMAIN_NAME;instanceName=INSTANCE_NAME;databaseName=DATABASE_NAME;integratedSecurity=true;authenticationScheme=JavaKerberos\"
+        jdbc_user => \"${SITENUM}_elastic.svc\"
+        jdbc_password => \"${ES_SVC_ACCT_PASSWORD}\"
+        schedule => \"*/60 * * * *\"
+
+        statement => \"SELECT TS_LASTMODIFIEDDATE, TS_SITE, TS_TITLE, TS_ACTIVEINACTIVE, TS_IMPACT, (CASE WHEN TS_SEGMENT IS NULL THEN 0 ELSE TS_SEGMENT END) as ts_segment, (CASE TS_PRIORITY WHEN 1106 THEN 0 WHEN 2936 THEN 1 WHEN 1105 THEN 2 ELSE 3 END) as ts_mission_priority, (CASE TS_MAJOR_CATEGORY WHEN 6 THEN 0 WHEN 68 THEN 1 WHEN 73 THEN 2 ELSE 3 END) as ts_category, TS_ID, TS_SUBMITDATE FROM TSM_INCIDENTS with(nolock) WHERE TSM_INCIDENTS.TS_PROJECTID=109 and ts_lastmodifieddate > :sql_last_value\"
+
+        use_column_value => true
+        tracking_column => \"ts_lastmodifieddate\"
+        tracking_column_type => \"timestamp\"
+        last_run_metadata_path => \"/etc/logstash/jdbc/lastrun_serena\"
+        add_field =>  { \"db_source\" => \"TSM_INCIDENTS\" }
+
+    }
+
+}
+filter {
+
+    jdbc_static {
+        loaders => [
+            {
+                id => \"serena_sites\"
+                query => \"SELECT TS_ID, TS_TITLE, TS_LOCATION_CODE_2 FROM USR_SITES\"
+                local_table => \"serena_sites\"
+            },
+            {
+                id => \"serena_segments\"
+                query => \"SELECT TS_ID, TS_TITLE FROM USR_SEGMENTS\"
+                local_table => \"serena_segments\"
+            }
+        ]
+        local_db_objects => [
+            {
+                name => \"serena_sites\"
+                index_column => [\"TS_ID\"]
+                columns => [
+                    [\"TS_ID\", \"int\"],
+                    [\"TS_TITLE\", \"varchar(255)\"],
+                    [\"TS_LOCATION_CODE_2\", \"varchar(255)\"]
+                ]
+            },
+            {
+                name => \"serena_segments\"
+                index_column => [\"TS_ID\"]
+                columns => [
+                    [\"TS_ID\", \"int\"],
+                    [\"TS_TITLE\", \"varchar(255)\"]
+                ]
+            }
+        ]
+        local_lookups => [
+            {
+                query => \"select TS_TITLE, TS_LOCATION_CODE_2 from serena_sites WHERE TS_ID = :TS_SITE\"
+                parameters => {TS_SITE => \"[ts_site]\"}
+                target => \"site\"
+            },
+            {
+                query => \"select TS_TITLE from serena_segments WHERE TS_ID = :TS_SEGMENT\"
+                parameters => {TS_SEGMENT => \"[ts_segment]\"}
+                target => \"segment\"
+                default_hash =>  {\"[segment][0][ts_title]\" => \"Empty\" }
+            }
+        ]
+        add_field => {DCGS_Site => \"%{[site][0][ts_title]}\"}
+        add_field => {DCGS_Site_Name => \"%{[site][0][ts_location_code_2]}\"}
+        add_field => {GEO_NAME => \"%{[site][0][ts_location_code_2]}\"}
+        add_field => {Segment => \"%{[segment][0][ts_title]}\"}
+        staging_directory => \"/tmp/logstash/jdbc_static/import_data\"
+        loader_schedule => \"* */12 * * *\"
+        jdbc_driver_library => \"/etc/logstash/jdbc/mssql-jdbc-7.2.2.jre8.jar\"
+        jdbc_driver_class => \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"
+        jdbc_connection_string => \"jdbc:sqlserver://HOSTNAME:PORT_NUM;domain=DOMAIN_NAME;instanceName=INSTANCE_NAME;databaseName=DATABASE_NAME;integratedSecurity=true;authenticationScheme=JavaKerberos\"
+        jdbc_user => \"${SITENUM}_elastic.svc\"
+        jdbc_password => \"${ES_SVC_ACCT_PASSWORD}\"
+
+    }
+
+    if [Segment] == \"NULL\" {
+        mutate {
+            update => { \"Segment\" => \"Not Entered\" }
+        }
+    }
+
+    # Translate priorities
+    translate {
+        field => \"ts_priority\"
+        destination => \"piority\"
+        dictionary => {
+            \"1105\" => \"Critical\"
+            \"1106\" => \"High\"
+            \"1107\" => \"Low\"
+            \"1108\" => \"Medium\"
+            \"1109\" => \"Very Low\"
+            \"2935\" => \"Extremely Low\"
+        }
+        override => true
+        fallback => \"Other\"
+    }
+
+    # Translate impacts
+    translate {
+        field => \"ts_impact\"
+        destination => \"impact\"
+        dictionary => {
+            \"1115\" => \"Critical\"
+            \"1116\" => \"High\"
+            \"1117\" => \"Low\"
+            \"2926\" => \"Medium\"
+            \"2927\" => \"Very Low\"
+            \"2928\" => \"Extremely Low\"
+        }
+        override => true
+        fallback => \"Other\"
+    }
+
+    # Translate categories
+    translate {
+        field => \"ts_category\"
+        destination => \"category\"
+        dictionary => {
+            \"0\" => \"Agile Enclave\"
+            \"1\" => \"UNICORN\"
+            \"2\" => \"Workstation\"
+            \"3\" => \"Other\"
+        }
+        override => true
+        fallback => \"Error\"
+    }
+
+    # Translate mission priorites
+    translate {
+        field => \"ts_mission_priority\"
+        destination => \"mission_priority\"
+        dictionary => {
+            \"0\" => \"High\"
+            \"1\" => \"Very High\"
+            \"2\" => \"Critical\"
+            \"3\" => \"Other\"
+        }
+        override => true
+        fallback => \"Error\"
+    }
+
+    translate {
+        field => \"ts_activeinactive\"
+        destination => \"active_inactive\"
+        dictionary => {
+            \"0\" => \"active\"
+            \"1\" => \"inactive\"
+        }
+    }
+
+    mutate {
+        add_field => { \"[geo][name]\" => \"${SITELOC}\" }
+        rename => { \"ts_id\" => \"EVENT_ID\" }
+        rename => { \"ts_title\" => \"event.original\" }
+        rename => { \"ts_sumbitdate\" => \"event.start\" }
+        rename => { \"ts_lastmodifieddate\" => \"event.Lastmodified\" }
+    }
+
+}
+output {
+    elasticsearch {
+        hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+        index => \"dcgs-db_serena-iaas-ent\"
+        user => \"ls_internal\"
+        password => \"${LS_INTERNAL_PW}\"
+        ssl => true
+        cacert => \"/etc/logstash/certs/cachain.pem\"
+        document_id => \"%{EVENT_ID}\"
+    }
+}","settings":{"pipeline.batch.delay":50,"pipeline.batch.size":125,"pipeline.workers":1,"queue.checkpoint.writes":1024,"queue.max_bytes":"1gb","queue.type":"memory"}}

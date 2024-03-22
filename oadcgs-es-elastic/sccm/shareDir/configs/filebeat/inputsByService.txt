@@ -1,0 +1,37 @@
+#
+# This file contains a list of all services
+# that filebeat can collect data from.  A unique portion
+# of the service name is used to identify if the
+# service is running on a host.  If the service is
+# found to be installed on the host then the associated
+# filebeat configuration to collect data for that service
+# will be copied to the host. Configuration files should be
+# placed in the inputs.d directory.
+#
+# Enter one service per line like this:
+# service name=config.yml  (Do not enclose in quotes)
+# Examples:
+# mcafee endpoint security=endpoint.yml
+# configuration manager client=ccm.yml
+#
+# In the case of a singleworker pipeline service, then :SW should
+# be appended to the end like this:
+# service name=config.yml:SW (Do not enclose in quotes)
+# Example:
+# REnDER=render.yml:SW
+#
+# Additionally, the singleworker pipeline can be set by
+# appending -SW at the end of a config file name like this:
+# (in \configs\filebeat\) filename-SW.yml
+# Example:
+# ls01.filebeat-SW.yml
+#
+# Note: The above examples are commented out with the pound sign.
+#       Any line that begins with a pound sign in this file is
+#       ignored.  Do not begin lines that should be evaulated
+#       with a pound sign.
+#
+
+REnDER=render.yml:SW
+UNICORN=unicorn.yml
+Wildfly=fmv_maas_server.yml

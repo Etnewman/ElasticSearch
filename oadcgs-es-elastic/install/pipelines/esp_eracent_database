@@ -1,0 +1,67 @@
+{"description":"eracent pipeline provided by Enterprise Services","pipeline":"input {
+  jdbc {
+        jdbc_driver_library => \"/etc/logstash/jdbc/mssql-jdbc-7.2.2.jre8.jar\"
+        jdbc_driver_class => \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"
+        jdbc_connection_string => \"jdbc:sqlserver://OADCGS02.dcgs.mil:1460;domain=dcgs.mil;integratedSecurity=true;authenticationScheme=JavaKerberos\"
+        jdbc_user => \"${SITENUM}_elastic.svc\"
+        jdbc_password => \"${ES_SVC_ACCT_PASSWORD}\"
+        schedule => \"* * * * *\"
+
+        statement => \"select logid, logdate, username, logtext from Eracent_Reporting.dbo.T_AuditLogs where logdate > :sql_last_value\"
+
+        use_column_value => true
+        tracking_column => \"logdate\"
+        tracking_column_type => \"timestamp\"
+        last_run_metadata_path => \"/etc/logstash/jdbc/lastruneracent\"
+    }
+}
+
+filter {
+
+    # extract just user name and place in [user][name]
+    ruby {
+        code => '
+            name = event.get(\"username\")
+            name = name.gsub(/[()]/, \"\") # Remove any parens
+            names = name.split(\"\\\\\")
+            if(names.length() > 1)
+                event.set(\"[user][name]\", names[1])
+            else
+                event.set(\"[user][name]\", names[0])
+            end
+        '
+    }
+
+    mutate {
+        add_field => { \"DCGS_Site\" => \"${SITE}\" }
+        add_field => { \"DCGS_Site_Name\" => \"${SITELOC}\" }
+        add_field => { \"[geo][name]\" => \"${SITELOC}\" }
+        add_field => { \"[event][module]\" => \"eracent\" }
+        add_field => { \"[event][category]\" => \"database\" }
+        # date filter has issues when field is already logstash timestamp so use copy
+        copy => { \"@timestamp\" => \"[event][created]\" }
+        copy => { \"logdate\" => \"@timestamp\" }
+        rename => { \"logid\" => \"[event][id]\" }
+        rename => { \"logtext\" => \"message\" }
+        rename => { \"username\" => \"[user][full_name]\" }
+        remove_field => [ \"logdate\" ]
+    }
+    translate {
+        field => \"DCGS_Site_Name\"
+        destination => \"[geo][location]\"
+        override => \"true\"
+        fallback => \"0,0\"
+        dictionary_path => '/etc/logstash/dictionaries/site_coordinates.yml'
+    }
+}
+
+output {
+    elasticsearch {
+        hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+        index => \"dcgs-db_eracent-iaas-ent\"
+        user => \"ls_internal\"
+        password => \"${LS_INTERNAL_PW}\"
+        ssl => true
+        cacert => \"/etc/logstash/certs/cachain.pem\"
+    }
+}","settings":{"pipeline.batch.delay":50,"pipeline.batch.size":125,"pipeline.workers":1,"queue.checkpoint.writes":1024,"queue.max_bytes":"1gb","queue.type":"persisted"}}

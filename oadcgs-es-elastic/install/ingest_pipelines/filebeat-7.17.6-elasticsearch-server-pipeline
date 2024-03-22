@@ -1,0 +1,120 @@
+{
+    "description" : "Pipeline for parsing elasticsearch server logs",
+    "processors" : [
+      {
+        "set" : {
+          "field" : "event.ingested",
+          "value" : "{{_ingest.timestamp}}"
+        }
+      },
+      {
+        "rename" : {
+          "field" : "@timestamp",
+          "target_field" : "event.created"
+        }
+      },
+      {
+        "grok" : {
+          "field" : "message",
+          "patterns" : [
+            "^%{CHAR:first_char}"
+          ],
+          "pattern_definitions" : {
+            "CHAR" : "."
+          }
+        }
+      },
+      {
+        "pipeline" : {
+          "if" : "ctx.first_char != '{'",
+          "name" : "filebeat-7.17.6-elasticsearch-server-pipeline-plaintext"
+        }
+      },
+      {
+        "pipeline" : {
+          "if" : "ctx.first_char == '{'",
+          "name" : "filebeat-7.17.6-elasticsearch-server-pipeline-json"
+        }
+      },
+      {
+        "script" : {
+          "source" : "if (ctx.elasticsearch.server.gc != null && ctx.elasticsearch.server.gc.observation_duration != null) {\n  if (ctx.elasticsearch.server.gc.observation_duration.unit == params.seconds_unit) {\n    ctx.elasticsearch.server.gc.observation_duration.ms = ctx.elasticsearch.server.gc.observation_duration.time * params.ms_in_one_s;\n  }\n  if (ctx.elasticsearch.server.gc.observation_duration.unit == params.milliseconds_unit) {\n    ctx.elasticsearch.server.gc.observation_duration.ms = ctx.elasticsearch.server.gc.observation_duration.time;\n  }\n  if (ctx.elasticsearch.server.gc.observation_duration.unit == params.minutes_unit) {\n    ctx.elasticsearch.server.gc.observation_duration.ms = ctx.elasticsearch.server.gc.observation_duration.time * params.ms_in_one_m;\n  }\n} if (ctx.elasticsearch.server.gc != null && ctx.elasticsearch.server.gc.collection_duration != null) {\n  if (ctx.elasticsearch.server.gc.collection_duration.unit == params.seconds_unit) {\n    ctx.elasticsearch.server.gc.collection_duration.ms = ctx.elasticsearch.server.gc.collection_duration.time * params.ms_in_one_s;\n  }\n  if (ctx.elasticsearch.server.gc.collection_duration.unit == params.milliseconds_unit) {\n    ctx.elasticsearch.server.gc.collection_duration.ms = ctx.elasticsearch.server.gc.collection_duration.time;\n  }\n  if (ctx.elasticsearch.server.gc.collection_duration.unit == params.minutes_unit) {\n    ctx.elasticsearch.server.gc.collection_duration.ms = ctx.elasticsearch.server.gc.collection_duration.time * params.ms_in_one_m;\n  }\n}",
+          "params" : {
+            "ms_in_one_m" : 60000,
+            "minutes_unit" : "m",
+            "seconds_unit" : "s",
+            "milliseconds_unit" : "ms",
+            "ms_in_one_s" : 1000
+          },
+          "lang" : "painless"
+        }
+      },
+      {
+        "set" : {
+          "field" : "event.kind",
+          "value" : "event"
+        }
+      },
+      {
+        "set" : {
+          "value" : "database",
+          "field" : "event.category"
+        }
+      },
+      {
+        "script" : {
+          "lang" : "painless",
+          "source" : "def errorLevels = ['FATAL', 'ERROR']; if (ctx?.log?.level != null) {\n  if (errorLevels.contains(ctx.log.level)) {\n    ctx.event.type = 'error';\n  } else {\n    ctx.event.type = 'info';\n  }\n}"
+        }
+      },
+      {
+        "set" : {
+          "field" : "host.name",
+          "value" : "{{elasticsearch.node.name}}",
+          "ignore_empty_value" : true
+        }
+      },
+      {
+        "set" : {
+          "field" : "host.id",
+          "value" : "{{elasticsearch.node.id}}",
+          "ignore_empty_value" : true
+        }
+      },
+      {
+        "remove" : {
+          "field" : [
+            "elasticsearch.server.gc.collection_duration.time",
+            "elasticsearch.server.gc.collection_duration.unit",
+            "elasticsearch.server.gc.observation_duration.time",
+            "elasticsearch.server.gc.observation_duration.unit"
+          ],
+          "ignore_missing" : true
+        }
+      },
+      {
+        "remove" : {
+          "ignore_missing" : true,
+          "field" : [
+            "elasticsearch.server.timestamp",
+            "elasticsearch.server.@timestamp"
+          ]
+        }
+      },
+      {
+        "remove" : {
+          "field" : [
+            "first_char"
+          ]
+        }
+      }
+    ],
+    "on_failure" : [
+      {
+        "set" : {
+          "value" : "{{ _ingest.on_failure_message }}",
+          "field" : "error.message"
+        }
+      }
+    ]
+  }

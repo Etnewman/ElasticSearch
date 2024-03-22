@@ -1,0 +1,24 @@
+{
+  "template": {
+    "settings": {
+      "index": {
+        "lifecycle": {
+          "rollover_alias": "dcgs-db_eracent-iaas-ent"
+        }
+      }
+    }
+  },
+  "index_patterns": [
+    "dcgs-db_eracent*"
+  ],
+  "composed_of": [
+    "estc_dcgs_defaults",
+    "estc_eracent-mappings"
+  ],
+    "priority" : 200,
+    "version" : 0,
+    "_meta" : {
+      "description" : "settings for Eracent database indexes installed by DCGS Enterprise Services`",
+      "managed" : true
+  }
+}

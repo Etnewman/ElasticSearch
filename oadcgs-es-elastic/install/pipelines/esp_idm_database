@@ -1,0 +1,41 @@
+{"description":"This provides connection to the IDM server (OneIdentity)","pipeline":"input {
+  jdbc {
+        jdbc_driver_library => \"/etc/logstash/jdbc/mssql-jdbc-7.2.2.jre8.jar\"
+        jdbc_driver_class => \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"
+        jdbc_connection_string => \"jdbc:sqlserver://OADCGS01.dcgs.mil:1440;domain=dcsg.mil;integratedSecurity=true;authenticationScheme=JavaKerberos\"
+        jdbc_user => \"${SITENUM}_elastic.svc\"
+        jdbc_password => \"${ES_SVC_ACCT_PASSWORD}\"
+        schedule => \"* * * * *\"
+        statement => \"SELECT * FROM CCCDialogWatchPropertyExp WHERE xdateupdated > :sql_last_value\"
+        use_column_value => true
+        tracking_column => \"xdateupdated\"
+        tracking_column_type => \"timestamp\"
+        last_run_metadata_path => \"/etc/logstash/jdbc/lastrun_idm\"
+    }
+}
+filter {
+    # Add Orignating Site to document
+    mutate {
+        add_field => { \"DCGS_Site\" => \"${SITE}\" }
+        add_field => { \"DCGS_Site_Name\" => \"${SITELOC}\" }
+        add_field => { \"[geo][name]\" => \"${SITELOC}\" }
+        lowercase => \"ccc_hostname\"
+    }
+    translate {
+        field => \"DCGS_Site_Name\"
+        destination => \"[geo][location]\"
+        override => \"true\"
+        fallback => \"0,0\"
+        dictionary_path => '/etc/logstash/dictionaries/site_coordinates.yml'
+    }
+}
+output {
+    elasticsearch {
+        hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+        index => \"dcgs-db_idm-iaas-ent\"
+        user => \"ls_internal\"
+        password => \"${LS_INTERNAL_PW}\"
+        ssl => true
+        cacert => \"/etc/logstash/certs/cachain.pem\"
+    }
+}","settings":{"pipeline.batch.delay":50,"pipeline.batch.size":125,"pipeline.workers":1,"queue.checkpoint.writes":1024,"queue.max_bytes":"1gb","queue.type":"persisted"}}

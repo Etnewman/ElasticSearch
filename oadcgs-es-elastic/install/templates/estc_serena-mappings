@@ -1,0 +1,104 @@
+{
+  "template" : {
+    "mappings" : {
+      "properties" : {
+        "@timestamp" : {
+          "type" : "date"
+        },
+        "@version" : {
+          "type" : "keyword",
+      	  "ignore_above" : 256
+        },
+        "EVENT_ID" : {
+          "type" : "long"
+        },
+        "GEO_NAME" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "Segment" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "active_inactive" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "category" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "db_source" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "event" : {
+          "properties" : {
+            "Lastmodified" : {
+              "type" : "date"
+            },
+            "original" : {
+              "type" : "text"
+            }
+		      }
+        },
+        "impact" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "mission_priority" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "piority" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "segment" : {
+          "properties" : {
+            "ts_title" : {
+              "type" : "keyword",
+			        "ignore_above" : 256
+            }
+          }
+        },
+        "site" : {
+          "properties" : {
+            "ts_location_code_2" : {
+              "type" : "keyword",
+			  "ignore_above" : 256
+            },
+            "ts_title" : {
+              "type" : "keyword",
+			  "ignore_above" : 256
+            }
+          }
+        },
+        "ts_activeinactive" : {
+          "type" : "long"
+        },
+        "ts_category" : {
+          "type" : "long"
+        },
+        "ts_impact" : {
+          "type" : "long"
+        },
+        "ts_mission_priority" : {
+          "type" : "long"
+        },
+        "ts_priority" : {
+          "type" : "long"
+        },
+        "ts_segment" : {
+          "type" : "long"
+        },
+        "ts_site" : {
+          "type" : "long"
+        },
+        "ts_submitdate" : {
+          "type" : "date"
+        }
+      }
+    }
+  }
+}

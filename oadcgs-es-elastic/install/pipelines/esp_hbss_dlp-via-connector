@@ -1,0 +1,59 @@
+{"description":"Pipeline to receive data from EPO ArcSight connector(DLP Workarond)","pipeline":"input {
+    tcp {
+        port => 5056
+        ssl_enable => true
+        ssl_certificate_authorities => [\"/etc/logstash/certs/cachain.pem\"]
+        ssl_cert => \"/etc/logstash/certs/${HOSTNAME}.crt\"
+        ssl_key => \"/etc/logstash/certs/${HOSTNAME}_pkcs8.key\"
+        ssl_key_passphrase => \"${SSL_PASSPHRASE}\"
+        ssl_verify => false
+
+        codec => cef {
+            ecs_compatibility => v1
+            delimiter => \"\
+\"
+        }
+    }
+}
+
+filter {
+    if [@metadata][input][tcp][source] and ![host] {
+        mutate {
+            copy => {
+                \"[@metadata][input][tcp][source][name]\" => \"[host][hostname]\"
+                \"[@metadata][input][tcp][source][ip]\"   => \"[host][ip]\"
+            }
+        }
+    }
+
+    mutate {
+        add_field => { \"DCGS_Site\" => \"${SITE}\" }
+        add_field => { \"DCGS_Site_Name\" => \"${SITELOC}\" }
+        add_field => { \"[geo][name]\" => \"${SITELOC}\" }
+        copy => { \"@timestamp\" => \"[event][created]\" }
+        copy => { \"message\" => \"[event][original]\" }
+    }
+    translate {
+        field => \"DCGS_Site_Name\"
+        destination => \"[geo][location]\"
+        override => \"true\"
+        fallback => \"0,0\"
+        dictionary_path => '/etc/logstash/dictionaries/site_coordinates.yml'
+    }
+
+    if [event][code] != \"19115\" and [event][code] != \"DEVICE_PLUG\" {
+        drop { }
+    }
+}
+
+output {
+    elasticsearch {
+        hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+        index => \"dcgs-hbss_epo_dlp-iaas-ent\"
+        user => \"ls_internal\"
+        password => \"${LS_INTERNAL_PW}\"
+        ssl => true
+        cacert => \"/etc/logstash/certs/cachain.pem\"
+    }
+}
+","settings":{"pipeline.batch.delay":50,"pipeline.batch.size":125,"pipeline.workers":1,"queue.checkpoint.writes":1024,"queue.max_bytes":"1gb","queue.type":"persisted"}}

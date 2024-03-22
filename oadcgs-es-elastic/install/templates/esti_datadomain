@@ -1,0 +1,23 @@
+{
+    "index_patterns" : [
+      "dcgs-device_datadomain-iaas-ent*"
+    ],
+        "template" : {
+          "settings" : {
+            "index" : {
+              "lifecycle" : {
+                "rollover_alias" : "dcgs-device_datadomain-iaas-ent"
+              }
+            }
+          }
+        },
+    "composed_of" : [
+      "estc_dcgs_defaults",
+      "estc_datadomain-mappings"
+    ],
+    "priority" : 200,
+    "version" : 0,
+    "_meta" : {
+      "description" : "Data Domain template installed by DCGS Enterprise Services"
+    }
+}

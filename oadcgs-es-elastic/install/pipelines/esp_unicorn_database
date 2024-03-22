@@ -1,0 +1,145 @@
+{"description":"UNICORN database pipeline provided by Enterprise Services","pipeline":"input {
+
+  jdbc {
+    jdbc_driver_library => \"/etc/logstash/jdbc/mssql-jdbc-7.2.2.jre8.jar\"
+    jdbc_driver_class => \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"
+    jdbc_connection_string => \"jdbc:sqlserver://HOSTNAME;databaseName=DATABASE_NAME;integratedSecurity=true;authenticationScheme=JavaKerberos\"
+    jdbc_user => \"${SITENUM}_elastic.svc\"
+    jdbc_password => \"${ES_SVC_ACCT_PASSWORD}\"
+    schedule => \"* * * * *\"
+    statement => \"SELECT access_id, access_date, access_user, access_description_txt, access_url_txt FROM access WHERE access_date > :sql_last_value\"
+
+    use_column_value => true
+    tracking_column => \"access_date\"
+    tracking_column_type => \"timestamp\"
+    last_run_metadata_path => \"/etc/logstash/jdbc/lastrununicornaccess\"
+  }
+
+  jdbc {
+    jdbc_driver_library => \"/etc/logstash/jdbc/mssql-jdbc-7.2.2.jre8.jar\"
+    jdbc_driver_class => \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"
+    jdbc_connection_string => \"jdbc:sqlserver://HOSTNAME;databaseName=DATABASE_NAME;integratedSecurity=true;authenticationScheme=JavaKerberos\"
+    jdbc_user => \"${SITENUM}_elastic.svc\"
+    jdbc_password => \"${ES_SVC_ACCT_PASSWORD}\"
+    schedule => \"* * * * *\"
+    statement => \"SELECT ACTION_ID, ACTION_DATE, ACTION_USER, ACTION_DESCRIPTION_TXT, ACTION_ENTITY_ID, ACTION_URL_TXT  from ACTION WHERE action_date > :sql_last_value\"
+
+    use_column_value => true
+    tracking_column => \"action_date\"
+    tracking_column_type => \"timestamp\"
+    last_run_metadata_path => \"/etc/logstash/jdbc/lastrununicornaccess\"
+  }
+
+  jdbc {
+    jdbc_driver_library => \"/etc/logstash/jdbc/mssql-jdbc-7.2.2.jre8.jar\"
+    jdbc_driver_class => \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"
+    jdbc_connection_string => \"jdbc:sqlserver://HOSTNAME;databaseName=DATABASE_NAME;integratedSecurity=true;authenticationScheme=JavaKerberos\"
+    jdbc_user => \"${SITENUM}_elastic.svc\"
+    jdbc_password => \"${ES_SVC_ACCT_PASSWORD}\"
+    schedule => \"* * * * *\"
+    statement => \"SELECT AMQP_ID, AMQP_DATE, AMQP_USER, AMQP_DESCRIPTION_TXT, AMQP_ENTITY_ID, AMQP_URL_TXT from AMQP WHERE amqp_date > :sql_last_value\"
+
+    use_column_value => true
+    tracking_column => \"amqp_date\"
+    tracking_column_type => \"timestamp\"
+    last_run_metadata_path => \"/etc/logstash/jdbc/lastrununicornaccess\"
+  }
+
+  jdbc {
+    jdbc_driver_library => \"/etc/logstash/jdbc/mssql-jdbc-7.2.2.jre8.jar\"
+    jdbc_driver_class => \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"
+    jdbc_connection_string => \"jdbc:sqlserver://HOSTNAME;databaseName=DATABASE_NAME;integratedSecurity=true;authenticationScheme=JavaKerberos\"
+    jdbc_user => \"${SITENUM}_elastic.svc\"
+    jdbc_password => \"${ES_SVC_ACCT_PASSWORD}\"
+    schedule => \"* * * * *\"
+    statement => \"SELECT ERROR_ID, ERROR_DATE, ERROR_USER, ERROR_DESCRIPTION_TXT, ERROR_EXCEPTION_TXT, ERROR_URL_TXT FROM ERROR WHERE error_date > :sql_last_value\"
+
+    use_column_value => true
+    tracking_column => \"error_date\"
+    tracking_column_type => \"timestamp\"
+    last_run_metadata_path => \"/etc/logstash/jdbc/lastrununicornaccess\"
+  }
+
+  jdbc {
+    jdbc_driver_library => \"/etc/logstash/jdbc/mssql-jdbc-7.2.2.jre8.jar\"
+    jdbc_driver_class => \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"
+    jdbc_connection_string => \"jdbc:sqlserver://HOSTNAME;databaseName=DATABASE_NAME;integratedSecurity=true;authenticationScheme=JavaKerberos\"
+    jdbc_user => \"${SITENUM}_elastic.svc\"
+    jdbc_password => \"${ES_SVC_ACCT_PASSWORD}\"
+    schedule => \"* * * * *\"
+    statement => \"SELECT LOG4NET_ID, LOG4NET_DATE, LOG4NET_USER, LOG4NET_THREAD, LOG4NET_LEVEL, LOG4NET_LOGGER, LOG4NET_MESSAGE, LOG4NET_EXCEPTION, LOG4NET_URL_TXT FROM LOG4NET WHERE log4net_date > :sql_last_value\"
+
+    use_column_value => true
+    tracking_column => \"log4net_date\"
+    tracking_column_type => \"timestamp\"
+    last_run_metadata_path => \"/etc/logstash/jdbc/lastrununicornaccess\"
+  }
+
+  jdbc {
+    jdbc_driver_library => \"/etc/logstash/jdbc/mssql-jdbc-7.2.2.jre8.jar\"
+    jdbc_driver_class => \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"
+    jdbc_connection_string => \"jdbc:sqlserver://HOSTNAME;databaseName=DATABASE_NAME;integratedSecurity=true;authenticationScheme=JavaKerberos\"
+    jdbc_user => \"${SITENUM}_elastic.svc\"
+    jdbc_password => \"${ES_SVC_ACCT_PASSWORD}\"
+    schedule => \"* * * * *\"
+    statement => \"SELECT SECURITY_ID, SECURITY_DATE, SECURITY_USER, SECURITY_DESCRIPTION_TXT, SECURITY_URL_TXT FROM SECURITY WHERE security_date > :sql_last_value\"
+
+    use_column_value => true
+    tracking_column => \"security_date\"
+    tracking_column_type => \"timestamp\"
+    last_run_metadata_path => \"/etc/logstash/jdbc/lastrununicornaccess\"
+  }
+  jdbc {
+    jdbc_driver_library => \"/etc/logstash/jdbc/mssql-jdbc-7.2.2.jre8.jar\"
+    jdbc_driver_class => \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"
+    jdbc_connection_string => \"jdbc:sqlserver://HOSTNAME;databaseName=DATABASE_NAME;integratedSecurity=true;authenticationScheme=JavaKerberos\"
+    jdbc_user => \"${SITENUM}_elastic.svc\"
+    jdbc_password => \"${ES_SVC_ACCT_PASSWORD}\"
+    schedule => \"* * * * *\"
+    statement => \"SELECT SYSTEM_ID, SYSTEM_DATE, SYSTEM_USER_TXT, SYSTEM_DESCRIPTION_TXT, SYSTEM_URL_TXT FROM SYSTEM  WHERE system_date > :sql_last_value\"
+
+    use_column_value => true
+    tracking_column => \"system_date\"
+    tracking_column_type => \"timestamp\"
+    last_run_metadata_path => \"/etc/logstash/jdbc/lastrununicornaccess\"
+  }
+}
+
+filter {
+
+  # Add Orignating Site to document
+  mutate {
+    add_field => { \"DCGS_Site\" => \"${SITE}\" }
+    add_field => { \"DCGS_Site_Name\" => \"${SITELOC}\" }
+    add_field => { \"[geo][name]\" => \"${SITELOC}\" }
+
+    # Copies the originating document's date into timestamp. Ignores copy command if the source field doesn't exist.
+
+    copy => { \"access_date\" => \"@timestamp\" }
+    copy => { \"action_date\" => \"@timestamp\" }
+    copy => { \"amqp_date\" => \"@timestamp\" }
+    copy => { \"error_date\" => \"@timestamp\" }
+    copy => { \"log4net_date\" => \"@timestamp\" }
+    copy => { \"security_date\" => \"@timestamp\" }
+    copy => { \"system_date\" => \"@timestamp\" }
+  }
+
+  translate {
+    field => \"DCGS_Site_Name\"
+    destination => \"[geo][location]\"
+    override => \"true\"
+    fallback => \"0,0\"
+    dictionary_path => '/etc/logstash/dictionaries/site_coordinates.yml'
+    }
+}
+
+output {
+  elasticsearch {
+      hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+      index => \"dcgs-db_geo-ha-unicorn-iaas-ent\"
+      user => \"ls_internal\"
+      password => \"${LS_INTERNAL_PW}\"
+      ssl => true
+      cacert => \"/etc/logstash/certs/cachain.pem\"
+  }
+}","settings":{"pipeline.batch.delay":50,"pipeline.batch.size":125,"pipeline.workers":1,"queue.checkpoint.writes":1024,"queue.max_bytes":"1gb","queue.type":"memory"}}

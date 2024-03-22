@@ -1,0 +1,21 @@
+{
+  "template" : {
+    "settings" : {
+      "index" : {
+        "lifecycle" : {
+          "rollover_alias" : "dcgs-filebeat-sr-ashes"
+        }
+      }
+    }
+  },
+    "index_patterns" : [
+      "dcgs-filebeat-sr-ashes*"
+    ],
+    "composed_of" : [ "estc_dcgs_defaults", "estc_dcgs_app_defaults", "estc_ashes-mappings" ],
+    "priority" : 150,
+    "version" : 0,
+    "_meta" : {
+      "description" : "settings for Ashes indexes installed by DCGS Enterprise Services",
+      "managed" : true
+ }
+}

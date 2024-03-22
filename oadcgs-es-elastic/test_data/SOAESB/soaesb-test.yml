@@ -1,0 +1,20 @@
+- type: log
+  enabled: true
+  exclude_lines: ["^\\s+[\\-`('.|_]"] # drop asciiart lines
+  paths:
+    - '/tmp/ingest/SOAESB*.log'
+  json.message_key: log
+  json.keys_under_root: true
+  json.overwrite_keys: true
+  multiline.pattern: '^[0-9]{4}' # Any line that starts with the year is a timestamp
+  multiline.negate: true
+  multiline.match: after
+
+  processors:
+    - decode_json_fields:
+        fields: ['message']
+        process_array: true
+        max_depth: 10
+        target: 'log'
+        overwrite_keys: true
+  tags: ['SOAESB']

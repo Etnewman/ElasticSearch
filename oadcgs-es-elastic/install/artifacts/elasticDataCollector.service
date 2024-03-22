@@ -1,0 +1,20 @@
+[Unit]
+Description = elasticDataCollector - ESS Elastic Data Collector python app to monitor (Infrastruction/app/host) health
+After=network-online.target
+
+[Service]
+Type = simple
+
+Environment=SCRIPT_DIR=/etc/logstash/scripts
+
+ExecStart = /etc/logstash/scripts/venv/bin/python ${SCRIPT_DIR}/elasticDataCollector.py
+
+StandardOutput=syslog
+StandardError=syslog
+
+TimeoutStartSec=5
+Restart= always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

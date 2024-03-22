@@ -1,0 +1,24 @@
+{
+        "index_patterns" : [
+          "winlogbeat-8.6.2*"
+        ],
+        "template" : {
+          "settings" : {
+            "index" : {
+              "lifecycle" : {
+                "rollover_alias" : "winlogbeat-8.6.2"
+              }
+            }
+          }
+        },
+        "composed_of" : [
+          "estc_dcgs_defaults",
+          "estc_winlogbeat-8.6.2-mappings",
+          "estc_winlogbeat-settings"
+        ],
+        "priority" : 200,
+        "version" : 0,
+        "_meta" : {
+          "description" : "Winlogbeat template installed by DCGS Enterprise Services"
+        }
+      }

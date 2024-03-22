@@ -1,0 +1,49 @@
+{
+        "template" : {
+          "mappings" : {
+            "properties" : {
+              "Log" : {
+                "type" : "object",
+                "properties" : {
+                  "vmw_cluster" : {
+                    "type" : "keyword"
+                  },
+                  "vmw_datacenter" : {
+                    "type" : "keyword"
+                  },
+                  "syslog_identifier" : {
+                    "type" : "keyword"
+                  },
+                  "vmw_object_id" : {
+                    "type" : "keyword"
+                  },
+                  "pri_severity" : {
+                    "type" : "keyword"
+                  },
+                  "agentgenerated" : {
+                    "type" : "keyword"
+                  },
+                  "generator" : {
+                    "type" : "keyword"
+                  },
+                  "pri_facility" : {
+                    "type" : "keyword"
+                  },
+                  "vmw_host" : {
+                    "type" : "keyword"
+                  },
+                  "vmw_vcenter" : {
+                    "type" : "keyword"
+                  },
+                  "vmw_vcenter_id" : {
+                    "type" : "keyword"
+                  },
+                  "vmw_vr_ops_id" : {
+                    "type" : "keyword"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }

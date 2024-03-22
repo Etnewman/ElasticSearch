@@ -1,0 +1,45 @@
+{
+    "description" : "Pipeline for parsing Kibana ECS audit logs",
+    "processors" : [
+      {
+        "set" : {
+          "field" : "event.ingested",
+          "value" : "{{_ingest.timestamp}}"
+        }
+      },
+      {
+        "set" : {
+          "copy_from" : "@timestamp",
+          "field" : "event.created"
+        }
+      },
+      {
+        "script" : {
+          "description" : "Merges filebeat generated fields with ECS log content",
+          "source" : "ctx.json.keySet().each(key -> ctx.merge(key, ctx.json.get(key), (oldValue, newValue) -> {\n  if (newValue instanceof Map) {\n    newValue.putAll(oldValue);\n  }\n\n  return newValue;\n}))",
+          "lang" : "painless",
+          "if" : "ctx.json != null"
+        }
+      },
+      {
+        "script" : {
+          "lang" : "painless",
+          "description" : "Overrides log entry with custom field values. Applicable when fields_under_root is true",
+          "if" : "ctx.fields != null",
+          "source" : "ctx.fields.keySet().each(key -> ctx.merge(key, ctx.fields.get(key), (oldValue, newValue) -> {\n  if (oldValue instanceof Map) {\n    oldValue.putAll(newValue);\n  }\n\n  return oldValue;\n}));"
+        }
+      },
+      {
+        "remove" : {
+          "ignore_missing" : true,
+          "field" : "fields"
+        }
+      },
+      {
+        "remove" : {
+          "field" : "json",
+          "ignore_missing" : true
+        }
+      }
+    ]
+  }

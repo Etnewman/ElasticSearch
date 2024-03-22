@@ -1,0 +1,110 @@
+  {
+    "trigger" : {
+      "schedule" : {
+        "interval" : "5m"
+      }
+    },
+    "input" : {
+      "search" : {
+        "request" : {
+          "search_type" : "query_then_fetch",
+          "indices" : [
+            "dcgs-current-healthdata-iaas-ent"
+          ],
+          "rest_total_hits_as_int" : true,
+          "body" : {
+            "size" : 500,
+            "query" : {
+              "bool" : {
+                "must_not" : [
+                  {
+                    "range" : {
+                      "@timestamp" : {
+                        "gt" : "now-5m"
+                      }
+                    }
+                  },
+                  {
+                    "multi_match" : {
+                      "query" : "Stale",
+                      "fields" : [
+                        "host.Health",
+                        "app.Health",
+                        "app.status",
+                        "group.Health"
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "condition" : {
+      "compare" : {
+        "ctx.payload.hits.total" : {
+          "gt" : 0
+        }
+      }
+    },
+    "actions" : {
+      "index_payload" : {
+        "transform" : {
+          "script" : {
+            "source" : "
+          List documents = [];
+          for (def hit : ctx.payload.hits.hits) {
+          Map doc = new HashMap();
+          doc.putAll(hit['_source']);
+          doc['@timestamp'] = ctx['execution_time'];
+          doc['_id'] = hit['_id'];
+          doc['updated_By'] = 'WATCHER-STALE';
+
+          def metadata = doc['metadata'];
+          if (metadata != null) {
+              def docSubtype = metadata['DocSubtype'];
+              if (docSubtype != null) {
+                  if (docSubtype == 'app-host') {
+                      doc['app']['Status'] = 'Stale';
+                      doc['host']['Health'] = 'Stale';
+                      doc['host']['HealthSymptoms'] = 'Not_Reporting';
+                  } else if (docSubtype == 'app-overall') {
+                      doc['app']['Health'] = 'Stale';
+                      doc['app']['HealthSymptoms'] = 'Not_Reporting';
+                  } else if (docSubtype == 'group') {
+                      doc['group']['Health'] = 'Stale';
+                      doc['group']['HealthSymptoms'] = 'Not_Reporting';
+                  } else if (docSubtype == 'host') {
+                      doc['host']['Health'] = 'Stale';
+                      doc['host']['HealthSymptoms'] = 'Not_Reporting';
+                  }  else if (docSubtype == 'datacollector') {
+                      doc['app.Status'] = 'Stale';
+                    }
+                  }
+                }
+
+          documents.add(doc);
+      }
+
+      if (documents.size() > 0) {
+          return [\"_doc\": documents];
+      }
+          ",
+            "lang" : "painless"
+          }
+        },
+        "index" : {
+          "index" : "dcgs-current-healthdata-iaas-ent"
+        }
+      }
+    },
+    "metadata" : {
+      "name" : "esw_current-healthdata-stale-state",
+      "xpack" : {
+        "type" : "json"
+      }
+    }
+  }
+}

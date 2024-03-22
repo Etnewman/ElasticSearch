@@ -1,0 +1,25 @@
+{
+  "template" : {
+    "settings" : {
+      "index" : {
+        "lifecycle" : {
+          "rollover_alias" : "dcgs-filebeat-soaesb"
+        }
+      }
+    }
+  },
+    "index_patterns" : [
+      "dcgs-filebeat-soaesb-*"
+    ],
+    "composed_of" : [
+      "estc_dcgs_defaults",
+      "estc_dcgs_app_defaults",
+      "estc_soaesb-mappings"
+    ],
+    "priority" : 150,
+    "version" : 0,
+    "_meta" : {
+      "description" : "settings for SOAESB indexes",
+      "managed" : true
+ }
+}

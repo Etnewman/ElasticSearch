@@ -1,0 +1,24 @@
+{
+  "template" : {
+    "settings" : {
+      "index" : {
+        "lifecycle" : {
+          "rollover_alias" : "dcgs-loginsight_syslog-iaas-ent"
+        }
+      }
+    }
+  },
+  "index_patterns" : [
+    "dcgs-loginsight_syslog-iaas-ent-*"
+  ],
+  "composed_of" : [
+    "estc_dcgs_defaults",
+    "estc_loginsight_syslog-mappings"
+  ],
+  "priority" : 201,
+  "version" : 0,
+  "_meta" : {
+    "managed" : true,
+    "description" : "settings for loginsight audits by DCGS Enterprise Services`"
+  }
+}

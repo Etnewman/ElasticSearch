@@ -1,0 +1,17 @@
+{
+  "template" : {
+    "mappings" : {
+      "dynamic_templates": [
+        {
+          "Metrics": {
+            "mapping": {
+              "type": "keyword"
+            },
+            "match_mapping_type": "string",
+            "path_match": "Metrics.*"
+          }
+        }
+      ]
+    }
+  }
+}

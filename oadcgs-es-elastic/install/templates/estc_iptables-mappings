@@ -1,0 +1,722 @@
+{
+        "template" : {
+          "mappings" : {
+            "properties" : {
+              "iptables" : {
+                "type" : "object",
+                "properties" : {
+                  "tcp" : {
+                    "type" : "object",
+                    "properties" : {
+                      "reserved_bits" : {
+                        "type" : "long"
+                      },
+                      "flags" : {
+                        "eager_global_ordinals" : false,
+                        "norms" : false,
+                        "index" : true,
+                        "store" : false,
+                        "type" : "keyword",
+                        "index_options" : "docs",
+                        "split_queries_on_whitespace" : false,
+                        "doc_values" : true
+                      },
+                      "window" : {
+                        "type" : "long"
+                      }
+                    }
+                  },
+                  "udp" : {
+                    "type" : "object",
+                    "properties" : {
+                      "length" : {
+                        "type" : "long"
+                      }
+                    }
+                  },
+                  "flow_label" : {
+                    "coerce" : true,
+                    "index" : true,
+                    "ignore_malformed" : false,
+                    "store" : false,
+                    "type" : "integer",
+                    "doc_values" : true
+                  },
+                  "input_device" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "precedence_bits" : {
+                    "type" : "long"
+                  },
+                  "fragment_flags" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "length" : {
+                    "type" : "long"
+                  },
+                  "log_prefix" : {
+                    "type" : "text"
+                  },
+                  "icmp" : {
+                    "type" : "object",
+                    "properties" : {
+                      "code" : {
+                        "type" : "long"
+                      },
+                      "id" : {
+                        "type" : "long"
+                      },
+                      "type" : {
+                        "type" : "long"
+                      },
+                      "seq" : {
+                        "type" : "long"
+                      }
+                    }
+                  },
+                  "ttl" : {
+                    "type" : "long"
+                  },
+                  "ether_type" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "action" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "output_device" : {
+                    "type" : "text"
+                  },
+                  "tos" : {
+                    "type" : "long"
+                  },
+                  "id" : {
+                    "type" : "long"
+                  }
+                }
+              },
+              "agent" : {
+                "type" : "object",
+                "properties" : {
+                  "hostname" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "name" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "id" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "ephemeral_id" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "type" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "version" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  }
+                }
+              },
+              "process" : {
+                "type" : "object",
+                "properties" : {
+                  "name" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  }
+                }
+              },
+              "log" : {
+                "type" : "object",
+                "properties" : {
+                  "file" : {
+                    "type" : "object",
+                    "properties" : {
+                      "path" : {
+                        "eager_global_ordinals" : false,
+                        "norms" : false,
+                        "index" : true,
+                        "store" : false,
+                        "type" : "keyword",
+                        "index_options" : "docs",
+                        "split_queries_on_whitespace" : false,
+                        "doc_values" : true
+                      }
+                    }
+                  },
+                  "original" : {
+                    "type" : "text"
+                  },
+                  "offset" : {
+                    "type" : "long"
+                  },
+                  "level" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "syslog" : {
+                    "type" : "object",
+                    "properties" : {
+                      "severity" : {
+                        "type" : "object",
+                        "properties" : {
+                          "code" : {
+                            "type" : "long"
+                          },
+                          "name" : {
+                            "eager_global_ordinals" : false,
+                            "norms" : false,
+                            "index" : true,
+                            "store" : false,
+                            "type" : "keyword",
+                            "index_options" : "docs",
+                            "split_queries_on_whitespace" : false,
+                            "doc_values" : true
+                          }
+                        }
+                      },
+                      "source" : {
+                        "type" : "object",
+                        "properties" : {
+                          "host" : {
+                            "eager_global_ordinals" : false,
+                            "norms" : false,
+                            "index" : true,
+                            "store" : false,
+                            "type" : "keyword",
+                            "split_queries_on_whitespace" : false,
+                            "index_options" : "docs",
+                            "doc_values" : true
+                          }
+                        }
+                      },
+                      "priority" : {
+                        "coerce" : true,
+                        "index" : true,
+                        "ignore_malformed" : false,
+                        "store" : false,
+                        "type" : "long",
+                        "doc_values" : true
+                      },
+                      "facility" : {
+                        "type" : "object",
+                        "properties" : {
+                          "code" : {
+                            "type" : "long"
+                          },
+                          "name" : {
+                            "eager_global_ordinals" : false,
+                            "norms" : false,
+                            "index" : true,
+                            "store" : false,
+                            "type" : "keyword",
+                            "index_options" : "docs",
+                            "split_queries_on_whitespace" : false,
+                            "doc_values" : true
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "facility" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  }
+                }
+              },
+              "destination" : {
+                "type" : "object",
+                "properties" : {
+                  "geo" : {
+                    "type" : "object",
+                    "properties" : {
+                      "continent_name" : {
+                        "eager_global_ordinals" : false,
+                        "norms" : false,
+                        "index" : true,
+                        "store" : false,
+                        "type" : "keyword",
+                        "index_options" : "docs",
+                        "split_queries_on_whitespace" : false,
+                        "doc_values" : true
+                      },
+                      "country_iso_code" : {
+                        "eager_global_ordinals" : false,
+                        "norms" : false,
+                        "index" : true,
+                        "store" : false,
+                        "type" : "keyword",
+                        "index_options" : "docs",
+                        "split_queries_on_whitespace" : false,
+                        "doc_values" : true
+                      },
+                      "country_name" : {
+                        "eager_global_ordinals" : false,
+                        "norms" : false,
+                        "index" : true,
+                        "store" : false,
+                        "type" : "keyword",
+                        "index_options" : "docs",
+                        "split_queries_on_whitespace" : false,
+                        "doc_values" : true
+                      },
+                      "location" : {
+                        "type" : "object",
+                        "properties" : {
+                          "lon" : {
+                            "type" : "float"
+                          },
+                          "lat" : {
+                            "type" : "float"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "as" : {
+                    "type" : "object",
+                    "properties" : {
+                      "number" : {
+                        "type" : "long"
+                      },
+                      "organization" : {
+                        "type" : "object",
+                        "properties" : {
+                          "name" : {
+                            "eager_global_ordinals" : false,
+                            "norms" : false,
+                            "index" : true,
+                            "store" : false,
+                            "type" : "keyword",
+                            "index_options" : "docs",
+                            "split_queries_on_whitespace" : false,
+                            "doc_values" : true
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "port" : {
+                    "type" : "long"
+                  },
+                  "ip" : {
+                    "index" : true,
+                    "store" : false,
+                    "type" : "ip",
+                    "doc_values" : true
+                  },
+                  "mac" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  }
+                }
+              },
+              "source" : {
+                "type" : "object",
+                "properties" : {
+                  "geo" : {
+                    "type" : "object",
+                    "properties" : {
+                      "continent_name" : {
+                        "eager_global_ordinals" : false,
+                        "norms" : false,
+                        "index" : true,
+                        "store" : false,
+                        "type" : "keyword",
+                        "index_options" : "docs",
+                        "split_queries_on_whitespace" : false,
+                        "doc_values" : true
+                      },
+                      "country_iso_code" : {
+                        "eager_global_ordinals" : false,
+                        "norms" : false,
+                        "index" : true,
+                        "store" : false,
+                        "type" : "keyword",
+                        "index_options" : "docs",
+                        "split_queries_on_whitespace" : false,
+                        "doc_values" : true
+                      },
+                      "country_name" : {
+                        "eager_global_ordinals" : false,
+                        "norms" : false,
+                        "index" : true,
+                        "store" : false,
+                        "type" : "keyword",
+                        "index_options" : "docs",
+                        "split_queries_on_whitespace" : false,
+                        "doc_values" : true
+                      },
+                      "location" : {
+                        "type" : "object",
+                        "properties" : {
+                          "lon" : {
+                            "type" : "float"
+                          },
+                          "lat" : {
+                            "type" : "float"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "as" : {
+                    "type" : "object",
+                    "properties" : {
+                      "number" : {
+                        "type" : "long"
+                      },
+                      "organization" : {
+                        "type" : "object",
+                        "properties" : {
+                          "name" : {
+                            "eager_global_ordinals" : false,
+                            "norms" : false,
+                            "index" : true,
+                            "store" : false,
+                            "type" : "keyword",
+                            "index_options" : "docs",
+                            "split_queries_on_whitespace" : false,
+                            "doc_values" : true
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "port" : {
+                    "type" : "long"
+                  },
+                  "ip" : {
+                    "index" : true,
+                    "store" : false,
+                    "type" : "ip",
+                    "doc_values" : true
+                  },
+                  "mac" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  }
+                }
+              },
+              "network" : {
+                "type" : "object",
+                "properties" : {
+                  "community_id" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "transport" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "type" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  }
+                }
+              },
+              "tags" : {
+                "eager_global_ordinals" : false,
+                "norms" : false,
+                "index" : true,
+                "store" : false,
+                "type" : "keyword",
+                "index_options" : "docs",
+                "split_queries_on_whitespace" : false,
+                "doc_values" : true
+              },
+              "input" : {
+                "type" : "object",
+                "properties" : {
+                  "type" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  }
+                }
+              },
+              "@timestamp" : {
+                "type" : "date"
+              },
+              "ecs" : {
+                "type" : "object",
+                "properties" : {
+                  "version" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  }
+                }
+              },
+              "related" : {
+                "type" : "object",
+                "properties" : {
+                  "ip" : {
+                    "index" : true,
+                    "store" : false,
+                    "type" : "ip",
+                    "doc_values" : true
+                  }
+                }
+              },
+              "@version" : {
+                "eager_global_ordinals" : false,
+                "norms" : false,
+                "index" : true,
+                "store" : false,
+                "type" : "keyword",
+                "index_options" : "docs",
+                "split_queries_on_whitespace" : false,
+                "doc_values" : true
+              },
+              "host" : {
+                "type" : "object",
+                "properties" : {
+                  "hostname" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "name" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  }
+                }
+              },
+              "event" : {
+                "type" : "object",
+                "properties" : {
+                  "severity" : {
+                    "type" : "long"
+                  },
+                  "ingested" : {
+                    "type" : "date"
+                  },
+                  "original" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "created" : {
+                    "type" : "date"
+                  },
+                  "kind" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "module" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "action" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "category" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "type" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "dataset" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  },
+                  "outcome" : {
+                    "eager_global_ordinals" : false,
+                    "norms" : false,
+                    "index" : true,
+                    "store" : false,
+                    "type" : "keyword",
+                    "index_options" : "docs",
+                    "split_queries_on_whitespace" : false,
+                    "doc_values" : true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }

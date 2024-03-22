@@ -1,0 +1,135 @@
+  {
+    "trigger" : {
+      "schedule" : {
+        "interval" : "30m"
+      }
+    },
+    "input" : {
+      "search" : {
+        "request" : {
+          "search_type" : "query_then_fetch",
+          "indices" : [
+            "dcgs-current-healthdata*"
+          ],
+          "rest_total_hits_as_int" : true,
+          "body" : {
+            "query" : {
+              "bool" : {
+                "must_not" : [
+                  {
+                    "multi_match" : {
+                      "query" : "FAILOVER",
+                      "fields" : [
+                        "host.Health",
+                        "app.Health",
+                        "app.status",
+                        "group.Health"
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "aggs" : {
+              "duplicateDoc" : {
+                "terms" : {
+                  "field" : "doc_ID",
+                  "min_doc_count" : 2
+                },
+                "aggs" : {
+                  "topDocs" : {
+                    "top_hits" : {
+                      "size" : 1,
+                      "sort" : [
+                        {
+                          "@timestamp" : {
+                            "order" : "asc"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "condition" : {
+      "compare" : {
+        "ctx.payload.hits.total" : {
+          "gt" : 0
+        }
+      }
+    },
+    "actions" : {
+      "index_payload" : {
+        "transform" : {
+          "script" : {
+            "source" : "
+          List hits = [];
+
+          for (def bucket_1 : ctx.payload.aggregations.duplicateDoc.buckets) {
+            if (bucket_1.topDocs != null) {
+              def olderDoc = bucket_1.topDocs.hits.hits[0];
+              if (olderDoc != null) {
+                Map doc = new HashMap();
+                doc.putAll(olderDoc['_source']);
+                doc['_id'] = olderDoc['_id'];
+                doc['_index'] = olderDoc['_index'];
+
+                def metadata = doc['metadata'];
+                if (metadata != null) {
+                  def docSubtype = metadata['DocSubtype'];
+                  if (docSubtype != null) {
+                    if (docSubtype == 'app-host') {
+                      doc['app']['Status'] = 'FAILOVER';
+                      doc['host']['Health'] = 'FAILOVER';
+                      doc['host']['HealthSymptoms'] = 'Index_Failed_Over';
+                  } else if (docSubtype == 'app-overall') {
+                      doc['app']['Health'] = 'FAILOVER';
+                      doc['app']['HealthSymptoms'] = 'Index_Failed_Over';
+                  } else if (docSubtype == 'group') {
+                      doc['group']['Health'] = 'FAILOVER';
+                      doc['group']['HealthSymptoms'] = 'Index_Failed_Over';
+                  } else if (docSubtype == 'host') {
+                      doc['host']['Health'] = 'FAILOVER';
+                      doc['host']['HealthSymptoms'] = 'Index_Failed_Over';
+                  }  else if (docSubtype == 'datacollector') {
+                      doc['app.Status'] = 'FAILOVER';
+                    }
+                  }
+                }
+                hits.add(doc);
+              }
+            } else {
+            ctx['logger'].info(\"Null reference in bucket_1: {}\", bucket_1);
+            }
+          }
+
+          if (hits.size() > 0) {
+            return [\"_doc\": hits];
+          } else {
+            def hit = ctx.payload.hits.hits[0];
+            Map doc = new HashMap();
+            doc.putAll(hit['_source']);
+            doc['_id'] = hit['_id'];
+            doc['_index'] = hit['_index'];
+            return [\"_doc\": doc];
+          }
+          ",
+            "lang" : "painless"
+          }
+        },
+        "index" : { }
+      }
+    },
+    "metadata" : {
+      "name" : "esw_failover-duplicate-doc",
+      "xpack" : {
+        "type" : "json"
+      }
+    }
+  }
+}

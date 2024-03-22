@@ -1,0 +1,21 @@
+{
+  "template" : {
+    "settings" : {
+      "index" : {
+        "lifecycle" : {
+          "rollover_alias" : "dcgs-filebeat-geo-ha-gxpxplorer"
+        }
+      }
+    }
+  },
+    "index_patterns" : [
+      "dcgs-filebeat-geo-ha-gxpxplorer-*"
+    ],
+    "composed_of" : [ "estc_dcgs_defaults", "estc_dcgs_app_defaults", "estc_gxpxplorer-mappings" ],
+    "priority" : 150,
+    "version" : 0,
+    "_meta" : {
+      "description" : "settings for GXP Xplorer indexes",
+      "managed" : true
+ }
+}

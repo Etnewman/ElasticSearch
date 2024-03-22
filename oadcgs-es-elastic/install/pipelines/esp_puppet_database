@@ -1,0 +1,45 @@
+{"description":"This provides connection to the puppet postgresql database","pipeline":"input {
+  jdbc {
+        jdbc_driver_library => \"/etc/logstash/jdbc/postgresql-42.3.1.jar\"
+        jdbc_driver_class => \"org.postgresql.Driver\"
+        jdbc_connection_string => \"jdbc:postgresql://${SITE}su01pup1:5432/pe-activity\"
+        jdbc_user => \"elastic\"
+        jdbc_password => \"${PUPPET_POSTGRES_PASSWORD}\"
+        schedule => \"* * * * *\"
+        #statement => \"SELECT * FROM events\"
+        statement => \"SELECT row_number() over() as rowid, e.id, e.commit_id, e.action_type, e.action_what, e.action_description,
+                        e.message, ec.id, ec.submit_time FROM events AS e, event_commits AS ec
+                        WHERE e.commit_id = ec.id AND submit_time >  :sql_last_value\"
+        use_column_value => true
+        tracking_column => \"submit_time\"
+        tracking_column_type => \"timestamp\"
+        last_run_metadata_path => \"/etc/logstash/jdbc/lastrun_puppet\"
+    }
+}
+filter {
+    # Add Orignating Site to document
+    mutate {
+        add_field => { \"DCGS_Site\" => \"${SITE}\" }
+        add_field => { \"DCGS_Site_Name\" => \"${SITELOC}\" }
+        add_field => { \"[geo][name]\" => \"${SITELOC}\" }
+        copy => { \"submit_time\" => \"@timestamp\" }
+
+    }
+    translate {
+        field => \"DCGS_Site_Name\"
+        destination => \"[geo][location]\"
+        override => \"true\"
+        fallback => \"0,0\"
+        dictionary_path => '/etc/logstash/dictionaries/site_coordinates.yml'
+    }
+}
+output {
+    elasticsearch {
+        hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+        index => \"dcgs-db_puppet-iaas-ent\"
+        user => \"ls_internal\"
+        password => \"${LS_INTERNAL_PW}\"
+        ssl => true
+        cacert => \"/etc/logstash/certs/cachain.pem\"
+    }
+}","settings":{"pipeline.batch.delay":50,"pipeline.batch.size":125,"pipeline.workers":1,"queue.checkpoint.writes":1024,"queue.max_bytes":"1gb","queue.type":"persisted"}}

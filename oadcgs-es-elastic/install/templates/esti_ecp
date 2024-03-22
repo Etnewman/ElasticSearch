@@ -1,0 +1,25 @@
+{
+  "template" : {
+    "settings" : {
+      "index" : {
+        "lifecycle" : {
+          "rollover_alias" : "dcgs-filebeat-geo-sensors-ecp"
+        }
+      }
+    }
+  },
+  "index_patterns" : [
+    "dcgs-filebeat-geo-sensors-ecp-*"
+  ],
+  "composed_of" : [
+    "estc_dcgs_defaults",
+    "estc_dcgs_app_defaults",
+    "estc_ecp-mappings"
+  ],
+  "priority" : 150,
+  "version" : 0,
+  "_meta" : {
+    "managed" : true,
+    "description" : "settings for ECP indexes"
+  }
+}

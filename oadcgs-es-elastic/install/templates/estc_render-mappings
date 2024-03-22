@@ -1,0 +1,1538 @@
+{
+  "template" : {
+    "mappings" : {
+      "dynamic_templates" : [
+        {
+          "labels" : {
+            "path_match" : "labels.*",
+            "match_mapping_type" : "string",
+            "mapping" : {
+              "type" : "keyword"
+            }
+          }
+        },
+        {
+          "container.labels" : {
+            "path_match" : "container.labels.*",
+            "match_mapping_type" : "string",
+            "mapping" : {
+              "type" : "keyword"
+            }
+          }
+        }
+      ],
+      "properties" : {
+        "@timestamp" : {
+          "type" : "date"
+        },
+        "@version" : {
+            "type" : "keyword",
+              "ignore_above" : 1024
+        },
+        "Action1" : {
+          "type" : "keyword",
+            "ignore_above" : 1024
+      },
+        "Action2" : {
+          "type" : "keyword",
+            "ignore_above" : 1024
+      },
+        "DCGS_Site" : {
+          "type" : "keyword"
+        },
+        "DCGS_Site_Name" : {
+          "type" : "keyword"
+        },
+        "Log" : {
+          "properties" : {
+            "Description" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "Success" : {
+              "type" : "boolean"
+            },
+            "affectednitfdata" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "area" : {
+              "properties" : {
+                "countryName" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "id" : {
+                  "type" : "long"
+                }
+              }
+            },
+            "caveats" : {
+              "properties" : {
+                "relName" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                  },
+                "threeDigitCountryCode" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "twoDigitCountryCode" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                }
+              }
+            },
+            "classification" : {
+              "properties" : {
+                "name" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                }
+              }
+            },
+            "cocom" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "code" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "createDateTime" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "createUserName" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "criticalNotes" : {
+              "properties" : {
+                "criticalnotes" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "theorder" : {
+                  "type" : "long"
+                }
+              }
+            },
+            "date" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "deleteDateTime" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "deleteUserName" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "deleted" : {
+              "type" : "boolean"
+            },
+            "description" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "displayName" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "disseminationInstructions" : {
+              "properties" : {
+                "isJpeg" : {
+                  "type" : "boolean"
+                },
+                "isNitf" : {
+                  "type" : "boolean"
+                },
+                "jpegNotes" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "miscNotes" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "nitfNotes" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                }
+              }
+            },
+            "fieldOrTypeName" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "footer" : {
+              "properties" : {
+                "heightPx" : {
+                  "type" : "float"
+                },
+                "isVisible" : {
+                  "type" : "boolean"
+                },
+                "totalColumns" : {
+                  "type" : "long"
+                },
+                "totalRows" : {
+                  "type" : "long"
+                },
+                "widthPx" : {
+                  "type" : "float"
+                }
+              }
+            },
+            "guid" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "guidanceRejectionCnt" : {
+              "type" : "long"
+            },
+            "hasWarning" : {
+              "type" : "boolean"
+            },
+            "header" : {
+              "properties" : {
+                "fieldList" : {
+                  "properties" : {
+                    "displayName" : {
+                      "type" : "keyword",
+                        "ignore_above" : 1024
+                    },
+                    "fieldOrTypeId" : {
+                      "type" : "keyword",
+                        "ignore_above" : 1024
+                    },
+                    "fontColor" : {
+                      "type" : "keyword",
+                        "ignore_above" : 1024
+                    },
+                    "fontSize" : {
+                      "type" : "long"
+                    },
+                    "fontType" : {
+                      "type" : "keyword",
+                        "ignore_above" : 1024
+                    },
+                    "groupedMetadata" : {
+                      "properties" : {
+                        "name" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        },
+                        "source" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        }
+                      }
+                    },
+                    "horizontalAlignment" : {
+                      "type" : "keyword",
+                        "ignore_above" : 1024
+                    },
+                    "initialColumn" : {
+                      "type" : "long"
+                    },
+                    "initialRow" : {
+                      "type" : "long"
+                    },
+                    "isBold" : {
+                      "type" : "boolean"
+                    },
+                    "label" : {
+                      "type" : "keyword",
+                        "ignore_above" : 1024
+                    },
+                    "properties" : {
+                      "properties" : {
+                        "backgroundColor" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        },
+                        "binary_data" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        },
+                        "edgeColor" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        },
+                        "image_description_data" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        },
+                        "num_bands" : {
+                          "type" : "long"
+                        },
+                        "pixel_height" : {
+                          "type" : "long"
+                        },
+                        "pixel_width" : {
+                          "type" : "long"
+                        },
+                        "thefreetext" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        }
+                      }
+                    },
+                    "source" : {
+                      "type" : "keyword",
+                        "ignore_above" : 1024
+                    },
+                    "totalColumns" : {
+                      "type" : "long"
+                    },
+                    "totalRows" : {
+                      "type" : "long"
+                    }
+                  }
+                },
+                "heightPx" : {
+                  "type" : "float"
+                },
+                "isVisible" : {
+                  "type" : "boolean"
+                },
+                "totalColumns" : {
+                  "type" : "long"
+                },
+                "totalRows" : {
+                  "type" : "long"
+                },
+                "widthPx" : {
+                  "type" : "float"
+                }
+              }
+            },
+            "id" : {
+              "type" : "long"
+            },
+            "imageType" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "importDateTime" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "importUserName" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "isArea" : {
+              "type" : "boolean"
+            },
+            "isImageHolder" : {
+              "type" : "boolean"
+            },
+            "lastTimeUsed" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "miscGuidance" : {
+              "properties" : {
+                "allowed" : {
+                  "properties" : {
+                    "allowed" : {
+                      "type" : "keyword",
+                        "ignore_above" : 1024
+                    },
+                    "theorder" : {
+                      "type" : "long"
+                    }
+                  }
+                },
+                "imageryProducts" : {
+                  "properties" : {
+                    "classificationMarkings" : {
+                      "type" : "keyword",
+                        "ignore_above" : 1024
+                    },
+                    "declassBlocks" : {
+                      "properties" : {
+                        "classifiedBy" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        },
+                        "classifiedByDropDown" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        },
+                        "declassifiedCustom" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        },
+                        "declassifiedOn" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        },
+                        "derivedFrom" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        },
+                        "platform" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        }
+                      }
+                    },
+                    "generalInfo" : {
+                      "properties" : {
+                        "generalInfo" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        },
+                        "theorder" : {
+                          "type" : "long"
+                        }
+                      }
+                    }
+                  }
+                },
+                "notForTargetingStatement" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "prohibited" : {
+                  "properties" : {
+                    "prohibited" : {
+                      "type" : "keyword",
+                        "ignore_above" : 1024
+                    },
+                    "theorder" : {
+                      "type" : "long"
+                    }
+                  }
+                }
+              }
+            },
+            "miscGuidance_legacyForm" : {
+              "type" : "object"
+            },
+            "modifyDateTime" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "modifyUserName" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "name" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "nitfRedactionRequestCnt" : {
+              "type" : "long"
+            },
+            "nitfSection" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "notes" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "onTemplate" : {
+              "type" : "boolean"
+            },
+            "platformName" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "platforms" : {
+              "properties" : {
+                "platformName" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                }
+              }
+            },
+            "platformsAsList" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "primaryClassificationMarking" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "primaryType" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "primaryTypeObj" : {
+              "properties" : {
+                "primaryType" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "secondaryTypeObj" : {
+                  "properties" : {
+                    "secondaryType" : {
+                      "type" : "keyword",
+                        "ignore_above" : 1024
+                    },
+                    "tertiaryTypeObj" : {
+                      "properties" : {
+                        "tertiaryType" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "productHeightPx" : {
+              "type" : "float"
+            },
+            "productWidthPx" : {
+              "type" : "float"
+            },
+            "relGuidances" : {
+              "properties" : {
+                "caveats" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "classification" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "id" : {
+                  "type" : "long"
+                },
+                "name" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "target" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "targetCountryCode" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                }
+              }
+            },
+            "rules" : {
+              "properties" : {
+                "action" : {
+                  "properties" : {
+                    "actionName" : {
+                      "type" : "keyword",
+                        "ignore_above" : 1024
+                    }
+                  }
+                },
+                "field" : {
+                  "properties" : {
+                    "displayName" : {
+                      "type" : "keyword",
+                        "ignore_above" : 1024
+                    },
+                    "fieldOrTypeName" : {
+                      "type" : "keyword",
+                        "ignore_above" : 1024
+                    },
+                    "source" : {
+                      "properties" : {
+                        "sourceName" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "sampleProduct" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "secondaryType" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "sensorName" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "sensors" : {
+              "properties" : {
+                "sensorName" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                }
+              }
+            },
+            "sensorsAsList" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "site" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "status" : {
+              "type" : "long"
+            },
+            "success" : {
+              "type" : "boolean"
+            },
+            "tDataTarget" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "target" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "targetCountryCode" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "template" : {
+              "properties" : {
+                "createDateTime" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "createUserName" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "date" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "deleteDateTime" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "deleteUserName" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "deleted" : {
+                  "type" : "boolean"
+                },
+                "footer" : {
+                  "properties" : {
+                    "fieldList" : {
+                      "properties" : {
+                        "displayName" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        },
+                        "fieldOrTypeId" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        },
+                        "fontColor" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        },
+                        "fontSize" : {
+                          "type" : "long"
+                        },
+                        "fontType" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        },
+                        "groupedMetadata" : {
+                          "properties" : {
+                            "name" : {
+                              "type" : "keyword",
+                                "ignore_above" : 1024
+                            },
+                            "source" : {
+                              "type" : "keyword",
+                                "ignore_above" : 1024
+                            }
+                          }
+                        },
+                        "horizontalAlignment" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        },
+                        "initialColumn" : {
+                          "type" : "long"
+                        },
+                        "initialRow" : {
+                          "type" : "long"
+                        },
+                        "isBold" : {
+                          "type" : "boolean"
+                        },
+                        "label" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        },
+                        "properties" : {
+                          "properties" : {
+                            "backgroundColor" : {
+                              "type" : "keyword",
+                                "ignore_above" : 1024
+                            },
+                            "binary_data" : {
+                              "type" : "keyword",
+                                "ignore_above" : 1024
+                            },
+                            "edgeColor" : {
+                              "type" : "keyword",
+                                "ignore_above" : 1024
+                            },
+                            "image_description_data" : {
+                              "type" : "keyword",
+                                "ignore_above" : 1024
+                            },
+                            "num_bands" : {
+                              "type" : "long"
+                            },
+                            "pixel_height" : {
+                              "type" : "long"
+                            },
+                            "pixel_width" : {
+                              "type" : "long"
+                            },
+                            "thefreetext" : {
+                              "type" : "keyword",
+                                "ignore_above" : 1024
+                            }
+                          }
+                        },
+                        "source" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        },
+                        "totalColumns" : {
+                          "type" : "long"
+                        },
+                        "totalRows" : {
+                          "type" : "long"
+                        }
+                      }
+                    },
+                    "heightPx" : {
+                      "type" : "long"
+                    },
+                    "isVisible" : {
+                      "type" : "boolean"
+                    },
+                    "totalColumns" : {
+                      "type" : "long"
+                    },
+                    "totalRows" : {
+                      "type" : "long"
+                    },
+                    "widthPx" : {
+                      "type" : "long"
+                    }
+                  }
+                },
+                "guid" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "header" : {
+                  "properties" : {
+                    "fieldList" : {
+                      "properties" : {
+                        "displayName" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        },
+                        "fieldOrTypeId" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        },
+                        "fontColor" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        },
+                        "fontSize" : {
+                          "type" : "long"
+                        },
+                        "fontType" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        },
+                        "groupedMetadata" : {
+                          "properties" : {
+                            "name" : {
+                              "type" : "keyword",
+                                "ignore_above" : 1024
+                            },
+                            "source" : {
+                              "type" : "keyword",
+                                "ignore_above" : 1024
+                            }
+                          }
+                        },
+                        "horizontalAlignment" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        },
+                        "initialColumn" : {
+                          "type" : "long"
+                        },
+                        "initialRow" : {
+                          "type" : "long"
+                        },
+                        "isBold" : {
+                          "type" : "boolean"
+                        },
+                        "label" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        },
+                        "properties" : {
+                          "properties" : {
+                            "backgroundColor" : {
+                              "type" : "keyword",
+                                "ignore_above" : 1024
+                            },
+                            "binary_data" : {
+                              "type" : "keyword",
+                                "ignore_above" : 1024
+                            },
+                            "edgeColor" : {
+                              "type" : "keyword",
+                                "ignore_above" : 1024
+                            },
+                            "image_description_data" : {
+                              "type" : "keyword",
+                                "ignore_above" : 1024
+                            },
+                            "num_bands" : {
+                              "type" : "long"
+                            },
+                            "pixel_height" : {
+                              "type" : "long"
+                            },
+                            "pixel_width" : {
+                              "type" : "long"
+                            },
+                            "thefreetext" : {
+                              "type" : "keyword",
+                                "ignore_above" : 1024
+                            }
+                          }
+                        },
+                        "source" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        },
+                        "totalColumns" : {
+                          "type" : "long"
+                        },
+                        "totalRows" : {
+                          "type" : "long"
+                        }
+                      }
+                    },
+                    "heightPx" : {
+                      "type" : "long"
+                    },
+                    "isVisible" : {
+                      "type" : "boolean"
+                    },
+                    "totalColumns" : {
+                      "type" : "long"
+                    },
+                    "totalRows" : {
+                      "type" : "long"
+                    },
+                    "widthPx" : {
+                      "type" : "long"
+                    }
+                  }
+                },
+                "id" : {
+                  "type" : "long"
+                },
+                "importDateTime" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "importUserName" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "lastTimeUsed" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "modifyDateTime" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "modifyUserName" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "name" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "notes" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "productHeightPx" : {
+                  "type" : "long"
+                },
+                "productWidthPx" : {
+                  "type" : "long"
+                },
+                "site" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "version" : {
+                  "type" : "long"
+                },
+                "workproductRedactionRequestCnt" : {
+                  "type" : "long"
+                }
+              }
+            },
+            "templateIds" : {
+              "properties" : {
+                "id" : {
+                  "type" : "long"
+                },
+                "lastModified" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "name" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "site" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                }
+              }
+            },
+            "threeDigitCountryCode" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "treFieldName" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "version" : {
+              "type" : "long"
+            },
+            "workProductData" : {
+              "properties" : {
+                "annotation" : {
+                  "properties" : {
+                    "SGXPGraphicId" : {
+                      "type" : "keyword",
+                        "ignore_above" : 1024
+                    },
+                    "action" : {
+                      "type" : "keyword",
+                        "ignore_above" : 1024
+                    },
+                    "guid" : {
+                      "type" : "keyword",
+                        "ignore_above" : 1024
+                    }
+                  }
+                },
+                "autoLabel" : {
+                  "properties" : {
+                    "action" : {
+                      "type" : "keyword",
+                        "ignore_above" : 1024
+                    },
+                    "currentValue" : {
+                      "type" : "keyword",
+                        "ignore_above" : 1024
+                    },
+                    "guid" : {
+                      "type" : "keyword",
+                        "ignore_above" : 1024
+                    }
+                  }
+                },
+                "templateData" : {
+                  "properties" : {
+                    "action" : {
+                      "type" : "keyword",
+                        "ignore_above" : 1024
+                    },
+                    "field" : {
+                      "type" : "keyword",
+                        "ignore_above" : 1024
+                    },
+                    "source" : {
+                      "type" : "keyword",
+                        "ignore_above" : 1024
+                    }
+                  }
+                }
+              }
+            },
+            "workproductRedactionRequestCnt" : {
+              "type" : "long"
+            }
+          }
+        },
+        "Nitf" : {
+          "properties" : {
+            "caveats" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "classification" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "platforms" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "sensors" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            }
+          }
+        },
+        "Payload" : {
+          "properties" : {
+            "associationType" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "caveats" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "classification" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "displayName" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "name" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "platforms" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "primaryDataType" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "secondaryDataType" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "sensors" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "success" : {
+              "type" : "boolean"
+            },
+            "target" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "versionInfo" : {
+              "properties" : {
+                "build_datestamp" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "build_timestamp" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "build_version" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "description" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "organization_name" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "organization_url" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                }
+              }
+            }
+          }
+        },
+        "Product" : {
+          "properties" : {
+            "caveats" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "classification" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "platforms" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "sensors" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            }
+          }
+        },
+        "Rest" : {
+          "properties" : {
+            "request" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "status" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            }
+          }
+        },
+        "Ruleset" : {
+          "properties" : {
+            "caveats" : {
+              "properties" : {
+                "relName" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "threeDigitCountryCode" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                },
+                "twoDigitCountryCode" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                }
+              }
+            },
+            "classification" : {
+              "properties" : {
+                "name" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                }
+              }
+            },
+            "rules" : {
+              "properties" : {
+                "action" : {
+                  "properties" : {
+                    "actionName" : {
+                      "type" : "keyword",
+                        "ignore_above" : 1024
+                    }
+                  }
+                },
+                "field" : {
+                  "properties" : {
+                    "displayName" : {
+                      "type" : "keyword",
+                        "ignore_above" : 1024
+                    },
+                    "fieldOrTypeName" : {
+                      "type" : "keyword",
+                        "ignore_above" : 1024
+                    },
+                    "source" : {
+                      "properties" : {
+                        "sourceName" : {
+                          "type" : "keyword",
+                            "ignore_above" : 1024
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "sensors" : {
+              "properties" : {
+                "sensorName" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                }
+              }
+            }
+          }
+        },
+        "Status" : {
+          "type" : "keyword",
+            "ignore_above" : 1024
+        },
+        "XNIO_TASK" : {
+          "type" : "keyword",
+            "ignore_above" : 1024
+        },
+        "agent" : {
+          "properties" : {
+            "ephemeral_id" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "hostname" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "id" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "name" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "type" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "version" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            }
+          }
+        },
+        "api_Metadata" : {
+          "type" : "keyword",
+            "ignore_above" : 1024
+        },
+        "api_Request" : {
+          "type" : "keyword",
+            "ignore_above" : 1024
+        },
+        "api_Rest" : {
+          "type" : "keyword",
+            "ignore_above" : 1024
+        },
+        "api_Services" : {
+          "type" : "keyword",
+            "ignore_above" : 1024
+        },
+        "app" : {
+          "properties" : {
+            "Category" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "DocSubtype" : {
+              "type" : "keyword"
+            },
+            "DocType" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "Kind" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "Name" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "Type" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            }
+          }
+        },
+        "attempting_to_Retrieve" : {
+          "type" : "keyword",
+            "ignore_above" : 1024
+        },
+        "bad_Request" : {
+          "type" : "keyword",
+            "ignore_above" : 1024
+        },
+        "container" : {
+          "properties" : {
+            "image" : {
+              "properties" : {
+                "name" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "labels" : {
+              "type" : "object"
+            },
+            "name" : {
+              "type" : "keyword"
+            },
+            "runtime" : {
+              "type" : "keyword"
+            }
+          }
+        },
+        "ecs" : {
+          "properties" : {
+            "version" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            }
+          }
+        },
+        "error" : {
+          "properties" : {
+            "id" : {
+              "type" : "keyword"
+            }
+          }
+        },
+        "event" : {
+          "properties" : {
+            "action" : {
+              "type" : "keyword"
+            },
+            "category" : {
+              "type" : "keyword"
+            },
+            "code" : {
+              "type" : "keyword"
+            },
+            "created" : {
+              "type" : "date"
+            },
+            "dataset" : {
+              "type" : "keyword"
+            },
+            "duration" : {
+              "type" : "long"
+            },
+            "end" : {
+              "type" : "date"
+            },
+            "id" : {
+              "type" : "keyword"
+            },
+            "ingested" : {
+              "type" : "date"
+            },
+            "kind" : {
+              "type" : "keyword"
+            },
+            "module" : {
+              "type" : "keyword"
+            },
+            "original" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "outcome" : {
+              "type" : "keyword"
+            },
+            "provider" : {
+              "type" : "keyword"
+            },
+            "reason" : {
+              "type" : "keyword"
+            },
+            "risk_score" : {
+              "type" : "float"
+            },
+            "severity" : {
+              "type" : "long"
+            },
+            "start" : {
+              "type" : "date"
+            },
+            "type" : {
+              "type" : "keyword"
+            }
+          }
+        },
+        "extras" : {
+          "type" : "keyword",
+            "ignore_above" : 1024
+        },
+        "file" : {
+          "properties" : {
+            "name" : {
+              "type" : "keyword"
+            }
+          }
+        },
+        "geo" : {
+          "properties" : {
+            "location" : {
+              "type" : "geo_point"
+            },
+            "name" : {
+              "type" : "keyword"
+            }
+          }
+        },
+        "host" : {
+          "properties" : {
+            "hostname" : {
+              "type" : "keyword"
+            },
+            "name" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            }
+          }
+        },
+        "input" : {
+          "properties" : {
+            "type" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            }
+          }
+        },
+        "json_Msg" : {
+          "type" : "keyword",
+            "ignore_above" : 1024
+        },
+        "json_Title" : {
+          "type" : "keyword",
+            "ignore_above" : 1024
+        },
+        "labels" : {
+          "type" : "object"
+        },
+        "log" : {
+          "properties" : {
+            "Timestamp" : {
+              "type" : "date"
+            },
+            "file" : {
+              "properties" : {
+                "path" : {
+                  "type" : "keyword",
+                    "ignore_above" : 1024
+                }
+              }
+            },
+            "flags" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "level" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "logger" : {
+              "type" : "keyword",
+                "ignore_above" : 1024
+            },
+            "offset" : {
+              "type" : "long"
+            },
+            "origin" : {
+              "properties" : {
+                "file" : {
+                  "properties" : {
+                    "line" : {
+                      "type" : "integer"
+                    },
+                    "name" : {
+                      "type" : "keyword"
+                    }
+                  }
+                },
+                "function" : {
+                  "type" : "keyword"
+                }
+              }
+            }
+          }
+        },
+        "message" : {
+          "type" : "keyword",
+            "ignore_above" : 1024
+        },
+        "msg_Payload" : {
+          "type" : "keyword",
+            "ignore_above" : 1024
+        },
+        "msg_Payload1" : {
+          "type" : "keyword",
+            "ignore_above" : 1024
+        },
+        "payload_Files" : {
+          "type" : "keyword",
+            "ignore_above" : 1024
+        },
+        "payload_Msg" : {
+          "type" : "keyword",
+            "ignore_above" : 1024
+        },
+        "request_Action" : {
+          "type" : "keyword",
+            "ignore_above" : 1024
+        },
+        "request_method" : {
+          "type" : "keyword",
+            "ignore_above" : 1024
+        },
+        "response_Status" : {
+          "type" : "keyword",
+            "ignore_above" : 1024
+        },
+        "response_Type" : {
+          "type" : "keyword",
+            "ignore_above" : 1024
+        },
+        "returning_Response" : {
+          "type" : "keyword",
+            "ignore_above" : 1024
+        },
+        "status" : {
+          "type" : "keyword",
+            "ignore_above" : 1024
+        },
+        "tags" : {
+          "type" : "keyword",
+            "ignore_above" : 1024
+        },
+        "ts" : {
+          "type" : "date"
+        },
+        "user" : {
+          "properties" : {
+            "name" : {
+              "type" : "keyword"
+            }
+          }
+        },
+        "valid_License" : {
+          "type" : "keyword",
+            "ignore_above" : 1024
+        }
+      }
+    }
+  }
+}

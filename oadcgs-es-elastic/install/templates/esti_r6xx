@@ -1,0 +1,23 @@
+{
+    "index_patterns" : [
+      "dcgs-device_idrac_r6xx-iaas-ent*"
+    ],
+        "template" : {
+          "settings" : {
+            "index" : {
+              "lifecycle" : {
+                "rollover_alias" : "dcgs-device_idrac_r6xx-iaas-ent"
+              }
+            }
+          }
+        },
+    "composed_of" : [
+      "estc_dcgs_defaults",
+      "estc_dellidrac-mappings"
+    ],
+    "priority" : 200,
+    "version" : 0,
+    "_meta" : {
+      "description" : "Dell R6XX index template installed by DCGS Enterprise Services"
+    }
+}

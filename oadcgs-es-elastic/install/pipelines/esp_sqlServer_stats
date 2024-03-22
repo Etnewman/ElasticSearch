@@ -1,0 +1,154 @@
+{"description":"SQL Server pipeline provided by Enterprise Services","pipeline":"input {
+  jdbc {
+        jdbc_driver_library => \"/etc/logstash/jdbc/mssql-jdbc-7.2.2.jre8.jar\"
+        jdbc_driver_class => \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"
+        jdbc_connection_string => \"jdbc:sqlserver://u00sm01sq20.dcgs.mil:1460;domain=dcgs.mil;instanceName=ES01;databaseName=Master;integratedSecurity=true;authenticationScheme=JavaKerberos\"
+        jdbc_user => \"${SITENUM}_elastic.svc\"
+        jdbc_password => \"${ES_SVC_ACCT_PASSWORD}\"
+        schedule => \"* * * * *\"
+
+        statement => \"SELECT ag.name AS 'AG Name', ag.is_distributed, ar.replica_server_name AS 'AG', dbs.name AS 'Database', ars.role_desc,
+                        ars.operational_state_desc, ars.recovery_health_desc, ars.synchronization_health_desc, ars.connected_state_desc,
+                        drs.synchronization_health_desc, drs.log_send_queue_size, drs.log_send_rate, drs.redo_queue_size,
+                        drs.redo_rate, drs.suspend_reason_desc, drs.last_sent_time, drs.last_received_time, drs.last_hardened_time,
+                        drs.last_redone_time, drs.last_commit_time, drs.secondary_lag_seconds
+                        FROM sys.databases dbs INNER JOIN sys.dm_hadr_database_replica_states drs ON dbs.database_id = drs.database_id
+                        INNER JOIN sys.availability_groups ag ON drs.group_id = ag.group_id INNER JOIN sys.dm_hadr_availability_replica_states ars
+                        ON ars.replica_id = drs.replica_id INNER JOIN sys.availability_replicas ar ON ar.replica_id = ars.replica_id\"
+
+        last_run_metadata_path => \"/etc/logstash/jdbc/lastrun_sqlserver1\"
+
+  }
+  jdbc {
+        jdbc_driver_library => \"/etc/logstash/jdbc/mssql-jdbc-7.2.2.jre8.jar\"
+        jdbc_driver_class => \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"
+        jdbc_connection_string => \"jdbc:sqlserver://u00sm01sq20.dcgs.mil:1440;domain=dcgs.mil;instanceName=idam01;databaseName=Master;integratedSecurity=true;authenticationScheme=JavaKerberos\"
+        jdbc_user => \"${SITENUM}_elastic.svc\"
+        jdbc_password => \"${ES_SVC_ACCT_PASSWORD}\"
+        schedule => \"* * * * *\"
+
+        statement => \"SELECT ag.name AS 'AG Name', ag.is_distributed, ar.replica_server_name AS 'AG', dbs.name AS 'Database', ars.role_desc,
+                        ars.operational_state_desc, ars.recovery_health_desc, ars.synchronization_health_desc, ars.connected_state_desc,
+                        drs.synchronization_health_desc, drs.log_send_queue_size, drs.log_send_rate, drs.redo_queue_size,
+                        drs.redo_rate, drs.suspend_reason_desc, drs.last_sent_time, drs.last_received_time, drs.last_hardened_time,
+                        drs.last_redone_time, drs.last_commit_time, drs.secondary_lag_seconds
+                        FROM sys.databases dbs INNER JOIN sys.dm_hadr_database_replica_states drs ON dbs.database_id = drs.database_id
+                        INNER JOIN sys.availability_groups ag ON drs.group_id = ag.group_id INNER JOIN sys.dm_hadr_availability_replica_states ars
+                        ON ars.replica_id = drs.replica_id INNER JOIN sys.availability_replicas ar ON ar.replica_id = ars.replica_id\"
+        last_run_metadata_path => \"/etc/logstash/jdbc/lastrun_sqlserver2\"
+  }
+  jdbc {
+        jdbc_driver_library => \"/etc/logstash/jdbc/mssql-jdbc-7.2.2.jre8.jar\"
+        jdbc_driver_class => \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"
+        jdbc_connection_string => \"jdbc:sqlserver://u00sm01sq20.dcgs.mil:1450;domain=dcgs.mil;instanceName=infra01;databaseName=Master;integratedSecurity=true;authenticationScheme=JavaKerberos\"
+        jdbc_user => \"${SITENUM}_elastic.svc\"
+        jdbc_password => \"${ES_SVC_ACCT_PASSWORD}\"
+        schedule => \"* * * * *\"
+
+        statement => \"SELECT ag.name AS 'AG Name', ag.is_distributed, ar.replica_server_name AS 'AG', dbs.name AS 'Database', ars.role_desc,
+                        ars.operational_state_desc, ars.recovery_health_desc, ars.synchronization_health_desc, ars.connected_state_desc,
+                        drs.synchronization_health_desc, drs.log_send_queue_size, drs.log_send_rate, drs.redo_queue_size,
+                        drs.redo_rate, drs.suspend_reason_desc, drs.last_sent_time, drs.last_received_time, drs.last_hardened_time,
+                        drs.last_redone_time, drs.last_commit_time, drs.secondary_lag_seconds
+                        FROM sys.databases dbs INNER JOIN sys.dm_hadr_database_replica_states drs ON dbs.database_id = drs.database_id
+                        INNER JOIN sys.availability_groups ag ON drs.group_id = ag.group_id INNER JOIN sys.dm_hadr_availability_replica_states ars
+                        ON ars.replica_id = drs.replica_id INNER JOIN sys.availability_replicas ar ON ar.replica_id = ars.replica_id\"
+        last_run_metadata_path => \"/etc/logstash/jdbc/lastrun_sqlserver3\"
+  }
+  jdbc {
+        jdbc_driver_library => \"/etc/logstash/jdbc/mssql-jdbc-7.2.2.jre8.jar\"
+        jdbc_driver_class => \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"
+        jdbc_connection_string => \"jdbc:sqlserver://u00sm01sq20.dcgs.mil:1470;domain=dcgs.mil;instanceName=sccm01;databaseName=Master;integratedSecurity=true;authenticationScheme=JavaKerberos\"
+        jdbc_user => \"${SITENUM}_elastic.svc\"
+        jdbc_password => \"${ES_SVC_ACCT_PASSWORD}\"
+        schedule => \"* * * * *\"
+
+        statement => \"SELECT ag.name AS 'AG Name', ag.is_distributed, ar.replica_server_name AS 'AG', dbs.name AS 'Database', ars.role_desc,
+                        ars.operational_state_desc, ars.recovery_health_desc, ars.synchronization_health_desc, ars.connected_state_desc,
+                        drs.synchronization_health_desc, drs.log_send_queue_size, drs.log_send_rate, drs.redo_queue_size,
+                        drs.redo_rate, drs.suspend_reason_desc, drs.last_sent_time, drs.last_received_time, drs.last_hardened_time,
+                        drs.last_redone_time, drs.last_commit_time, drs.secondary_lag_seconds
+                        FROM sys.databases dbs INNER JOIN sys.dm_hadr_database_replica_states drs ON dbs.database_id = drs.database_id
+                        INNER JOIN sys.availability_groups ag ON drs.group_id = ag.group_id INNER JOIN sys.dm_hadr_availability_replica_states ars
+                        ON ars.replica_id = drs.replica_id INNER JOIN sys.availability_replicas ar ON ar.replica_id = ars.replica_id\"
+
+        last_run_metadata_path => \"/etc/logstash/jdbc/lastrun_sqlserver4\"
+  }
+}
+filter {
+
+    mutate {
+        add_field => { \"DCGS_Site\" => \"${SITE}\" }
+        add_field => { \"DCGS_Site_Name\" => \"${SITELOC}\" }
+        add_field => { \"[geo][name]\" => \"${SITELOC}\" }
+    }
+    translate {
+        field => \"DCGS_Site_Name\"
+        destination => \"[geo][location]\"
+        override => \"true\"
+        fallback => \"0,0\"
+        dictionary_path => '/etc/logstash/dictionaries/site_coordinates.yml'
+    }
+
+    json {
+        source => \"message\"
+    }
+    if ! [secondary_lag_seconds] {
+        mutate {
+             update => { \"secondary_lag_seconds\" => \"0\" }
+        }
+    }
+    if ! [suspend_reason_desc] {
+        mutate {
+             update => { \"suspend_reason_desc\" => \"None\" }
+        }
+    }
+
+#   if [id] == \"ES01\" {
+        jdbc_streaming {
+            jdbc_driver_library => \"/etc/logstash/jdbc/mssql-jdbc-7.2.2.jre8.jar\"
+            jdbc_driver_class => \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"
+            jdbc_connection_string => \"jdbc:sqlserver://u00sm01sq20.dcgs.mil:1460;domain=dcgs.mil;instanceName=ES01;databaseName=Master;integratedSecurity=true;authenticationScheme=JavaKerberos\"
+            jdbc_user => \"${SITENUM}_elastic.svc\"
+            jdbc_password => \"${ES_SVC_ACCT_PASSWORD}\"
+
+
+            statement => \"SELECT database_id, total_log_size_mb,active_log_size_mb,log_backup_time, log_since_last_log_backup_mb,
+                          log_since_last_checkpoint_mb,log_recovery_size_mb FROM sys.dm_db_log_stats(DEFAULT)\"
+
+            target => \"trans_log\"
+            #add_field => {
+            #    \"total_log_size_mb\" => \"%{[extra][0][total_log_size_mb]}\"
+            #}
+       }
+
+#   }
+        mutate {
+            add_field => { \"Testing\" => \"Trying Streaming\" }
+        }
+
+        jdbc_streaming {
+            jdbc_driver_library => \"/etc/logstash/jdbc/mssql-jdbc-7.2.2.jre8.jar\"
+            jdbc_driver_class => \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"
+            jdbc_connection_string => \"jdbc:sqlserver://u00sm01sq20.dcgs.mil:1460;domain=dcgs.mil;instanceName=ES01;databaseName=Master;integratedSecurity=true;authenticationScheme=JavaKerberos\"
+            jdbc_user => \"${SITENUM}_elastic.svc\"
+            jdbc_password => \"${ES_SVC_ACCT_PASSWORD}\"
+
+            statement => \"SELECT * FROM sys.dm_db_log_space_usage\"
+            target => \"trans1_log\"
+        }
+}
+output {
+    elasticsearch {
+        hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+        index => \"dcgs-db_sqlserver-iaas-ent\"
+        user => \"ls_internal\"
+        password => \"${LS_INTERNAL_PW}\"
+        ssl => true
+        cacert => \"/etc/logstash/certs/cachain.pem\"
+    }
+   # file {
+       # codec => \"rubydebug\"
+   #     path => \"/etc/logstash/output/sqlout\"
+   # }
+}","settings":{"pipeline.batch.delay":50,"pipeline.batch.size":125,"pipeline.workers":1,"queue.checkpoint.writes":1024,"queue.max_bytes":"1gb","queue.type":"memory"}}

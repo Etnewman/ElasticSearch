@@ -1,0 +1,75 @@
+{
+  "template" : {
+    "mappings" : {
+      "properties" : {
+        "container": {
+          "properties": {
+            "image": {
+              "properties": {
+                "Repo": {
+                  "type": "keyword"
+                },
+                "Version": {
+                  "type": "keyword"
+                }
+              }
+            }
+          }
+        },
+        "lineNumber": {
+          "type": "keyword"
+        },
+        "thread": {
+          "type": "keyword"
+        },
+        "javaClass": {
+          "type": "keyword"
+        },
+        "imageId": {
+          "type": "keyword"
+        },
+        "parentId": {
+          "type": "keyword"
+        },
+        "sceneNumber": {
+          "type": "keyword"
+        },
+        "missionId": {
+          "type": "keyword"
+        },
+        "catalogId": {
+          "type": "keyword"
+        },
+        "sentSoapToUnicorn": {
+          "type": "keyword"
+        },
+        "receivedSoapFromUnicorn": {
+          "type": "keyword"
+        },
+        "ReplayImageNotification": {
+          "type": "keyword"
+        },
+        "bundle": {
+          "properties": {
+            "id": {
+              "type": "keyword"
+            },
+            "name": {
+              "type": "keyword"
+            },
+            "version": {
+              "type": "keyword"
+            }
+          }
+        },
+        "log": {
+          "properties": {
+            "logger": {
+              "type": "keyword"
+            }
+          }
+        }
+      }
+    }
+  }
+}

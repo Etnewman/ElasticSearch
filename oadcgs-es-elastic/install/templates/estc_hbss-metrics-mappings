@@ -1,0 +1,214 @@
+{
+  "template" : {
+    "settings": {
+      "index": {
+        "query": {
+          "default_field": [
+            "File"
+          ]
+        }
+      }
+    },
+    "mappings" : {
+      "properties" : {
+        "@timestamp" : {
+          "type" : "date"
+        },
+        "@version" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "BackupStatus" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "CheckDBStatus" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "DaysRemaining" : {
+          "type" : "long"
+        },
+        "DeviceName" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "Duration" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "File" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "Filename" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "FreeSpaceGB" : {
+          "type" : "long"
+        },
+        "GeneratedOn" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "MaintenancePlanName" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "MaintenanceStatus1" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "PercentFree" : {
+          "type" : "float"
+        },
+        "PlanStatus" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "SQLMaintenanceVersion" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "SizeKB" : {
+          "type" : "long"
+        },
+        "VolumeName" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "agent" : {
+          "properties" : {
+            "name" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "version" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "event" : {
+          "properties" : {
+            "created" : {
+              "type" : "date",
+              "format" : "strict_date_time_no_millis"
+            },
+            "id" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "module" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "reference" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "host" : {
+          "properties" : {
+            "name" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "log" : {
+          "properties" : {
+            "level" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "service" : {
+          "properties" : {
+            "name" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "node" : {
+              "properties" : {
+                "name" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                }
+              }
+            },
+            "port" : {
+              "type" : "long"
+            },
+            "status" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "system" : {
+          "properties" : {
+            "cpu" : {
+              "properties" : {
+                "total" : {
+                  "properties" : {
+                    "norm" : {
+                      "properties" : {
+                        "pct" : {
+                          "type" : "float"
+                        }
+                      }
+                    },
+                    "pct" : {
+                      "type" : "float"
+                    }
+                  }
+                }
+              }
+            },
+            "memory" : {
+              "properties" : {
+                "free" : {
+                  "type" : "float"
+                },
+                "total" : {
+                  "type" : "long"
+                },
+                "used" : {
+                  "properties" : {
+                    "pct" : {
+                      "type" : "float"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        },
+        "tls" : {
+          "properties" : {
+            "client" : {
+              "properties" : {
+                "not_after" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                },
+                "not_before" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

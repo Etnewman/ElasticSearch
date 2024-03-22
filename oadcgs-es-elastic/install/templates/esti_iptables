@@ -1,0 +1,21 @@
+{
+        "template" : {
+          "settings" : {
+            "index" : {
+              "lifecycle" : {
+                "rollover_alias" : "dcgs-iptables-iaas-ent"
+              }
+            }
+          }
+        },
+	"index_patterns" : [
+	  "dcgs-iptables-*"
+	],
+        "composed_of" : [ "estc_dcgs_defaults", "estc_iptables-mappings" ],
+        "priority" : 150,
+        "version" : 0,
+        "_meta" : {
+          "description" : "settings for dcgs-iptables indexes installed by DCGS Enterprise Services",
+          "managed" : true
+        }
+      }

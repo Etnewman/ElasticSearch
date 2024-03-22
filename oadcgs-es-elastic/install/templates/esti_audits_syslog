@@ -1,0 +1,28 @@
+{
+  "index_patterns" : [
+    "dcgs-audits_syslog-iaas-ent*"
+  ],
+  "template" : {
+    "settings" : {
+      "index" : {
+        "lifecycle" : {
+          "rollover_alias" : "dcgs-audits_syslog-iaas-ent"
+        }
+      }
+    },
+    "aliases" : {
+      "auditbeat-dcgs" : { }
+    }
+  },
+  "composed_of" : [
+    "estc_dcgs_defaults",
+    "estc_loginsight-agent-mappings",
+    "estc_audit-mappings"
+  ],
+  "priority" : 150,
+  "version" : 0,
+  "_meta" : {
+    "description" : "settings for dcgs-audits_syslog indexes installed by DCGS Enterprise Services",
+    "managed" : true
+  }
+}

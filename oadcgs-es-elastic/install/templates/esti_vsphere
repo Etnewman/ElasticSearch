@@ -1,0 +1,26 @@
+{
+    "template": {
+        "settings": {
+            "index": {
+                "lifecycle": {
+                    "name": "dcgs_default_policy",
+                    "rollover_alias": "dcgs-vsphere-iaas-ent"
+                }
+            }
+        }
+    },
+    "index_patterns": [
+        "dcgs-vsphere*"
+    ],
+    "composed_of": [
+        "estc_dcgs_defaults",
+        "estc_vsphere-mappings",
+        "estc_vsphere-settings"
+    ],
+        "priority" : 200,
+        "version" : 0,
+        "_meta" : {
+            "description" : "settings for vsphere indexes installed by DCGS Enterprise Services`",
+            "managed" : true
+        }
+}

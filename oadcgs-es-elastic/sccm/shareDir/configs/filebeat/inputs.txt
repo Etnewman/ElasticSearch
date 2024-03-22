@@ -1,0 +1,39 @@
+#
+# This file contains a list of all applications
+# that filebeat can collect data from.  A unique portion
+# of the application name is used to identify if the
+# application is running on a host.  If the application is
+# found to be installed on the host then the associated
+# filebeat configuration to collect data for that application
+# will be copied to the host. Configuration files should be
+# placed in the inputs.d directory.
+#
+# Enter one application per line like this:
+# application name=config.yml  (Do not enclose in quotes)
+# Examples:
+# mcafee endpoint security=endpoint.yml
+# configuration manager client=ccm.yml
+#
+# In the case of a singleworker pipeline application, then :SW should
+# be appended to the end like this:
+# application name=config.yml:SW (Do not enclose in quotes)
+# Example:
+# REnDER=render.yml:SW
+#
+# Additionally, the singleworker pipeline can be set by
+# appending -SW at the end of a config file name like this:
+# (in \configs\filebeat\) filename-SW.yml
+# Example:
+# ls01.filebeat-SW.yml
+#
+# Note: The above examples are commented out with the pound sign.
+#       Any line that begins with a pound sign in this file is
+#       ignored.  Do not begin lines that should be evaulated
+#       with a pound sign.
+#
+SOCET=socet_gxp.yml
+GXP Xplorer Platform=gxp_xplorer.yml
+MAAS=fmv_maas.yml
+Enterprise Collection Planner=ECP_Workstation.yml
+ECP Interfaces=ECP_Services.yml
+ECP Process Starter=ECP_AutoRouter.yml

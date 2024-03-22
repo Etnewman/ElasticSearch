@@ -1,0 +1,25 @@
+PySNMP requires MIB files to be compiled into .py format.  The mibdump.py script is used to do this.
+The following are steps to get MIBs needed for the data collector into .py format.
+
+1. Activiate the virtual environment in /venv/bin/activate
+
+2. Run command --> python mibdump.py --destination-format=pysnmp --destination-directory={PATH TO MIBS DIR} {PATH TO MIB BEING COMPILED}
+	ex. python mibdump.py --destination-format=pysnmp --destination-directory=./MIBS /etc/logstash/MIBS/DELL-RAC-MIB.txt
+
+3. MIBs required (Located in /etc/logstash/MIBS unless noted otherwise):
+	1. CISCO-ENTITY-FRU-CONTROL-MIB
+	2. CISCO-ENTITY-SENSOR-MIB
+	3. CISCO-PROCESS-MIB
+	4. CISCO-SMI
+	5. CISCO-TC
+	6. DATA-DOMAIN-MIB
+	7. DELL-RAC-MIB
+	8. DISMAN-EVENT-MIB <---- in /usr/share/snmp/mibs
+	9. ENTITY-MIB
+	10. HCNUM-TC
+	11. IANAifType-MIB <---- in /usr/share/snmp/mibs
+	12. IDRAC-MIB-SMIv2
+	13. IF-MIB
+	14. IP-MIB <---- in /usr/share/snmp/mibs
+	15. RFC1212-MIB
+	16. SNMPv2-MIB

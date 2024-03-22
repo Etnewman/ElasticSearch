@@ -1,0 +1,44 @@
+# Module: system
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/7.5/metricbeat-module-system.html
+
+- module: system
+  period: 30s
+  metricsets:
+    - cpu
+    - memory
+    - network
+    - socket_summary
+    - core
+    - diskio
+
+  cpu.metrics: [percentages, normalized_percentages]
+  processors:
+    - add_host_metadata:
+        netinfo.enabled: true
+
+- module: system
+  period: 1m
+  metricsets:
+    - process
+    - filesystem
+    - fsstat
+  filesystem.ignore_types: [nfs, smbfs, cdrom, cdfs, udf]
+  processors:
+    - add_host_metadata:
+        netinfo.enabled: true
+  processes: ['.*']
+
+- module: system
+  period: 15m
+  metricsets:
+    - uptime
+
+# Note that the appmonitor script process depends on the process_summary
+# metricset period being greater then the metricsets it's capturing
+# data from.  This is currenlty cpu, process, network and filesystem
+# Do not change period times in this file without consulting a
+# DCGS Elastic SME
+- module: system
+  period: 2m
+  metricsets:
+    - process_summary

@@ -1,0 +1,21 @@
+- type: log
+  enabled: true
+  paths:
+    #Services VM
+    #   ECPDataManager
+    - D:\BAE\Interfaces\output\**\*.log
+    - D:\ServicesVMs\*\output\*.log
+    - D:\ServicesVMs\*\dist\output\*.log
+    - D:\ServicesVMs\*\log\*.log
+    - D:\ServicesVMs\*\data\*.log
+    - C:\users\*\appdata\ecp\log\*.log
+    - \\fileserver\ECP_App\ECP\Data\ECPData*\**\logs\*.log
+  recursive_glob.enabled: true
+  tags: ['ECP']
+  multiline.type: pattern
+  multiline.pattern:
+    '^(\[?[0-9]{4}-[0-9]{2}-[0-9]{2}|\w+
+    +[0-9]{2}/[0-9]{2}/[0-9]{4}|.+\|.+\|.+\|.+\|[0-9]{4}-[0-9]{2}-[0-9]{2})'
+  multiline.negate: true
+  multiline.match: after
+  multiline.max_lines: 100000

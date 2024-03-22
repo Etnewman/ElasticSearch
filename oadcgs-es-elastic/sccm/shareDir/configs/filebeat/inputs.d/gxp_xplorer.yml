@@ -1,0 +1,8 @@
+- type: log
+  enabled: true
+  paths:
+    - ${GXP_XPLORER_DATA}\\logs\\event.log
+    - ${GXP_XPLORER_DATA}\\logs\\notification.log
+    - ${GXP_XPLORER_DATA}\\logs\\ecs.log
+  tags: ['GXP_XPLORER']
+  scan_frequency: 30s

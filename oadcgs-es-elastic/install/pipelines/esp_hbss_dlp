@@ -1,0 +1,55 @@
+{"description":"HBSS Data Loss Prevention(DLP) data","pipeline":"input {
+    exec {
+        command => \"/etc/logstash/scripts/shell/hbssdlp.bash\"
+        interval => 1800
+    }
+}
+
+filter {
+
+    split {
+        field => \"message\"
+    }
+
+    json {
+        source => \"message\"
+    }
+
+    ruby {
+        code => '
+             event.set(\"[event][ingested]\", Time.now())
+        '
+    }
+
+    date {
+        match => [ \"[generalDetails][occurred_UTC]\", \"MMM d, yyyy H:mm:ss a\" ]
+        target => \"[event][created]\"
+    }
+
+    mutate {
+        add_field => { \"DCGS_Site\" => \"${SITE}\" }
+        add_field => { \"DCGS_Site_Name\" => \"${SITELOC}\" }
+        add_field => { \"[geo][name]\" => \"${SITELOC}\" }
+        copy => { \"message\" => \"[event][original]\" }
+        copy => { \"[event][created]\" => \"@timestamp\" }
+    }
+
+    translate {
+        field => \"DCGS_Site_Name\"
+        destination => \"[geo][location]\"
+        override => \"true\"
+        fallback => \"0,0\"
+        dictionary_path => '/etc/logstash/dictionaries/site_coordinates.yml'
+    }
+}
+
+output {
+    elasticsearch {
+        hosts => [\"${OUTPUT1}\", \"${OUTPUT2}\", \"${OUTPUT3}\"]
+        index => \"dcgs-hbss_epo-iaas-ent\"
+        user => \"ls_internal\"
+        password => \"${LS_INTERNAL_PW}\"
+        ssl => true
+        cacert => \"/etc/logstash/certs/cachain.pem\"
+    }
+}","settings":{"pipeline.batch.delay":50,"pipeline.batch.size":125,"pipeline.workers":1,"queue.checkpoint.writes":1024,"queue.max_bytes":"1gb","queue.type":"persisted"}}

@@ -1,0 +1,19 @@
+{
+    "template" : {
+      "settings" : {
+        "index" : {
+          "lifecycle" : {
+            "rollover_alias" : "dcgs-logindata-iaas-ent"
+          }
+        }
+       }
+      },
+    "index_patterns" : [ "dcgs-logindata-iaas-ent-*" ],
+    "composed_of" : [ "estc_dcgs_defaults", "estc_logindata-mappings" ],
+    "priority" : 201,
+    "version" : 0,
+    "_meta" : {
+      "description" : "settings for kibana login data indexes by DCGS Enterprise Services`",
+      "managed" : true
+    }
+}

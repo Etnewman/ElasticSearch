@@ -1,0 +1,21 @@
+{
+	"template" : {
+	 "settings": {
+	  "index" : {
+		"lifecycle" : {
+		 "rollover_alias" : "dcgs-db_puppet-iaas-ent"
+		 }
+		}
+	   }
+	 },
+	"index_patterns" : [
+	  "dcgs-db_puppet-iaas-*"
+	],
+	"composed_of" : [ "estc_dcgs_defaults", "estc_puppet-mappings" ],
+	"priority" : 150,
+	"version" : 0,
+	"_meta" : {
+	  "description" : "settings for puppet indexes installed by DCGS Enterprise Services",
+	  "managed" : true
+	}
+}

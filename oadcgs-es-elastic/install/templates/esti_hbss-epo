@@ -1,0 +1,19 @@
+{
+    "template" : {
+      "settings" : {
+        "index" : {
+          "lifecycle" : {
+            "rollover_alias" : "dcgs-hbss_epo-iaas-ent"
+          }
+        }
+       }
+      },
+    "index_patterns" : [ "dcgs-hbss_epo-iaas-ent-*" ],
+    "composed_of" : [ "estc_dcgs_defaults", "estc_hbss-epo-mappings", "estc_hbss-epo-settings" ],
+    "priority" : 201,
+    "version" : 0,
+    "_meta" : {
+      "description" : "settings for hbss syslog indexes installed by DCGS Enterprise Services`",
+      "managed" : true
+    }
+}

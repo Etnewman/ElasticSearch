@@ -1,0 +1,22 @@
+{
+  "template" : {
+    "settings" : {
+      "index" : {
+        "lifecycle" : {
+          "rollover_alias" : "dcgs-unparsed-syslog-iaas-ent"
+        }
+      }
+    }
+  },
+  "index_patterns" : [
+    "dcgs-unparsed-syslog-iaas-ent*"
+  ],
+  "composed_of" : [
+    "estc_dcgs_defaults"
+  ],
+  "priority" : 200,
+  "version" : 0,
+  "_meta" : {
+    "description" : "dcgs-unparsed-syslog index template installed by DCGS Enterprise Services"
+  }
+}
